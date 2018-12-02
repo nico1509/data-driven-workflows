@@ -47,11 +47,11 @@
 
 :DataAttribute
     a rdfs:Class ;
-    rdfs:subClassOf Attribute .
+    rdfs:subClassOf :Attribute .
 
 :StatusAttribute
     a rdfs:Class ;
-    rdfs:subClassOf Attribute .
+    rdfs:subClassOf :Attribute .
     
 :Task
     a rdfs:Class .
