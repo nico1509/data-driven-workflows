@@ -1,0 +1,224 @@
+<html>
+  <body>
+    <h1>How to run a Linked Data-Fu program in Java</h1>
+
+    <p>
+      The Linked Data-Fu Engine is a streaming rule/query engine.
+    </p>
+    <p>
+      The command-line utility provides all functionality to run programs.
+      Use the command-line utility.
+    </p>
+    <p>
+      If you must use Java, the following text describes how to use the Java API in four easy steps.
+    </p>
+    <ol>
+      <li>Generate a <code>Program</code> object.</li>
+      <li>Register a query.</li>
+      <li>Create an <code>EvaluateProgram</code> object.</li>
+      <li>Evaluate the program.</li>
+    </ol>
+
+    <p>
+      We use <a href="https://github.com/nxparser/nxparser">NxParser</a> as API for handling RDF in Java.
+    </p>
+
+    <h2>Generate a Program Object</h2>
+    <p>
+      A <code>Program</code> object contains:
+    </p>
+    <ul>
+      <li>facts/triples to be processed immediately,</li>
+      <li>requests to be carried out immediately,</li>
+      <li>deduction rules that derive new data from existing data and</li>
+      <li>request rules derive new requests from existing data.</li>
+    </ul>
+    <p>
+      You can manually create a <code>Program</code> object, or parse a Notation3 file:
+    </p>
+    <code>
+      <pre>InputStream pis = new FileInputStream(file);
+Origin pbase = new FileOrigin(file.toURI());
+
+Notation3Parser n3p = new Notation3Parser(pis);
+ProgramConsumer pc = new ProgramConsumerImpl(pbase.getResource());
+
+n3p.parse(pc);
+
+pis.close();</pre>
+    </code>
+
+    <p>
+      You can pass the <code>ProgramConsumer</code> to the <code>Program</code> constructor to create a <code>Program</code> object.
+    </p>
+    <code>
+      <pre>Program program = new Program(pc);</pre>
+    </code>
+
+    
+    <h2>Register a Query</h2>
+    <p>
+      Linked Data-Fu operates in a streaming fashion, so queries are registered, and results are provided in an ongoing fashion via a callback interface (e.g., see <a href="http://ceur-ws.org/Vol-1035/iswc2013_poster_8.pdf">a poster</a>).
+    </p>
+    <p>
+      Registering means to supply
+    </p>
+    <ul>
+      <li>the query itself and</li>
+      <li>a sink to where the resulting bindings should be sent.</li>
+    </ul>
+    <p>
+      There are various sink implementations, to write results to files in specific formats.
+      If you want to handle the results to queries in Java code, use a <code>BindingConsumerSink</code>, which takes as parameter a <code>BindingConsumer</code>.
+      A callback implements <code>BindingConsumer</code>, which encapsulates several <code>Node</code> objects and an <code>Origin</code> for provenance tracking.
+    </p>
+    <p>
+      There are several classes that implement <code>BindingConsumer</code>:
+    </p>
+    <ul>
+      <li><code>BindingConsumerCollection</code>, which stores the results in a set or a supplied collection (which should be synchronised).</li>
+      <li><code>BindingConsumerPrint</code>, which prints out the results in raw form.</li>
+      <li><code>SerialisationConsumers</code> such as <code>NQuadsSerialiser</code> or <code>SparqlResultsXmlSerialiser</code> to output the bindings in the right syntax.</li>
+    </ul>
+    <p>
+      For example, assume you want to register the following SPARQL query to the program.
+    </p>
+
+    <code>
+      <pre>SELECT ?s WHERE { ?s ?p ?o . }</pre>
+</code>
+
+    <p>
+      You can build the query in Java.
+      "#q" is the internal identifier for the query (not used, really).
+    </p>
+    <code>
+      <pre>Nodes pattern = new Nodes(new Variable("s"), new Variable("p"), new Variable("o"));
+List<Variable> li = new ArrayList<Variable>();
+li.add(new Variable("s"));
+SelectQuery sq = new SelectQuery(new Resource("#q"), li, pattern);</pre>
+      </code>
+
+    <p>
+      You can also use the SPARQL parser to obtain a query object:
+    </p>
+    <code>
+      <pre>QueryConsumerImpl qc = new QueryConsumerImpl();
+String s = new String("SELECT ?s WHERE { ?s ?p ?o . }");
+SparqlParser sp = new SparqlParser(new StringReader(s));
+
+sp.parse(qc, new InternalOrigin("SparqlSelectTest"));
+SelectQuery sq = qc.getSelectQueries().iterator().next();</pre>
+    </code>
+
+    <p>
+      Now, do:
+    </p>
+    <code>
+      <pre>BindingConsumerCollection bc = new BindingConsumerCollection();
+BindingConsumerSink sink = new BindingConsumerSink(bc);
+
+program.registerSelectQuery(sq, sink);</pre>
+</code>
+
+    <p>
+      Now you have prepared everything you need to evaluate the program.
+    </p>
+
+    <h2>Create an EvaluateProgram Object</h2>
+    <p>
+      <code>EvaluateProgram</code> represents one program run, or, in other words, the executable plan.
+      You can pass the <code>Program</code> object to the constructor of <code>EvaluateProgramGenerator</code> with the appropriate config in a <code>EvaluateProgramConfig</code> object.
+    </p>
+    <p>
+      In the following we assume the default configuration.
+    </p>
+    <code>
+      <pre>EvaluateProgramConfig config = new EvaluateProgramConfig();
+EvaluateProgram ep = new EvaluateProgramGenerator(program, config);
+</pre>
+    </code>
+
+    <!--
+    <p>
+      You can use <code>primeTriples()</code> to add triples in the form of Binding objects to the program.
+      With <code>primeInputOrigins()</code>, you can add safe requests (GET) to the program.
+      With <code>primeOutputOrigins()</code>, you can add unsafe requests (PUT, POST, DELETE) to the program.
+      The triples and requests added with <code>prime*()</code> will stay with the program if you run the program multiple times.
+    </p>
+    -->
+
+    <h2>Evaluate the Program</h2>
+    <p>
+      Once you call <code>start()</code> on the <code>EvaluateProgram</code> object, the program will be evaluated and results for the registered queries will be streamed to the registered callbacks.
+    </p>
+    <code>
+      <pre>ep.start();</pre>
+    </code>
+    <p>
+      After calling <code>start()</code>, you may add triples (in the form of Binding objects) to the running program via <code>consume()</code> on the <code>BindingConsumer</code> object you get via <code>getBaseConsumer()</code>.
+    </p>
+
+    <p>
+      With the following Java code, you add the triple:
+    </p>
+    <code>
+      <pre>&lt;http://example.org/foo&gt; rdf:type rdfs:Resource .</pre>
+    </code>
+
+    <code><pre>ep.getBaseConsumer().consume(new Binding(new Nodes(new Resource("http://example.org/foo"), RDF.TYPE, RDFS.RESOURCE));</pre></code>
+
+    <p>
+      You may also add safe (GET) requests to the <code>OriginConsumer</code> you get via <code>getInputOriginConsumer()</code>, and unsafe (PUT, POST, DELETE) requests to the <code>OriginConsumer</code> you get via <code>getOutputOriginConsumer()</code>.
+    </p>
+
+    <p>
+      To parse triples from a file, use an atomic request so that the parser can take care of parsing different RDF syntaxes.
+    </p>
+
+    <code><pre>ep.getInputOriginConsumer().consume(new RequestOrigin(new URI("http://harth.org/andreas/foaf.rdf"), Method.GET);</pre></code>
+
+    <p>
+      Once you have supplied all triples and requests, call <code>awaitIdleAndFinish()</code>.
+      The call to <code>awaitIdleAndFinish()</code> will block until the program evaluation has been finished.
+    </p>
+
+    <code><pre>ep.awaitIdleAndFinish();
+ep.shutdown();</pre>
+    </code>
+
+    <p>
+      Invoking the <code>shutdown()</code> method closes streams and network connections.
+    </p>
+    <p>
+      That's all.
+    </p>
+    <p>
+      The Linked Data-Fu command line utility provides access to all functionality you might need to run programs.
+    </p>
+    <p>
+      In the majority of cases, you do not need to use the Java API, and you should not use the Java API.
+    </p>
+    <p>
+      Use the command line utility.
+    </p>
+
+    <!--
+    <h2>Custom Input/Output Formats</h2>
+    <p>
+      But there's more.  You can define your own input and output formats.
+    </p>
+    <ul>
+      <li>Input: return an iterator over Nodes objects (arrays Node[3], where Node is an RDF Term)</li>
+      <li>Output: serialise Nodes objects (either when serialising triples, a Node[3] array, or solution sequences, as Nodes object with arbitrary length)</li>
+    </ul>
+
+    <p>
+      To have your own format, you have to implement the correct interfaces (@@@todo: identify the ones in *.common), and add your code to the classpath.
+      Also, you have to register your format with file suffix or content type in @@@todo.
+    </p>
+-->
+    <hr/>
+    Andreas Harth, May 2015, December 2015.
+  </body>
+</html>

@@ -1,0 +1,9 @@
+PREFIX : <https://www.nico-assfalg.de/semantic-web/kit-campus.ttl#>
+
+SELECT ?kitname ?latitude ?longitude
+FROM <https://www.nico-assfalg.de/semantic-web/kit-campus.ttl>
+WHERE {
+    ?k :kitname ?kitname .
+    ?k :latitude ?latitude .
+    ?k :longitude ?longitude .
+}
