@@ -1,0 +1,57 @@
+# add missing shit from sync error, fuck you OneDrive!
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+# how can we model status changes as rules? {-something} => {do that}
+# we do not have a history. Need to store previous value?
+
+# can i add several domains? -> :hasName for Task, ...
+:hasTaskName
+    a rdf:Property ;
+    rdfs:domain :Task ;
+    rdfs:range xsd:String .
+    
+# define that list is of type InputAttribute?
+:hasInputAttributes
+    a rdf:Property ;
+    rdfs:domain :Task ;
+    rdfs:range rdf:List .
+    
+:hasOutputAttributes
+    a rdf:Property ;
+    rdfs:domain :Task ;
+    rdfs:range rdf:List .
+    
+:hasPostCondition
+    a rdf:Property ;
+    rdfs:domain :Task ;
+    rdfs:range :PostCondition .
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+:Attribute
+    a rdfs:Class .
+
+:DataAttribute
+    a rdfs:Class ;
+    rdfs:subClassOf Attribute .
+
+:StatusAttribute
+    a rdfs:Class ;
+    rdfs:subClassOf Attribute .
+    
+:Task
+    a rdfs:Class .
+    
+:PostCondition
+    a rdfs:Class .
+    
