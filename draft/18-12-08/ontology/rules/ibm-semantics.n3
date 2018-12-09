@@ -13,29 +13,35 @@
 # check preconditions
 
 {
-?stage ibm:hasGuards ?guard .
-?guard ibm:hasPreCondition ?sentry .
-?sentry sparql-result:boolean "true"^^xsd:Boolean .
+    ?stage ibm:hasGuards ?guard .
+    ?guard ibm:hasPreCondition ?sentry .
+    ?sentry sparql-result:boolean "true"^^xsd:Boolean .
 }
 =>
-{ ?stage ibm:hasState ibm:active . } .
+{   
+    ?stage ibm:hasState ibm:active . 
+} .
 
 # execute stages
 
 {
-?stage ibm:hasState ibm:active ;
-    ibm:hasHttpRequest ?request .
-?request http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
+    ?stage ibm:hasState ibm:active ;
+        ibm:hasHttpRequest ?request .
+    ?request http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
 }
 =>
-{ _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . } .
+{
+    _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . 
+} .
 
 # check postconditions
 
 {
-?stage ibm:hasMilestone ?milestone .
-?milestone ibm:hasPostCondition ?sentry .
-?sentry sparql-result:boolean "true"^^xsd:Boolean .
+    ?stage ibm:hasMilestone ?milestone .
+    ?milestone ibm:hasPostCondition ?sentry .
+    ?sentry sparql-result:boolean "true"^^xsd:Boolean .
 } 
 => 
-{ ?stage ibm:hasState ibm:done . } .
+{ 
+    ?stage ibm:hasState ibm:done . 
+} .
