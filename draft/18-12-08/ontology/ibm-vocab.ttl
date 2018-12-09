@@ -78,8 +78,8 @@
 
 :hasState
     a rdf:Property ;
-    rdfs:domain (:Stage :Action)        ### QUESTION: is that valid code ?
-    rdfs:range :State ;
+    rdfs:domain (:Stage :Action) ;       ### QUESTION: is that valid code ?
+    rdfs:range :State .
 
 :hasMilestoneName
     a rdf:Property ;
@@ -89,7 +89,7 @@
 :hasAction
     a rdf:Property ;
     rdfs:domain :Task ;
-    rdfs:range :Action;
+    rdfs:range :Action .
 
 :hasHttpRequest
     a rdf:Property ;
