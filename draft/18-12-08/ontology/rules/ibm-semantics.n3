@@ -25,6 +25,7 @@
 
 # execute stages
 
+#1
 {
     ?stage      ibm:hasState        ibm:active ;
                 ibm:hasTask         ?task .
@@ -36,15 +37,16 @@
                 http:body           ?body .
 } => {
     #### perform action 
-    _:h http:mthd       http_m:POST ;                 
-        http:requestURI ?uri ; 
-        http:body       ?body .             ### QUESTION: react on non 3XX Responses
+    _:h         http:mthd           http_m:POST ;                 
+                http:requestURI     ?uri ; 
+                http:body           ?body .             ### QUESTION: react on non 3XX Responses
 
     #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
-    ?action     ibm:hasState ibm:done;
+    ?action     ibm:hasState        ibm:done;
 } .
 
 ##### QUESTION: how does this rule start executing??
+#2
 {
 
     ?stage      ibm:hasState        ibm:active ;
@@ -60,34 +62,38 @@
 
 } => {
     ### perform action 
-    _:h http:mthd       http_m:POST ;                 
-        http:requestURI ?uri ; 
-        http:body       ?body .              ### QUESTION: react on non 3XX Responses
+    _:h http:mthd                   http_m:POST ;                 
+        http:requestURI             ?uri ; 
+        http:body                   ?body .              ### QUESTION: react on non 3XX Responses
 
     ### set action state => done
-    ?action     ibm:hasState ibm:done;
+    ?action     ibm:hasState        ibm:done;
 }
 
+#3
 {
 
-    ?stage      ibm:hasState        ibm:active ;
-                ibm:hasTask         ?task .
-    ?task       ibm:hasAction       ?action .
-    ?action     ibm:hasState        ibm:done
-                ibm:hasNextAction   rdf:nil . #### QUESTION: is this valid for a missing next action (last item in row)
+    ?stage      ibm:hasState            ibm:active ;
+                ibm:hasTask             ?task ;
+                ibm:hasMilestone        ?milestone .
+    ?task       ibm:hasAction           ?action .
+    ?action     ibm:hasState            ibm:done
+                ibm:hasNextAction       rdf:nil .           #### QUESTION: is this valid for a missing next action (last item in row)
+    ?milestone  ibm:hasPostCondition    ?pc .
 } => {
-    #### set stage state => done
-    ?stage      ibm:hasState    
+    #### set stage state => done AND fulfill milestone's post conditions
+    ?stage      ibm:hasState            ibm:done .
+    ?pc         ibm:hasState            ibm:fulfilled .
 }
 
 # check postconditions
 
-{
-    ?stage ibm:hasMilestone ?milestone .
-    ?milestone ibm:hasPostCondition ?sentry .
-    ?sentry sparql-result:boolean "true"^^xsd:Boolean .
-} 
-=> 
-{ 
-    ?stage ibm:hasState ibm:done . 
-} .
+#{
+#    ?stage      ibm:hasMilestone        ?milestone .
+#    ?milestone  ibm:hasPostCondition    ?sentry .
+#    ?sentry     sparql-result:boolean   "true"^^xsd:Boolean .
+#} 
+#=> 
+#{ 
+#    ?stage      ibm:hasState            ibm:done . 
+#} .

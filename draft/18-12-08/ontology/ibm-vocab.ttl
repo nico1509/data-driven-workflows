@@ -25,11 +25,14 @@
     a rdf:Class .
 
     
-:Sentry
+:PreCondition
     a rdfs:Class ;
     owl:sameAs sp:Ask . 
     #???
     
+:PostCondition
+    a rdfs:Class .
+
 :State
     a rdfs:Class .
     
@@ -43,17 +46,17 @@
 :hasPreCondition
     a rdf:Property ;
     rdfs:domain :Guard ;
-    rdfs:range sp:Ask .
+    rdfs:range :PreCondition .
     
 :hasPostCondition
     a rdf:Property ;
     rdfs:domain :Milestone ;
-    rdfs:range sp:Ask .
+    rdfs:range :PostCondition .
     
 :hasGuards
     a rdf:Property ;
     rdfs:domain :Stage ;
-    rdfs:range :Guard .      # rdf List?
+    rdfs:range :Guard .      
     
 :hasMilestones
     a rdf:Property ;
@@ -78,7 +81,7 @@
 
 :hasState
     a rdf:Property ;
-    rdfs:domain (:Stage :Action) ;       ### QUESTION: is that valid code ?
+    rdfs:domain (:Stage :Action :PostCondition) ;       ### QUESTION: is that valid code ?
     rdfs:range :State .
 
 :hasMilestoneName
@@ -115,4 +118,7 @@
     a :State .
 
 :open
+    a :State .
+
+:fulfilled
     a :State .
