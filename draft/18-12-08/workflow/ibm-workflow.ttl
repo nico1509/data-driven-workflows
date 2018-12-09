@@ -1,0 +1,72 @@
+# Common Prefixes
+
+@prefix : <#> .
+@prefix ibm: <../ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+# Workflow-specific Prefixes
+@prefix button-state: <http://localhost:8080/button/state#> .
+@prefix worker: <http://localhost:8080/worker/> .
+@prefix worker-state: <http://localhost:8080/worker/state#> .
+
+
+
+# Guards
+
+:PressButton
+    a ibm:Guard ;
+    ibm:hasGuardName "g1"^^xsd:String ;
+    ibm:hasPreCondition :ButtonIsPressed .
+    
+
+    
+# Stages
+
+:DoSomething
+    a ibm:Stage ;
+    ibm:hasGuards :PressButton ;
+    ibm:hasMilestones :DidSomething ;
+    ibm:hasStageName "Do Something"^^xsd:String ;
+    ibm:hasState ibm:inactive ;
+    ibm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI worker:doWork ;
+        http:body ""^^xsd:String
+    ] .
+
+
+
+# Milestones
+
+:DidSomething
+    a ibm:Milestone ;
+    ibm:hasPostCondition :SomethingIsDone ;
+    ibm:hasMilestoneName "Did Something"^^xsd:String .
+    
+
+
+# Sentries
+
+:ButtonIsPressed 
+    a ibm:Sentry ;
+    sp:where ([
+        sp:subject button-state:Btn ;
+        sp:predicate button-state:isPressed ;
+        sp:object "true"^^xsd:Boolean 
+    ]) .
+
+:SomethingIsDone
+    a ibm:Sentry ;
+    sp:where ([
+        sp:subject worker-state:Worker ;
+        sp:predicate worker-state:didSomething ;
+        sp:object "true"^^xsd:Boolean 
+    ]) .

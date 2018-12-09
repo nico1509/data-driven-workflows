@@ -1,0 +1,41 @@
+@prefix : <#> .
+@prefix ibm: <http://ldbbc-server.lan/ldbbc/ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+# check preconditions
+
+{ 
+?stage ibm:hasGuards ?guard .
+?guard ibm:hasPreCondition ?sentry .
+?sentry sparql-result:boolean "true"^^xsd:Boolean .
+}
+=>
+{ ?stage ibm:hasState ibm:active . } .
+
+# execute stages
+
+{
+?stage ibm:hasState ibm:active ;
+    ibm:hasHttpRequest ?request .
+?request http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . } .
+
+# check postconditions
+
+{
+?stage ibm:hasMilestone ?milestone .
+?milestone ibm:hasPostCondition ?sentry .
+?sentry sparql-result:boolean "true"^^xsd:Boolean .
+} 
+=> 
+{ ?stage ibm:hasState ibm:done . } .

@@ -1,0 +1,93 @@
+@prefix : <#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix sp: <http://spinrdf.org/sp#> .
+
+
+# Classes
+
+:Guard
+    a rdfs:Class .
+    
+:Stage
+    a rdfs:Class .
+    
+:Milestone
+    a rdfs:Class .
+    
+:Sentry
+    a rdfs:Class ;
+    owl:sameAs sp:Ask . 
+    #???
+    
+:State
+    a rdfs:Class .
+    
+# Properties
+
+:hasGuardName
+    a rdf:Property ;
+    rdfs:domain :Guard ;
+    rdfs:range xsd:string .
+    
+:hasPreCondition
+    a rdf:Property ;
+    rdfs:domain :Guard ;
+    rdfs:range :Sentry .
+    
+:hasPostCondition
+    a rdf:Property ;
+    rdfs:domain :Milestone ;
+    rdfs:range :Sentry .
+    
+:hasGuards
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :Guard .      # rdf List?
+    
+:hasMilestones
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :Milestone .
+    
+:hasStageName
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range xsd:string .
+    
+:hasSubstages
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :Stage .
+
+:hasState
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :State .
+    
+:hasHttpRequest
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range http:Request .
+
+:hasMilestoneName
+    a rdf:Property ;
+    rdfs:domain :Milestone ;
+    rdfs:range xsd:string .
+    
+
+# States
+
+:inactive
+    a :State ;
+    owl:disjointWith :active .
+
+:active
+    a :State ;
+    owl:disjointWith :inactive .
+    
+:done
+    a :State .

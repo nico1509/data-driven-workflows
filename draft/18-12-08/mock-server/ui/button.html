@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <style>
+    button, p {
+        font-size: 50px;
+    }
+  </style>
+</head>
+<body>
+<button id="#press-btn" onclick="buttonPress()">PRESS BUTTON</button>
+<p id="text"></p>
+<script>
+function buttonPress() {
+    //$("#text").html("You pressed the button!");
+    $.ajax({
+        url: "/button/pressButton",
+        success: function(data, status, xhr) {
+            $("#text").html("You pressed the button!");
+        },
+        error: function(xhr, status, error) {
+            $("#text").html("error!");
+        }
+    });
+}
+</script>
+</body>
