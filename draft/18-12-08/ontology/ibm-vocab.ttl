@@ -17,10 +17,17 @@
     
 :Milestone
     a rdfs:Class .
+
+:Task
+    a rdf:Class .
+
+:Action 
+    a rdf:Class .
+
     
-#:Sentry
-#    a rdfs:Class ;
-#    owl:sameAs sp:Ask . 
+:Sentry
+    a rdfs:Class ;
+    owl:sameAs sp:Ask . 
     #???
     
 :State
@@ -58,26 +65,41 @@
     rdfs:domain :Stage ;
     rdfs:range xsd:string .
     
-:hasSubstages
+#:hasSubstages
+#    a rdf:Property ;
+#    rdfs:domain :Stage ;
+#    rdfs:range :Stage .
+
+# ==> for atomic stages hasTask instead of hasTasks 
+:hasTask
     a rdf:Property ;
     rdfs:domain :Stage ;
-    rdfs:range :Stage .
+    rdfs:range :Task .
 
 :hasState
     a rdf:Property ;
-    rdfs:domain :Stage ;
-    rdfs:range :State .
-    
-:hasHttpRequest
-    a rdf:Property ;
-    rdfs:domain :Stage ;
-    rdfs:range http:Request .
+    rdfs:domain (:Stage :Action)        ### QUESTION: is that valid code ?
+    rdfs:range :State ;
 
 :hasMilestoneName
     a rdf:Property ;
     rdfs:domain :Milestone ;
     rdfs:range xsd:string .
     
+:hasAction
+    a rdf:Property ;
+    rdfs:domain :Task ;
+    rdfs:range :Action;
+
+:hasHttpRequest
+    a rdf:Property ;
+    rdfs:domain :Action ;
+    rdfs:range http:Request .
+
+:hasNextAction
+    a rdf:Property ;
+    rdfs:domain :Action ;
+    rdfs:range :Action .
 
 # States
 
@@ -90,4 +112,7 @@
     owl:disjointWith :inactive .
     
 :done
+    a :State .
+
+:open
     a :State .

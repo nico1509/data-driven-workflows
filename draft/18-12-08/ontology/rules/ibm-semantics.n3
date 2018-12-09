@@ -22,17 +22,60 @@
     ?stage ibm:hasState ibm:active . 
 } .
 
+
 # execute stages
 
 {
-    ?stage ibm:hasState ibm:active ;
-        ibm:hasHttpRequest ?request .
-    ?request http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
-}
-=>
-{
-    _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . 
+    ?stage      ibm:hasState ibm:active ;
+                ibm:hasTask ?task .
+    ?task       ibm:hasAction ?action .
+    ?action     ibm:hasHttpRequest ?request .
+    #    ibm:hasHttpRequest ?request .
+    ?request    http:mthd http_m:POST ; 
+                http:requestURI ?uri ; 
+                http:body ?body .
+} => {
+    _:h http:mthd http_m:POST ;                 
+        http:requestURI ?uri ; 
+        http:body ?body .                       ### QUESTION: react on non 3XX Responses
+
+    ##### set action state => done              ### QUESTION: valid? is property value overwritten or is a duplicate property added
+    ?action     ibm:hasState ibm:done;
 } .
+
+##### QUESTION: how does this rule start executing??
+{
+
+    ?stage      ibm:hasState ibm:active ;
+                ibm:hasTask ?task .
+    ?task       ibm:hasAction ?action .
+    ?action     ibm:hasState ibm:done
+                ibm:hasNextAction ?nextAction .
+    ?nextAction ibm:hasState ibm:open .
+                ibm:hasHttpRequest ?request .
+    ?request    http:mthd http_m:POST ; 
+                http:requestURI ?uri ; 
+                http:body ?body .
+
+} => {
+    _:h http:mthd http_m:POST ;                 
+            http:requestURI ?uri ; 
+            http:body ?body .                       ### QUESTION: react on non 3XX Responses
+
+    ##### set action state => done
+}
+
+{
+
+    ?stage      ibm:hasState ibm:active ;
+                ibm:hasTask ?task .
+    ?task       ibm:hasAction ?action .
+    ?action     ibm:hasState ibm:done
+                ibm:hasNextAction rdf:nil .         #### is this valid for a missing next action (last item in row)
+} => {
+    
+    ##### set stage state => done
+}
 
 # check postconditions
 
