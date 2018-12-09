@@ -31,10 +31,10 @@
 
 :DoSomething
     a ibm:Stage ;
+    #ibm:hasState ibm:inactive ;
     ibm:hasGuards :PressButton ;
     ibm:hasMilestones :DidSomething ;
     ibm:hasStageName "Do Something"^^xsd:String ;
-    ibm:hasState ibm:inactive ;
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -56,7 +56,7 @@
 # Sentries
 
 :ButtonIsPressed 
-    a ibm:Sentry ;
+    a sp:Ask ;
     sp:where ([
         sp:subject button-state:Btn ;
         sp:predicate button-state:isPressed ;
@@ -64,7 +64,7 @@
     ]) .
 
 :SomethingIsDone
-    a ibm:Sentry ;
+    a sp:Ask ;
     sp:where ([
         sp:subject worker-state:Worker ;
         sp:predicate worker-state:didSomething ;

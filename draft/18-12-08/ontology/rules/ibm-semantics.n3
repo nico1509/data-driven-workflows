@@ -12,7 +12,7 @@
 
 # check preconditions
 
-{ 
+{
 ?stage ibm:hasGuards ?guard .
 ?guard ibm:hasPreCondition ?sentry .
 ?sentry sparql-result:boolean "true"^^xsd:Boolean .

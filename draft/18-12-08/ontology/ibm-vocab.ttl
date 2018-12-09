@@ -18,9 +18,9 @@
 :Milestone
     a rdfs:Class .
     
-:Sentry
-    a rdfs:Class ;
-    owl:sameAs sp:Ask . 
+#:Sentry
+#    a rdfs:Class ;
+#    owl:sameAs sp:Ask . 
     #???
     
 :State
@@ -36,12 +36,12 @@
 :hasPreCondition
     a rdf:Property ;
     rdfs:domain :Guard ;
-    rdfs:range :Sentry .
+    rdfs:range sp:Ask .
     
 :hasPostCondition
     a rdf:Property ;
     rdfs:domain :Milestone ;
-    rdfs:range :Sentry .
+    rdfs:range sp:Ask .
     
 :hasGuards
     a rdf:Property ;
