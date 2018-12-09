@@ -13,8 +13,8 @@
 # check preconditions
 
 {
-    ?stage ibm:hasGuards ?guard .
-    ?guard ibm:hasPreCondition ?sentry .
+    ?stage ibm:hasGuards        ?guard .
+    ?guard ibm:hasPreCondition  ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:Boolean .
 }
 =>
@@ -26,55 +26,58 @@
 # execute stages
 
 {
-    ?stage      ibm:hasState ibm:active ;
-                ibm:hasTask ?task .
-    ?task       ibm:hasAction ?action .
-    ?action     ibm:hasHttpRequest ?request .
+    ?stage      ibm:hasState        ibm:active ;
+                ibm:hasTask         ?task .
+    ?task       ibm:hasAction       ?action .
+    ?action     ibm:hasHttpRequest  ?request .
     #    ibm:hasHttpRequest ?request .
-    ?request    http:mthd http_m:POST ; 
-                http:requestURI ?uri ; 
-                http:body ?body .
+    ?request    http:mthd           http_m:POST ; 
+                http:requestURI     ?uri ; 
+                http:body           ?body .
 } => {
-    _:h http:mthd http_m:POST ;                 
+    #### perform action 
+    _:h http:mthd       http_m:POST ;                 
         http:requestURI ?uri ; 
-        http:body ?body .                       ### QUESTION: react on non 3XX Responses
+        http:body       ?body .             ### QUESTION: react on non 3XX Responses
 
-    ##### set action state => done              ### QUESTION: valid? is property value overwritten or is a duplicate property added
+    #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
     ?action     ibm:hasState ibm:done;
 } .
 
 ##### QUESTION: how does this rule start executing??
 {
 
-    ?stage      ibm:hasState ibm:active ;
-                ibm:hasTask ?task .
-    ?task       ibm:hasAction ?action .
-    ?action     ibm:hasState ibm:done
-                ibm:hasNextAction ?nextAction .
-    ?nextAction ibm:hasState ibm:open .
-                ibm:hasHttpRequest ?request .
-    ?request    http:mthd http_m:POST ; 
-                http:requestURI ?uri ; 
-                http:body ?body .
+    ?stage      ibm:hasState        ibm:active ;
+                ibm:hasTask         ?task .
+    ?task       ibm:hasAction       ?action .
+    ?action     ibm:hasState        ibm:done
+                ibm:hasNextAction   ?nextAction .
+    ?nextAction ibm:hasState        ibm:open .
+                ibm:hasHttpRequest  ?request .
+    ?request    http:mthd           http_m:POST ; 
+                http:requestURI     ?uri ; 
+                http:body           ?body .
 
 } => {
-    _:h http:mthd http_m:POST ;                 
-            http:requestURI ?uri ; 
-            http:body ?body .                       ### QUESTION: react on non 3XX Responses
+    ### perform action 
+    _:h http:mthd       http_m:POST ;                 
+        http:requestURI ?uri ; 
+        http:body       ?body .              ### QUESTION: react on non 3XX Responses
 
-    ##### set action state => done
+    ### set action state => done
+    ?action     ibm:hasState ibm:done;
 }
 
 {
 
-    ?stage      ibm:hasState ibm:active ;
-                ibm:hasTask ?task .
-    ?task       ibm:hasAction ?action .
-    ?action     ibm:hasState ibm:done
-                ibm:hasNextAction rdf:nil .         #### is this valid for a missing next action (last item in row)
+    ?stage      ibm:hasState        ibm:active ;
+                ibm:hasTask         ?task .
+    ?task       ibm:hasAction       ?action .
+    ?action     ibm:hasState        ibm:done
+                ibm:hasNextAction   rdf:nil . #### QUESTION: is this valid for a missing next action (last item in row)
 } => {
-    
-    ##### set stage state => done
+    #### set stage state => done
+    ?stage      ibm:hasState    
 }
 
 # check postconditions
