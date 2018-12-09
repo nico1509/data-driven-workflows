@@ -31,18 +31,42 @@
 
 :DoSomething
     a ibm:Stage ;
-    #ibm:hasState ibm:inactive ;
+    ibm:hasState ibm:inactive ;
     ibm:hasGuards :PressButton ;
     ibm:hasMilestones :DidSomething ;
     ibm:hasStageName "Do Something"^^xsd:String ;
+    ibm:hasTask :WorkingTask .
+    
+
+
+# Tasks
+:WorkingTask
+    a ibm:Task ;
+    ibm:hasAction :WorkingAction .
+
+# Actions
+:WorkingAction
+    a ibm:Action ;
+    ibm:hasState ibm:open ;
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI worker:doWork ;
         http:body ""^^xsd:String
-    ] .
+    ] ;
+    ibm:hasNextAction :WorkingAction2 .
 
 
+:WorkingAction2
+    a ibm:Action ;
+    ibm:hasState ibm:open ;
+    ibm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI worker:doWork ;
+        http:body ""^^xsd:String
+    ] ;
+    ibm:hasNextAction rdf:nil;
 
 # Milestones
 
