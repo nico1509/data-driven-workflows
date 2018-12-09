@@ -34,6 +34,10 @@ http.createServer(function (req, res) {
         buttonPressed = "true";
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end("ok, button pressed!");
+    } else if (req.url.startsWith("/button/reset")) { // press the Button
+        buttonPressed = "false";
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end("ok, button reset!");
     } else if (req.url.startsWith("/worker/doWork")) { // simulate task
         workerDone = "true";
         res.writeHead(200, {'Content-Type': 'text/html'});

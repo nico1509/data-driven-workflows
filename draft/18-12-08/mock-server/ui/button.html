@@ -12,6 +12,7 @@
 </head>
 <body>
 <button id="#press-btn" onclick="buttonPress()">PRESS BUTTON</button>
+<button id="#reset-btn" onclick="buttonReset()">RESET BUTTON</button>
 <p id="text"></p>
 <script>
 function buttonPress() {
@@ -20,6 +21,19 @@ function buttonPress() {
         url: "/button/pressButton",
         success: function(data, status, xhr) {
             $("#text").html("You pressed the button!");
+        },
+        error: function(xhr, status, error) {
+            $("#text").html("error!");
+        }
+    });
+}
+
+function buttonReset() {
+    //$("#text").html("You pressed the button!");
+    $.ajax({
+        url: "/button/reset",
+        success: function(data, status, xhr) {
+            $("#text").html("You RESET the button!");
         },
         error: function(xhr, status, error) {
             $("#text").html("error!");
