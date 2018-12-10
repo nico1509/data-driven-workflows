@@ -42,6 +42,7 @@
                 http:body           ?body .             ### QUESTION: react on non 3XX Responses
 
     #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
+    #### We should consider waiting for the receiving device to finish its task
     ?action     ibm:hasState        ibm:done .
 } .
 
