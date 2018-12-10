@@ -42,7 +42,7 @@
                 http:body           ?body .             ### QUESTION: react on non 3XX Responses
 
     #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
-    ?action     ibm:hasState        ibm:done;
+    ?action     ibm:hasState        ibm:done .
 } .
 
 ##### QUESTION: how does this rule start executing??
@@ -52,9 +52,9 @@
     ?stage      ibm:hasState        ibm:active ;
                 ibm:hasTask         ?task .
     ?task       ibm:hasAction       ?action .
-    ?action     ibm:hasState        ibm:done
+    ?action     ibm:hasState        ibm:done ;
                 ibm:hasNextAction   ?nextAction .
-    ?nextAction ibm:hasState        ibm:open .
+    ?nextAction ibm:hasState        ibm:open ;
                 ibm:hasHttpRequest  ?request .
     ?request    http:mthd           http_m:POST ; 
                 http:requestURI     ?uri ; 
@@ -67,8 +67,8 @@
         http:body                   ?body .              ### QUESTION: react on non 3XX Responses
 
     ### set action state => done
-    ?action     ibm:hasState        ibm:done;
-}
+    ?action     ibm:hasState        ibm:done .
+} .
 
 #3
 {
@@ -77,14 +77,14 @@
                 ibm:hasTask             ?task ;
                 ibm:hasMilestone        ?milestone .
     ?task       ibm:hasAction           ?action .
-    ?action     ibm:hasState            ibm:done
+    ?action     ibm:hasState            ibm:done ;
                 ibm:hasNextAction       rdf:nil .           #### QUESTION: is this valid for a missing next action (last item in row)
     ?milestone  ibm:hasPostCondition    ?pc .
 } => {
     #### set stage state => done AND fulfill milestone's post conditions
     ?stage      ibm:hasState            ibm:done .
     ?pc         ibm:hasState            ibm:fulfilled .
-}
+} .
 
 # check postconditions
 
