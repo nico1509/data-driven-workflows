@@ -11,8 +11,8 @@
   </style>
 </head>
 <body>
-<button id="#press-btn" onclick="buttonPress()">PRESS BUTTON</button>
-<button id="#reset-btn" onclick="buttonReset()">RESET BUTTON</button>
+<button id="#press-btn" onclick="buttonPress()">PRESS BUTTON</button><br>
+<button id="#reset-btn" onclick="buttonReset()">RESET BUTTON AND WORKERS</button>
 <p id="text"></p>
 <script>
 function buttonPress() {
@@ -21,9 +21,15 @@ function buttonPress() {
         url: "/button/pressButton",
         success: function(data, status, xhr) {
             $("#text").html("You pressed the button!");
+            setTimeout(() => {
+                $("#text").html("");
+            }, 1000);
         },
         error: function(xhr, status, error) {
             $("#text").html("error!");
+            setTimeout(() => {
+                $("#text").html("");
+            }, 1000);
         }
     });
 }
@@ -31,12 +37,18 @@ function buttonPress() {
 function buttonReset() {
     //$("#text").html("You pressed the button!");
     $.ajax({
-        url: "/button/reset",
+        url: "/reset",
         success: function(data, status, xhr) {
-            $("#text").html("You RESET the button!");
+            $("#text").html("You RESET all!");
+            setTimeout(() => {
+                $("#text").html("");
+            }, 1000);
         },
         error: function(xhr, status, error) {
             $("#text").html("error!");
+            setTimeout(() => {
+                $("#text").html("");
+            }, 1000);
         }
     });
 }
