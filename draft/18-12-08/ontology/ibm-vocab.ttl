@@ -21,7 +21,7 @@
 :Task
     a rdf:Class .
 
-:Action 
+:Action  ## put this in the task!
     a rdf:Class .
 
     
@@ -46,7 +46,7 @@
 :hasPreCondition
     a rdf:Property ;
     rdfs:domain :Guard ;
-    rdfs:range :PreCondition .
+    rdfs:range sp:Ask .
     
 :hasPostCondition
     a rdf:Property ;

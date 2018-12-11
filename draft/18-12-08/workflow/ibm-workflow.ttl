@@ -1,7 +1,7 @@
 # Common Prefixes
 
 @prefix : <#> .
-@prefix ibm: <../ibm-vocab.ttl#> .
+@prefix ibm: <http://localhost/ldbbc/ibm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -22,7 +22,7 @@
 
 :PressButton
     a ibm:Guard ;
-    ibm:hasGuardName "g1"^^xsd:String ;
+    ibm:hasGuardName "g1"^^xsd:string ;
     ibm:hasPreCondition :ButtonIsPressed .
     
 
@@ -34,7 +34,7 @@
     ibm:hasState ibm:inactive ;
     ibm:hasGuards :PressButton ;
     ibm:hasMilestones :DidSomething ;
-    ibm:hasStageName "Do Something"^^xsd:String ;
+    ibm:hasStageName "Do Something"^^xsd:string ;
     ibm:hasTask :WorkingTask .
     
 
@@ -52,7 +52,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI worker:doWork ;
-        http:body ""^^xsd:String
+        http:body ""^^xsd:string
     ] ;
     ibm:hasNextAction :WorkingAction2 .
 
@@ -64,7 +64,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI worker:doWork ;
-        http:body ""^^xsd:String
+        http:body ""^^xsd:string
     ] ;
     ibm:hasNextAction rdf:nil .
 
@@ -73,7 +73,7 @@
 :DidSomething
     a ibm:Milestone ;
     ibm:hasPostCondition :SomethingIsDone ;
-    ibm:hasMilestoneName "Did Something"^^xsd:String .
+    ibm:hasMilestoneName "Did Something"^^xsd:string .
     
 
 
@@ -84,7 +84,7 @@
     sp:where ([
         sp:subject button-state:Btn ;
         sp:predicate button-state:isPressed ;
-        sp:object "true"^^xsd:Boolean 
+        sp:object "true"^^xsd:boolean 
     ]) .
 
 :SomethingIsDone
@@ -92,5 +92,5 @@
     sp:where ([
         sp:subject worker-state:Worker ;
         sp:predicate worker-state:didSomething ;
-        sp:object "true"^^xsd:Boolean 
+        sp:object "true"^^xsd:boolean 
     ]) .

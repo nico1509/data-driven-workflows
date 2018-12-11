@@ -1,0 +1,108 @@
+#
+# Vocabulary to define vocabularies with properties that point to different members of an RDF list.
+#
+# You can define properties to point to any member, plus the first and the last.
+#
+# Author: Tobias Käfer
+#
+
+#
+# Example for talking about children and descendants of a node in a tree:
+#
+## The child relation:
+# ex:hasChild
+#   ldf:accompanying ex:hasChildren ;
+#   rdfs:subPropertyOf ex:hasDescendant .
+#
+## The descendant relation:
+# ex:hasDescendant
+#   a owl:TransitiveProperty .
+#
+#
+## The left-most child and descendant:
+# ex:hasLeftMostChild
+#   :isLast ex:hasChild ;
+#   rdfs:subPropertyOf ex:hasLeftMostDescendant .
+#
+# ex:hasLeftMostDescendant
+#   a owl:TransitiveProperty .
+# 
+#
+## The right-most child and descendant: 
+# ex:hasRightMostChild
+#   :isLast ex:hasChild ;
+#   rdfs:subPropertyOf ex:hasRightMostDescendant .
+# 
+# ex:hasRightMostDescendant
+#   a owl:TransitiveProperty .
+#
+
+@base <http://purl.org/list/vocab> .
+
+@prefix : <#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<> rdfs:seeAlso <semantics> .
+
+#
+# Classes
+#
+
+:ListMembershipProperty a rdfs:Class ;
+  rdfs:label "List Membership Property" ;
+  rdfs:comment "The class of properties that point from a thing to entries in a list attached to the thing." ;
+  rdfs:isDefinedBy <semantics> , <> .
+
+:FirstMemberProperty a rdfs:Class ;
+  rdfs:label "First List Item Membership Property" ;
+  rdfs:comment "The class of properties that point from a thing to the first entry in a list attached to the thing." ;
+  rdfs:isDefinedBy <semantics> , <> .
+
+:LastMemberProperty a rdfs:Class ;
+  rdfs:label "Last List Item Membership Property" ;
+  rdfs:comment "The class of properties that point from a thing to the last entry in a list attached to the thing." ;
+  rdfs:isDefinedBy <semantics> , <> .
+
+#
+# Properties
+#
+
+:accompanying
+  a rdf:Property ;
+  rdfs:label "accompanying" ;
+  rdfs:comment "States that a list membership property accompanies a property." ;
+  rdfs:domain :ListMembershipProperty ;
+  rdfs:range rdf:Property ;
+  rdfs:isDefinedBy <semantics> , <> .
+
+:isLast
+  a rdf:Property ;
+  rdfs:label "is last" ;
+  rdfs:comment "Corresponds to list membership property pointing to the last item in the list." ;
+  rdfs:subPropertyOf rdfs:subPropertyOf ;
+  rdfs:domain :LastMemberProperty ;
+  rdfs:range :ListMembershipProperty ;
+  rdfs:isDefinedBy <semantics> , <> .
+
+:isFirst
+  a rdf:Property ;
+  rdfs:label "is first" ;
+  rdfs:comment "Corresponds to list membership property pointing to the First item in the list." ;
+  rdfs:subPropertyOf rdfs:subPropertyOf ;
+  rdfs:domain :FirstMemberProperty ;
+  rdfs:range :ListMembershipProperty ;
+  rdfs:isDefinedBy <semantics> , <> .
+
+:transitiveRest
+  a rdf:Property , owl:TransitiveProperty ;
+  rdfs:label "rest, transitively" ;
+  rdfs:comment "A transitive version for the rest property from the rdf vocabulary." ;
+  rdfs:seeAlso rdf:rest ;
+  rdfs:isDefinedBy <> .
+rdf:rest rdfs:subPropertyOf :transitiveRest .
+
+:equalsOrTransitiveRest a rdf:Property .
+:transitiveRest rdfs:subPropertyOf :equalsOrTransitiveRest .
+

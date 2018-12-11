@@ -6,17 +6,17 @@
 # If the BGPs all match, the SPARQL result of "true" is attached to the query.
 #
 
-#@prefix list: <http://purl.org/list/vocab#> .
+@prefix list: <http://purl.org/list/vocab#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
 @prefix sp: <http://spinrdf.org/sp#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-#@prefix wild: <http://purl.org/wild/vocab#> .
+@prefix wild: <http://purl.org/wild/vocab#> .
 
 # yes, GroupGraphPatternSub is the name in the EBNF of SPARQL
-#wild:hasGroupGraphPatternSub 
-#  a list:ListMembershipProperty ;
-#  list:accompanying sp:where .
+wild:hasGroupGraphPatternSub 
+  a list:ListMembershipProperty ;
+  list:accompanying sp:where .
 
 { ?ask a sp:Ask ; sp:where ?bn1 . ?bn1 rdf:first ?bn11 . ?bn11 sp:subject ?subj ; sp:predicate ?pred ; sp:object ?obj . ?subj ?pred ?obj . }
 =>
@@ -26,6 +26,6 @@
 =>
 { ?bn22 sparql-result:boolean "true"^^xsd:boolean . } .
 
-#{ ?ask a sp:Ask ; wild:hasGroupGraphPatternSub ?bnLastStmt . ?bnLast rdf:first ?bnLastStmt ; rdf:rest rdf:nil . ?bnLastStmt sparql-result:boolean "true"^^xsd:boolean . }
-#=>
-#{ ?ask sparql-result:boolean "true"^^xsd:boolean . } .
+{ ?ask a sp:Ask ; wild:hasGroupGraphPatternSub ?bnLastStmt . ?bnLast rdf:first ?bnLastStmt ; rdf:rest rdf:nil . ?bnLastStmt sparql-result:boolean "true"^^xsd:boolean . }
+=>
+{ ?ask sparql-result:boolean "true"^^xsd:boolean . } .

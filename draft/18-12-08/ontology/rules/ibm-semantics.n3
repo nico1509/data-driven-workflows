@@ -1,5 +1,5 @@
 @prefix : <#> .
-@prefix ibm: <http://ldbbc-server.lan/ldbbc/ibm-vocab.ttl#> .
+@prefix ibm: <http://localhost/ldbbc/ibm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -9,13 +9,23 @@
 @prefix http: <http://www.w3.org/2011/http#>.
 @prefix http_m: <http://www.w3.org/2011/http-methods#>.
 
+# get precondition data
+
+{
+    ?where  sp:subject          ?subject .
+}
+=>
+{
+    _:h     http:mthd               http_m:GET; 
+            http:requestURI         ?subject .
+} .
 
 # check preconditions
 
 {
     ?stage ibm:hasGuards        ?guard .
     ?guard ibm:hasPreCondition  ?sentry .
-    ?sentry sparql-result:boolean "true"^^xsd:Boolean .
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
 }
 =>
 {   
@@ -43,10 +53,12 @@
 
     #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
     #### We should consider waiting for the receiving device to finish its task
+
+    ## trueConditon !
     ?action     ibm:hasState        ibm:done .
 } .
 
-##### QUESTION: how does this rule start executing??
+##### QUESTION: how does this rule start executing?? parallel
 #2
 {
 
@@ -54,7 +66,7 @@
                 ibm:hasTask         ?task .
     ?task       ibm:hasAction       ?action .
     ?action     ibm:hasState        ibm:done ;
-                ibm:hasNextAction   ?nextAction .
+                ibm:hasNextAction   ?nextAction . ### NO NEXT ACTION -> 1 stage 1 request 
     ?nextAction ibm:hasState        ibm:open ;
                 ibm:hasHttpRequest  ?request .
     ?request    http:mthd           http_m:POST ; 
@@ -92,7 +104,7 @@
 #{
 #    ?stage      ibm:hasMilestone        ?milestone .
 #    ?milestone  ibm:hasPostCondition    ?sentry .
-#    ?sentry     sparql-result:boolean   "true"^^xsd:Boolean .
+#    ?sentry     sparql-result:boolean   "true"^^xsd:boolean .
 #} 
 #=> 
 #{ 
