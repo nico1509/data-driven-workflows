@@ -17,68 +17,40 @@
 @prefix worker-state: <http://localhost:8080/worker/state#> .
 
 
+:MyWorkflowModel
+    a ibm:WorkflowModel ;
+    ibm:containsStageModel :DoSomething .
 
 # Guards
-
 :PressButton
     a ibm:Guard ;
-    ibm:hasGuardName "g1"^^xsd:string ;
-    ibm:hasPreCondition :ButtonIsPressed .
+    ibm:hasCondition :ButtonIsPressed .
     
-
     
 # Stages
-
 :DoSomething
-    a ibm:Stage ;
-    ibm:hasState ibm:inactive ;
-    ibm:hasGuards :PressButton ;
-    ibm:hasMilestones :DidSomething ;
-    ibm:hasStageName "Do Something"^^xsd:string ;
-    ibm:hasTask :WorkingTask .
-    
-
+    a ibm:StageModel ;
+    ibm:hasGuard :PressButton ;
+    ibm:hasMilestone :DidSomething ;
+    ibm:hasTaskModel :WorkingTask .
 
 # Tasks
 :WorkingTask
-    a ibm:Task ;
-    ibm:hasAction :WorkingAction .
-
-# Actions
-:WorkingAction
-    a ibm:Action ;
-    ibm:hasState ibm:open ;
+    a ibm:TaskModel ;
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI worker:doWork ;
         http:body ""^^xsd:string
-    ] ;
-    ibm:hasNextAction :WorkingAction2 .
-
-
-:WorkingAction2
-    a ibm:Action ;
-    ibm:hasState ibm:open ;
-    ibm:hasHttpRequest [
-        a http:Request ;
-        http:mthd http_m:POST ;
-        http:requestURI worker:doWork ;
-        http:body ""^^xsd:string
-    ] ;
-    ibm:hasNextAction rdf:nil .
+    ] .
 
 # Milestones
-
 :DidSomething
     a ibm:Milestone ;
-    ibm:hasPostCondition :SomethingIsDone ;
-    ibm:hasMilestoneName "Did Something"^^xsd:string .
-    
+    ibm:hasCondition :SomethingIsDone .    
 
 
 # Sentries
-
 :ButtonIsPressed 
     a sp:Ask ;
     sp:where ([

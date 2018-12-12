@@ -8,7 +8,6 @@
 
 
 # Utility Classes
-
 :Condition
     a rdfs:Class ;
     owl:sameAs sp:Ask . 
@@ -29,7 +28,6 @@
     a rdfs:Class .
 
 # Workflow Element Classes
-
 :StageModel
     rdfs:subClassOf :StageContainer ;
     rdfs:subClassOf :Instantiable .
@@ -58,16 +56,15 @@
     rdfs:subClassOf :Conditional .
 
 # Properties
-
 :isInstanceOf
     a rdf:Property ;
     rdfs:domain :Instance ;
     rdfs:range :InstantiableObjects .
 
-:containsStage
+:containsStageModel
     a rdf:Property ;
     rdfs:domain :StageContainer ;
-    rdfs:range :Stage .
+    rdfs:range :StageModel .
 
 :hasCondition
     a rdf:Property ;
@@ -89,7 +86,7 @@
     rdfs:domain :Instance ;
     rdfs:range :State .
 
-:hasTask
+:hasTaskModel
     a rdf:Property ;
     rdfs:domain :StageModel ;
     rdfs:range :TaskModel .
@@ -99,7 +96,7 @@
     rdfs:domain :Instantiable ;
     rdfs:range :Instantiable .
 
-:inWorkflowInstane                      ###Temporary construct if recursive parent-instance requests are too hard
+:inWorkflowInstance                      ###Temporary construct if recursive parent-instance requests are too hard
     a rdf:Property ;
     rdfs:domain :Instantiable ;
     rdfs:range :WorkflowInstance .
@@ -109,8 +106,13 @@
     rdfs:domain :TaskModel ;
     rdfs:range http:Request .
 
-
 # States
+:uninitialized
+    a :State .
+
+:initialized
+    a :State .
+
 :inactive
     a :State .
     # owl:disjointWith :active .

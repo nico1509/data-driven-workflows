@@ -9,53 +9,51 @@
 @prefix http: <http://www.w3.org/2011/http#>.
 @prefix http_m: <http://www.w3.org/2011/http-methods#>.
 
+@prefix :       <http://localhost/ldbbc/> .
+
+@prefix this: <http://this.nxparser.github.io/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/#> .
+@prefix tmp:    <http://localhost/ldbbc/> .
+@prefix tmp_ha: <http://localhost/ldbbc/#> . # because we cannot parse local names with 0 or 1 letter
+@prefix webserver: <http://localhost/ldbbc/> .
 
 
+{ ?WfInstance a ibm:WorkflowInstance ; ibm:hasState ibm:uninitialized ; ibm:isInstanceOf ?td . }
+=>
+{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+
+{ ?WfInstance a ibm:WorkflowInstance ; ibm:hasState ibm:initialized ; ibm:isInstanceOf ?td . }
+=>
+{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+
+{ ?WfInstance a ibm:WorkflowInstance ; ibm:hasState ibm:active ; ibm:isInstanceOf ?td . }
+=>
+{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+
+# Setup Workflow Instances() 
 { 
-    ?WfInstance ibm:hasInstanceState imb:uninitialised ;
-                wild:workflowInstanceOf ?WfModel . 
-                ?WfModel ibm:containsStage ?stage . 
+    ?WfInstance a ibm:WorkflowInstance ;
+                ibm:hasState ibm:uninitialized ;
+                ibm:isInstanceOf ?WfModel . 
+                ?WfModel ibm:containsStageModel ?stage .
+                ?stage ibm:hasTaskModel ?taskModel .
 }
 =>
 {
     _:h http:mthd http_m:POST ; 
-        http:requestURI tmp_ha:ck ; 
-        http:body { 
-            this:it wild:instanceOf ?act ; 
-                    wild:hasState wild:initialised ; 
-                    wild:inWorkflowInstance ?WfInstance . 
+        http:requestURI <http://localhost/ldbbc/> ; 
+        http:body {
+            ?WfInstance ibm:isInstanceOf ?stage ;
+            ibm:hasState ibm:initialized ;
+            ibm:inWorkflowInstance ?WfInstance . 
         } . 
+    _:h http:mthd http_m:POST ; 
+        http:requestURI <http://localhost/ldbbc/> ; 
+        http:body { 
+            ?WfInstance ibm:isInstanceOf ?taskModel ;
+            ibm:hasState ibm:initialized ;
+            ibm:inWorkflowInstance ?WfInstance . 
+        } .
 } .
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
