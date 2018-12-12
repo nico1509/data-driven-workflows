@@ -12,9 +12,10 @@
 
 
 # Workflow-specific Prefixes
-@prefix button-state: <http://localhost:8080/button/state#> .
+@prefix example: <http://example.org#> .
+@prefix btnstate: <http://localhost:8080/button/state#> .
 @prefix worker: <http://localhost:8080/worker/> .
-@prefix worker-state: <http://localhost:8080/worker/state#> .
+@prefix worstate: <http://localhost:8080/worker/state#> .
 
 
 :MyWorkflowModel
@@ -54,15 +55,15 @@
 :ButtonIsPressed 
     a sp:Ask ;
     sp:where ([
-        sp:subject button-state:Btn ;
-        sp:predicate button-state:isPressed ;
+        sp:subject example:Btn ;
+        sp:predicate example:isPressed ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
 :SomethingIsDone
     a sp:Ask ;
     sp:where ([
-        sp:subject worker-state:Worker ;
-        sp:predicate worker-state:didSomething ;
+        sp:subject example:Worker ;
+        sp:predicate example:didSomething ;
         sp:object "true"^^xsd:boolean 
     ]) .

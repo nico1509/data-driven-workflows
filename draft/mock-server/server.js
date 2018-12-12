@@ -1,14 +1,14 @@
 var http = require('http');
 var fs = require('fs');
 
-var buttonPressed = "false";
-var buttonStatePrefix = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
-    + "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "
-    + "xmlns:ns0=\"#\">"
-    + "<rdf:Description rdf:about=\"#Btn\">"
-    + "<ns0:isPressed rdf:datatype=\"http://www.w3.org/2001/XMLSchema#boolean\">";
+var buttonPressed = "true";
+var buttonStatePrefix = '<?xml version="1.0" encoding="utf-8" ?>'
+    + '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+     +    'xmlns:ns0="http://example.org#">'
+   + '<rdf:Description rdf:about="http://example.org#Button">'
+    + '<ns0:isPressed rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">';
     
-var buttonStateSuffix = "</ns0:isPressed></rdf:Description></rdf:RDF>";
+var buttonStateSuffix = '</ns0:isPressed>' + '</rdf:Description>' + '</rdf:RDF>';
     
 var workerDone = "false";
 var workerStatePrefix = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
