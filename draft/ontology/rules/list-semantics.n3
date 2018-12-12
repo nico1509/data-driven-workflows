@@ -1,0 +1,48 @@
+#@base <http://purl.org/list/vocab> . # Linked Data-Fu 0.9.12 cannot grok that
+
+@prefix : <http://purl.org/list/vocab#> .
+
+@prefix list: <http://www.w3.org/2000/10/swap/list#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<> rdfs:seeAlso <vocab> .
+
+# First element
+{ ?p :accompanying ?p2 . ?s ?p2 ?list . ?list rdf:first ?listItem . }
+=> { ?s ?p ?listItem . } .
+
+# Second element
+{ ?p :accompanying ?p2 . ?s ?p2 ?list . ?s ?p ?listItem .  ?list :transitiveRest ?bn . ?bn rdf:first ?listItem ; rdf:rest ?bn2 . ?bn2 rdf:first ?anotherListItem . }
+=> { ?s ?p ?anotherListItem . } .
+
+# >2nd element
+{ ?p :accompanying ?p2 . ?s ?p2 ?list . ?s ?p ?listItem .  ?bn rdf:first ?listItem ; rdf:rest ?bn2 . ?bn2 rdf:first ?anotherListItem . }
+=> { ?s ?p ?anotherListItem . } .
+
+{ ?tlmcp :isFirst ?lmp . ?lmp :accompanying ?lp . ?s ?lp ?list . ?list rdf:first ?leftMostChild . }
+=>
+{ ?s ?tlmcp ?leftMostChild . } .
+
+{ ?trmcp :isLast ?lmp . ?lmp :accompanying ?lp . ?s ?lmp ?rightMostChild . ?s ?lp ?list . ?list :transitiveRest ?bn . ?bn rdf:first ?rightMostChild ; rdf:rest rdf:nil . }
+=>
+{ ?s ?trmcp ?rightMostChild . } .
+
+{ ?x rdf:rest ?y . } => { ?x :equalsOrTransitiveRest ?x . } .
+
+## Relation to swap's list vocabulary.
+#
+## :accompanying
+#
+#{ ?p :accompanying ?p2 . }
+#=>
+#{ ?p owl:propertyChainAxiom ( ?p2 list:member ) . } .
+#
+## :isFirst
+#
+# { ?tlmcp :isFirst ?lmp . } => { ?tlmcp owl:propertyChainAxiom ( ?lmp rdf:first ) . } .
+#
+## :isLast
+#
+#{ ?trcmp :isLast ?lmp . ?lmp :accompanying ?lp . } => { ?trcmp owl:propertyChainAxiom (?lp list:last ) . } .

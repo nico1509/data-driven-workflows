@@ -1,0 +1,18 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix ldf: <http://ex.org/ldf#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix maths: <http://vocab.arvida.de/2014/03/maths/vocab#> .
+@prefix qrl: <http://www.aifb.kit.edu/project/ld-retriever/qrl#>.
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix schema: <http://schema.org/> .
+@prefix this: <http://this.nxparser.github.io/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://purl.org/wild/vocab#> .
+
+<#it> a :WorkflowInstance ; :workflowInstanceOf <ibm-workflow.ttl#wf> ; :hasState :uninitialised .

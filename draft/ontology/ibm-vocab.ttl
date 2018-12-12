@@ -1,0 +1,122 @@
+@prefix : <#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix sp: <http://spinrdf.org/sp#> .
+
+
+# Classes
+
+:Stage
+    a rdfs:subClassOf :StageContainer .
+
+:Guard
+    a rdfs:Class .
+    
+:Milestone
+    a rdfs:Class .
+    
+:MilestoneInstance
+    a rdfs:subClassOf :Instance .
+
+:Task
+    a rdf:Class .
+
+:TaskInstance
+    a rdfs:subClassOf :Instance .
+
+:PreCondition
+    a rdfs:Class ;
+    owl:sameAs sp:Ask . 
+    
+:PostCondition
+    a rdfs:Class .
+
+:State
+    a rdfs:Class .
+
+:StatefulObjects
+    a rdfs:Class .
+    
+:StageContainer
+    a rdfs:Class .
+
+:WorkflowModel
+    a rdfs:subClassOf :StageContainer .
+
+:WorkflowInstance
+    a rdfs:subClassOf :Instance .
+
+:Instance
+    a rdfs:Class .
+
+
+# individuals
+
+
+
+
+# Properties
+
+
+:containsStage
+    a rdf:Property ;
+    rdfs:domain :StageContainer ;
+    rdfs:range :Stage .
+
+:hasPreCondition
+    a rdf:Property ;
+    rdfs:domain :Guard ;
+    rdfs:range sp:Ask .
+
+:hasPostCondition
+    a rdf:Property ;
+    rdfs:domain :Milestone ;
+    rdfs:range :PostCondition .
+    
+:hasGuard
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :Guard .      
+    
+:hasMilestone
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :Milestone .
+
+:hasState
+    a rdf:Property ;
+    rdfs:domain :StatefulObjects ;
+    rdfs:range :State .
+
+:hasTask
+    a rdf:Property ;
+    rdfs:domain :Stage ;
+    rdfs:range :Task .
+
+:hasHttpRequest
+    a rdf:Property ;
+    rdfs:domain :Task ;
+    rdfs:range http:Request .
+
+
+# States
+:inactive
+    a :StageState .
+    # owl:disjointWith :active .
+
+:active
+    a :StageState .
+    # owl:disjointWith :inactive .
+    
+:done
+    a :StageState .
+    # owl:disjointWith :inactive .
+
+:open
+    a :TaskState .
+
+:fulfilled
+    a :TasksState .

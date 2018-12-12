@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <style>
+    html, body{
+      background: #f9f9f9;
+      font-family: Arial;
+    }
+
+    p {
+        font-size: 50px;
+    }
+
+    button {
+      font-size: 35px;
+      margin: 10px;
+      border: 1px solid #b5b5b5;
+      background: #efefef;
+      border-radius: 5px;
+      padding: 5px 15px;
+      cursor: pointer;
+    }
+
+    h1{
+      font-size: 40px;
+      border-bottom: 2px solid #0075a2;
+      padding: 0 10px 10px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Testing</h1>
+  <button id="#press-btn" onclick="buttonPress()">PRESS BUTTON</button><br>
+  <button id="#reset-btn" onclick="buttonReset()">RESET BUTTON AND WORKERS</button>
+  <p id="text"></p>
+  <script>
+  function buttonPress() {
+      //$("#text").html("You pressed the button!");
+      $.ajax({
+          url: "/button/pressButton",
+          success: function(data, status, xhr) {
+              $("#text").html("You pressed the button!");
+              setTimeout(() => {
+                  $("#text").html("");
+              }, 1000);
+          },
+          error: function(xhr, status, error) {
+              $("#text").html("error!");
+              setTimeout(() => {
+                  $("#text").html("");
+              }, 1000);
+          }
+      });
+  }
+
+  function buttonReset() {
+      //$("#text").html("You pressed the button!");
+      $.ajax({
+          url: "/reset",
+          success: function(data, status, xhr) {
+              $("#text").html("You RESET all!");
+              setTimeout(() => {
+                  $("#text").html("");
+              }, 1000);
+          },
+          error: function(xhr, status, error) {
+              $("#text").html("error!");
+              setTimeout(() => {
+                  $("#text").html("");
+              }, 1000);
+          }
+      });
+  }
+  </script>
+</body>

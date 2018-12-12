@@ -1,0 +1,162 @@
+@prefix : <#> .
+@prefix ibm: <http://localhost/ldbbc/ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+
+{ 
+    ?WfInstance ibm:hasInstanceState imb:uninitialised ;
+                wild:workflowInstanceOf ?WfModel . 
+                ?WfModel ibm:containsStage ?stage . 
+}
+=>
+{
+    _:h http:mthd http_m:POST ; 
+        http:requestURI tmp_ha:ck ; 
+        http:body { 
+            this:it wild:instanceOf ?act ; 
+                    wild:hasState wild:initialised ; 
+                    wild:inWorkflowInstance ?WfInstance . 
+        } . 
+} .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# get precondition data
+
+{
+    ?where  sp:subject          ?subject .
+}
+=>
+{
+    _:h     http:mthd               http_m:GET; 
+            http:requestURI         ?subject .
+} .
+
+# check preconditions
+
+{
+    ?stage ibm:hasGuards        ?guard .
+    ?guard ibm:hasPreCondition  ?sentry .
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+}
+=>
+{   
+    ?stage ibm:hasState ibm:active . 
+} .
+
+
+# execute stages
+
+#1
+{
+    ?stage      ibm:hasState        ibm:active ;
+                ibm:hasTask         ?task .
+    ?task       ibm:hasAction       ?action .
+    ?action     ibm:hasHttpRequest  ?request .
+    #    ibm:hasHttpRequest ?request .
+    ?request    http:mthd           http_m:POST ; 
+                http:requestURI     ?uri ; 
+                http:body           ?body .
+} => {
+    #### perform action 
+    _:h         http:mthd           http_m:POST ;                 
+                http:requestURI     ?uri ; 
+                http:body           ?body .             ### QUESTION: react on non 3XX Responses
+
+    #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
+    #### We should consider waiting for the receiving device to finish its task
+
+    ## trueConditon !
+    ?action     ibm:hasState        ibm:done .
+} .
+
+##### QUESTION: how does this rule start executing?? parallel
+#2
+{
+        
+    ?stage      ibm:hasState        ibm:active ;
+                ibm:hasTask         ?task .
+    ?task       ibm:hasAction       ?action .
+    ?action     ibm:hasState        ibm:done ;
+                ibm:hasNextAction   ?nextAction . ### NO NEXT ACTION -> 1 stage 1 request 
+    ?nextAction ibm:hasState        ibm:open ;
+                ibm:hasHttpRequest  ?request .
+    ?request    http:mthd           http_m:POST ; 
+                http:requestURI     ?uri ; 
+                http:body           ?body .
+
+} => {
+    ### perform action 
+    _:h http:mthd                   http_m:POST ;                 
+        http:requestURI             ?uri ; 
+        http:body                   ?body .              ### QUESTION: react on non 3XX Responses
+
+    ### set action state => done
+    ?action     ibm:hasState        ibm:done .
+} .
+
+#3
+{
+
+    ?stage      ibm:hasState            ibm:active ;
+                ibm:hasTask             ?task ;
+                ibm:hasMilestone        ?milestone .
+    ?task       ibm:hasAction           ?action .
+    ?action     ibm:hasState            ibm:done ;
+                ibm:hasNextAction       rdf:nil .           #### QUESTION: is this valid for a missing next action (last item in row)
+    ?milestone  ibm:hasPostCondition    ?pc .
+} => {
+    #### set stage state => done AND fulfill milestone's post conditions
+    ?stage      ibm:hasState            ibm:done .
+    ?pc         ibm:hasState            ibm:fulfilled .
+} .
+
+# check postconditions
+
+#{
+#    ?stage      ibm:hasMilestone        ?milestone .
+#    ?milestone  ibm:hasPostCondition    ?sentry .
+#    ?sentry     sparql-result:boolean   "true"^^xsd:boolean .
+#} 
+#=> 
+#{ 
+#    ?stage      ibm:hasState            ibm:done . 
+#} .
