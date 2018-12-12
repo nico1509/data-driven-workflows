@@ -9,116 +9,114 @@
 
 # Classes
 
-:Guard
-    a rdfs:Class .
-    
 :Stage
+    a rdfs:subClassOf :StageContainer .
+
+:Guard
     a rdfs:Class .
     
 :Milestone
     a rdfs:Class .
+    
+:MilestoneInstance
+    a rdfs:subClassOf :Instance .
 
 :Task
     a rdf:Class .
 
-:Action  ## put this in the task!
-    a rdf:Class .
+:TaskInstance
+    a rdfs:subClassOf :Instance .
 
-    
 :PreCondition
     a rdfs:Class ;
     owl:sameAs sp:Ask . 
-    #???
     
 :PostCondition
     a rdfs:Class .
 
 :State
     a rdfs:Class .
+
+:StatefulObjects
+    a rdfs:Class .
     
+:StageContainer
+    a rdfs:Class .
+
+:WorkflowModel
+    a rdfs:subClassOf :StageContainer .
+
+:WorkflowInstance
+    a rdfs:subClassOf :Instance .
+
+:Instance
+    a rdfs:Class .
+
+
+# individuals
+
+
+
+
 # Properties
 
-:hasGuardName
+
+:containsStage
     a rdf:Property ;
-    rdfs:domain :Guard ;
-    rdfs:range xsd:string .
-    
+    rdfs:domain :StageContainer ;
+    rdfs:range :Stage .
+
 :hasPreCondition
     a rdf:Property ;
     rdfs:domain :Guard ;
     rdfs:range sp:Ask .
-    
+
 :hasPostCondition
     a rdf:Property ;
     rdfs:domain :Milestone ;
     rdfs:range :PostCondition .
     
-:hasGuards
+:hasGuard
     a rdf:Property ;
     rdfs:domain :Stage ;
     rdfs:range :Guard .      
     
-:hasMilestones
+:hasMilestone
     a rdf:Property ;
     rdfs:domain :Stage ;
     rdfs:range :Milestone .
-    
-:hasStageName
-    a rdf:Property ;
-    rdfs:domain :Stage ;
-    rdfs:range xsd:string .
-    
-#:hasSubstages
-#    a rdf:Property ;
-#    rdfs:domain :Stage ;
-#    rdfs:range :Stage .
 
-# ==> for atomic stages hasTask instead of hasTasks 
+:hasState
+    a rdf:Property ;
+    rdfs:domain :StatefulObjects ;
+    rdfs:range :State .
+
 :hasTask
     a rdf:Property ;
     rdfs:domain :Stage ;
     rdfs:range :Task .
 
-:hasState
-    a rdf:Property ;
-    rdfs:domain (:Stage :Action :PostCondition) ;       ### QUESTION: is that valid code ?
-    rdfs:range :State .
-
-:hasMilestoneName
-    a rdf:Property ;
-    rdfs:domain :Milestone ;
-    rdfs:range xsd:string .
-    
-:hasAction
-    a rdf:Property ;
-    rdfs:domain :Task ;
-    rdfs:range :Action .
-
 :hasHttpRequest
     a rdf:Property ;
-    rdfs:domain :Action ;
+    rdfs:domain :Task ;
     rdfs:range http:Request .
 
-:hasNextAction
-    a rdf:Property ;
-    rdfs:domain :Action ;
-    rdfs:range :Action .
 
 # States
-
 :inactive
-    a :State ;
-    owl:disjointWith :active .
+    a :StageState .
+    # owl:disjointWith :active .
 
 :active
-    a :State ;
-    owl:disjointWith :inactive .
+    a :StageState .
+    # owl:disjointWith :inactive .
     
 :done
-    a :State .
+    a :StageState .
+    # owl:disjointWith :inactive .
 
 :open
-    a :State .
+    a :TaskState .
 
 :fulfilled
-    a :State .
+    a :TasksState .
