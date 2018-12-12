@@ -7,116 +7,118 @@
 @prefix sp: <http://spinrdf.org/sp#> .
 
 
-# Classes
+# Utility Classes
 
-:Stage
-    a rdfs:subClassOf :StageContainer .
-
-:Guard
-    a rdfs:Class .
-    
-:Milestone
-    a rdfs:Class .
-    
-:MilestoneInstance
-    a rdfs:subClassOf :Instance .
-
-:Task
-    a rdf:Class .
-
-:TaskInstance
-    a rdfs:subClassOf :Instance .
-
-:PreCondition
+:Condition
     a rdfs:Class ;
     owl:sameAs sp:Ask . 
-    
-:PostCondition
-    a rdfs:Class .
 
 :State
-    a rdfs:Class .
-
-:StatefulObjects
     a rdfs:Class .
     
 :StageContainer
     a rdfs:Class .
 
-:WorkflowModel
-    a rdfs:subClassOf :StageContainer .
-
-:WorkflowInstance
-    a rdfs:subClassOf :Instance .
-
 :Instance
     a rdfs:Class .
 
+:Conditional
+    a rdfs:Class .
 
-# individuals
+:Instantiable
+    a rdfs:Class .
 
+# Workflow Element Classes
 
+:StageModel
+    rdfs:subClassOf :StageContainer ;
+    rdfs:subClassOf :Instantiable .
 
+:StageInstance
+    rdfs:subClassOf :Instance .
+
+:TaskModel
+    rdfs:subClassOf :Conditional ;  ##If task hast condition it's a postcondition!
+    rdfs:subClassOf :Instantiable .
+
+:TaskInstance
+    rdfs:subClassOf :Instance .
+
+:WorkflowModel
+    rdfs:subClassOf :StageContainer ;
+    rdfs:subClassOf :Instantiable .
+
+:WorkflowInstance
+    rdfs:subClassOf :Instance .
+
+:Guard
+    rdfs:subClassOf :Conditional .
+    
+:Milestone
+    rdfs:subClassOf :Conditional .
 
 # Properties
 
+:isInstanceOf
+    a rdf:Property ;
+    rdfs:domain :Instance ;
+    rdfs:range :InstantiableObjects .
 
 :containsStage
     a rdf:Property ;
     rdfs:domain :StageContainer ;
     rdfs:range :Stage .
 
-:hasPreCondition
+:hasCondition
     a rdf:Property ;
-    rdfs:domain :Guard ;
+    rdfs:domain :Conditional ;
     rdfs:range sp:Ask .
-
-:hasPostCondition
-    a rdf:Property ;
-    rdfs:domain :Milestone ;
-    rdfs:range :PostCondition .
     
 :hasGuard
     a rdf:Property ;
-    rdfs:domain :Stage ;
+    rdfs:domain :StageModel ;
     rdfs:range :Guard .      
     
 :hasMilestone
     a rdf:Property ;
-    rdfs:domain :Stage ;
+    rdfs:domain :StageModel ;
     rdfs:range :Milestone .
 
 :hasState
     a rdf:Property ;
-    rdfs:domain :StatefulObjects ;
+    rdfs:domain :Instance ;
     rdfs:range :State .
 
 :hasTask
     a rdf:Property ;
-    rdfs:domain :Stage ;
-    rdfs:range :Task .
+    rdfs:domain :StageModel ;
+    rdfs:range :TaskModel .
+
+:inInstance
+    a rdf:Property ;
+    rdfs:domain :Instantiable ;
+    rdfs:range :Instantiable .
+
+:inWorkflowInstane                      ###Temporary construct if recursive parent-instance requests are too hard
+    a rdf:Property ;
+    rdfs:domain :Instantiable ;
+    rdfs:range :WorkflowInstance .
 
 :hasHttpRequest
     a rdf:Property ;
-    rdfs:domain :Task ;
+    rdfs:domain :TaskModel ;
     rdfs:range http:Request .
 
 
 # States
 :inactive
-    a :StageState .
+    a :State .
     # owl:disjointWith :active .
 
 :active
-    a :StageState .
+    a :State .
     # owl:disjointWith :inactive .
     
 :done
-    a :StageState .
+    a :State .
     # owl:disjointWith :inactive .
-
-:open
-    a :TaskState .
-
-:fulfilled
-    a :TasksState .

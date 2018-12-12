@@ -15,4 +15,4 @@
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://purl.org/wild/vocab#> .
 
-<#it> a :WorkflowInstance ; :workflowInstanceOf <ibm-workflow.ttl#wf> ; :hasState :uninitialised .
+<#it> a :WorkflowInstance ; :workflowInstanceOf <ibm-workflow.ttl#WorkflowModel> ; :hasState :inactive .
