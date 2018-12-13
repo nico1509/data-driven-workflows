@@ -39,26 +39,51 @@
 }
 =>
 {
-    _:h http:mthd http_m:POST ; 
+    _:h3 http:mthd http_m:PUT ; 
+        http:requestURI <http://localhost/ldbbc/ibm-workflow-instance.ttl> ; 
+        http:body { 
+            this:it ibm:isInstanceOf ?WfModel ;
+            ibm:hasState ibm:active . 
+        } .
+} .
+{ 
+    ?WfInstance a ibm:WorkflowInstance ;
+                ibm:hasState ibm:uninitialized ;
+                ibm:isInstanceOf ?WfModel . 
+                ?WfModel ibm:containsStageModel ?stage .
+                ?stage ibm:hasTaskModel ?taskModel .
+}
+=>
+{
+    _:h1 http:mthd http_m:POST ; 
         http:requestURI <http://localhost/ldbbc/> ; 
         http:body {
             ?WfInstance ibm:isInstanceOf ?stage ;
-            ibm:hasState ibm:initialized ;
+            ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance . 
         } . 
-    _:h http:mthd http_m:POST ; 
+} .
+
+{ 
+    ?WfInstance a ibm:WorkflowInstance ;
+                ibm:hasState ibm:uninitialized ;
+                ibm:isInstanceOf ?WfModel . 
+                ?WfModel ibm:containsStageModel ?stage .
+                ?stage ibm:hasTaskModel ?taskModel .
+}
+=>
+{
+    _:h2 http:mthd http_m:POST ; 
         http:requestURI <http://localhost/ldbbc/> ; 
         http:body { 
             ?WfInstance ibm:isInstanceOf ?taskModel ;
-            ibm:hasState ibm:initialized ;
+            ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance . 
         } .
+    
 } .
 
-
-
 # get precondition data
-
 {
     ?where  sp:subject          ?subject .
 }
@@ -69,15 +94,22 @@
 } .
 
 # check preconditions
-
 {
-    ?stage ibm:hasGuards        ?guard .
-    ?guard ibm:hasPreCondition  ?sentry .
+    ?stageInstance ibm:isInstanceOf ?stage .        ## |PAC 1: Basis
+    ?stage ibm:hasGuard ?guard .                    ## |
+    ?stageInstance ibm:hasState ibm:inactive .     ##  Prerequisite
+    ?stageContainer ibm:containsStageModel ?stage . ##  Antecedent
+    ?stageContainer ibm:hasState ibm:active .
+    ?guard ibm:hasCondition ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
 }
 =>
 {   
-    ?stage ibm:hasState ibm:active . 
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI ?stageInstance ; 
+        http:body { 
+            ?stageInstance ibm:hasState ibm:active .
+        } . 
 } .
 
 

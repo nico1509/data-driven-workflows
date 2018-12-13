@@ -1,0 +1,34 @@
+#
+# Selected {rdf,rdfs,owl} semantics.
+#
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+## from rdfs.n3 : some subclass / subproperty semantics.
+# rdfs9
+{ ?xxx rdfs:subClassOf ?yyy . ?zzz a ?xxx . } => { ?zzz a ?yyy . } .
+# rdfs7
+{ ?aaa rdfs:subPropertyOf ?bbb . ?xxx ?aaa ?yyy . } => { ?xxx ?bbb ?yyy . } .
+
+
+## from owl-ld.n3 : some of the owl:sameAs semantics.
+#{ ?x owl:sameAs ?y . } => { ?y owl:sameAs ?x . } .
+#{ ?x owl:sameAs ?y . ?y owl:sameAs ?z . } => { ?x owl:sameAs ?z . } .
+#{ ?s owl:sameAs ?s0 . ?s ?p ?o . } => { ?s0 ?p ?o . } .
+#{ ?p owl:sameAs ?p0 . ?s ?p ?o . } => { ?s ?p0 ?o . } .
+#{ ?o owl:sameAs ?o0 . ?s ?p ?o . } => { ?s ?p ?o0 . } .
+
+## from owl-rl.n3 : Transitive Property semantics.
+# prp-trp
+{ ?p a owl:TransitiveProperty . ?x ?p ?y . ?y ?p ?z . } => { ?x ?p ?z . } .
+
+# inverse of
+{ ?predicate owl:inverseOf ?anotherPredicate . ?s ?predicate ?o . } => { ?o ?anotherPredicate ?s . }.
+{ ?predicate owl:inverseOf ?anotherPredicate . ?s ?anotherPredicate ?o . } => { ?o ?predicate ?s . }.
+
+## cheating: owl:propertyChainAxioms only with a chain of a length of exactly two.
+{ ?p owl:propertyChainAxiom ?bn . ?bn rdf:first ?one ; rdf:rest ?bn2 . ?bn2 rdf:first ?two ; rdf:rest rdf:nil . ?s ?one ?o . ?o ?two ?o2 . }
+=>
+{ ?s ?p ?o2 . } .

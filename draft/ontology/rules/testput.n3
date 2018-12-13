@@ -1,0 +1,16 @@
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://example.org/#> .
+
+
+{ ?a ?b ?c . }
+=>
+{ 
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI <http://localhost:8080/ldbbc/test.ttl> ; 
+        http:body { 
+            :Test a :Stuff  . 
+        } . 
+} .
