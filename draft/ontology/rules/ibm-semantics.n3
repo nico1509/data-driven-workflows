@@ -93,100 +93,161 @@
             http:requestURI         ?subject .
 } .
 
-# check preconditions
+# PAC-1
+
 {
-    ?stageInstance ibm:isInstanceOf ?stage .        ## |PAC 1: Basis
-    ?stage ibm:hasGuard ?guard .                    ## |
-    ?stageInstance ibm:hasState ibm:inactive .     ##  Prerequisite
-    ?stageContainer ibm:containsStageModel ?stage . ##  Antecedent
-    ?stageContainer ibm:hasState ibm:active .
+    # Basis
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStage ?stage .
+    ?stage ibm:hasGuard ?guard .
+
+    # Prerequisite
+    ?stageInstance ibm:isInstanceOf ?stage .
+    ?stageInstance ibm:hasState ibm:inactive .
+
+    # Antecedent
     ?guard ibm:hasCondition ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
-}
-=>
-{   
-    _:h http:mthd http_m:PUT ; 
+    ?wfInstance ibm:hasState ibm:active .
+} 
+=> 
+{
+    # Consequent
+    _:h http:mthd http_m:POST ; 
         http:requestURI ?stageInstance ; 
-        http:body { 
-            ?stageInstance ibm:hasState ibm:active .
+        http:body {
+            ?stageInstance ibm:isInstanceOf ?stage ;
+            ibm:hasState ibm:active ;
+            ibm:inWorkflowInstance ?WfInstance .
         } . 
 } .
 
-
-# execute stages
-
-#1
+# PAC-2
 {
-    ?stage      ibm:hasState        ibm:active ;
-                ibm:hasTask         ?task .
-    ?task       ibm:hasAction       ?action .
-    ?action     ibm:hasHttpRequest  ?request .
-    #    ibm:hasHttpRequest ?request .
-    ?request    http:mthd           http_m:POST ; 
-                http:requestURI     ?uri ; 
-                http:body           ?body .
-} => {
-    #### perform action 
-    _:h         http:mthd           http_m:POST ;                 
-                http:requestURI     ?uri ; 
-                http:body           ?body .             ### QUESTION: react on non 3XX Responses
+    # Basis
+    ?stage ibm:hasMilestone ?milestone .
+    ?milestone ibm:hasValidatingSentry ?sentry .
+    ?milestoneInstance ibm:isInstanceOf ?milestone .
 
-    #### set action state => done           ### QUESTION: valid? is property value overwritten or is a duplicate property added
-    #### We should consider waiting for the receiving device to finish its task
+    # Prerequisite
+    ?stageInstance ibm:isInstanceOf ?stage ;
+                    ibm:hasState ibm:active .
 
-    ## trueConditon !
-    ?action     ibm:hasState        ibm:done .
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:POST ; 
+        http:requestURI ?milestoneInstance ; 
+        http:body {
+            ?milestoneInstance ibm:isInstanceOf ?milestone ;
+            ibm:hasState ibm:active ;
+            ibm:inWorkflowInstance ?WfInstance .
+        } . 
 } .
 
-##### QUESTION: how does this rule start executing?? parallel
-#2
+# PAC-3
 {
-        
-    ?stage      ibm:hasState        ibm:active ;
-                ibm:hasTask         ?task .
-    ?task       ibm:hasAction       ?action .
-    ?action     ibm:hasState        ibm:done ;
-                ibm:hasNextAction   ?nextAction . ### NO NEXT ACTION -> 1 stage 1 request 
-    ?nextAction ibm:hasState        ibm:open ;
-                ibm:hasHttpRequest  ?request .
-    ?request    http:mthd           http_m:POST ; 
-                http:requestURI     ?uri ; 
-                http:body           ?body .
+    # Basis
+    ?stage ibm:hasMilestone ?milestone .
+    ?milestone ibm:hasInvalidatingSentry ?sentry .
+    ?milestoneInstance ibm:isInstanceOf ?milestone .
 
-} => {
-    ### perform action 
-    _:h http:mthd                   http_m:POST ;                 
-        http:requestURI             ?uri ; 
-        http:body                   ?body .              ### QUESTION: react on non 3XX Responses
+    # Prerequisite
+    ?milestoneInstance ibm:hasState ibm:active .
 
-    ### set action state => done
-    ?action     ibm:hasState        ibm:done .
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:POST ; 
+        http:requestURI ?milestoneInstance ; 
+        http:body {
+            ?milestoneInstance ibm:isInstanceOf ?milestone ;
+            ibm:hasState ibm:inactive ;
+            ibm:inWorkflowInstance ?WfInstance .
+        } . 
 } .
 
-#3
+# PAC-4
 {
+    # Basis
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStage ?stage .
+    ?stage ibm:hasMilestone ?milestone ;
+            ibm:hasGuard ?guard .
+    
+    # Prerequisite
+    ?milestoneInstance ibm:isInstanceOf ?milestone ;
+                        ibm:hasState ibm:active .
 
-    ?stage      ibm:hasState            ibm:active ;
-                ibm:hasTask             ?task ;
-                ibm:hasMilestone        ?milestone .
-    ?task       ibm:hasAction           ?action .
-    ?action     ibm:hasState            ibm:done ;
-                ibm:hasNextAction       rdf:nil .           #### QUESTION: is this valid for a missing next action (last item in row)
-    ?milestone  ibm:hasPostCondition    ?pc .
-} => {
-    #### set stage state => done AND fulfill milestone's post conditions
-    ?stage      ibm:hasState            ibm:done .
-    ?pc         ibm:hasState            ibm:fulfilled .
+    # Antecedent
+    ?guard ibm:hasCondition ?sentry .
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+    ?wfInstance ibm:hasState ibm:active .
+} 
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:POST ; 
+        http:requestURI ?milestoneInstance ; 
+        http:body {
+            ?milestoneInstance ibm:isInstanceOf ?milestone ;
+            ibm:hasState ibm:inactive ;
+            ibm:inWorkflowInstance ?WfInstance .
+        } .
 } .
 
-# check postconditions
+# PAC-5
+{
+    # Basis
+    ?stage ibm:hasMilestone ?milestone .
+    ?milestone ibm:hasCondition ?sentry .
 
-#{
-#    ?stage      ibm:hasMilestone        ?milestone .
-#    ?milestone  ibm:hasPostCondition    ?sentry .
-#    ?sentry     sparql-result:boolean   "true"^^xsd:boolean .
-#} 
-#=> 
-#{ 
-#    ?stage      ibm:hasState            ibm:done . 
-#} .
+    # Prerequisite
+    ?stageInstance ibm:isInstanceOf ?stage ;
+                    ibm:hasState ibm:active .
+
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:POST ; 
+        http:requestURI ?stageInstance ; 
+        http:body {
+            ?stageInstance ibm:isInstanceOf ?stage ;
+            ibm:hasState ibm:inactive ;
+            ibm:inWorkflowInstance ?WfInstance .
+        } . 
+} .
+
+# PAC-6
+{
+    # Basis
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStage ?stage .
+
+    # Prerequisite
+    ?stageInstance ibm:isInstanceOf ?stage .
+    ?stageInstance ibm:hasState ibm:active .
+
+    # Antecedent
+    ?wfInstance ibm:hasState ibm:inactive .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:POST ; 
+        http:requestURI ?stageInstance ; 
+        http:body {
+            ?stageInstance ibm:isInstanceOf ?stage ;
+            ibm:hasState ibm:inactive ;
+            ibm:inWorkflowInstance ?WfInstance .
+        } . 
+} .
