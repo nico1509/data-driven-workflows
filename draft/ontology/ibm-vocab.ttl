@@ -52,14 +52,17 @@
 :Guard
     rdfs:subClassOf :Conditional .
     
-:Milestone
-    rdfs:subClassOf :Conditional .
+:MilestoneModel
+    rdfs:subClassOf :Instantiable .
+
+:MileStoneInstance
+    rdfs:subClassOf :Instance .
 
 # Properties
 :isInstanceOf
     a rdf:Property ;
     rdfs:domain :Instance ;
-    rdfs:range :InstantiableObjects .
+    rdfs:range :Instantiable .
 
 :containsStageModel
     a rdf:Property ;
@@ -71,6 +74,13 @@
     rdfs:domain :Conditional ;
     rdfs:range sp:Ask .
     
+:hasInvalidatingSentry
+    rdfs:subPropertyOf :hasCondition ;
+    rdfs:domain :MilestoneModel .
+
+:hasAchievingSentry
+    rdfs:subPropertyOf :MilestoneModel .
+
 :hasGuard
     a rdf:Property ;
     rdfs:domain :StageModel ;

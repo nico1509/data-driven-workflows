@@ -48,7 +48,8 @@
 # Milestones
 :DidSomething
     a ibm:Milestone ;
-    ibm:hasCondition :SomethingIsDone .    
+    ibm:hasAchievingSentry :SomethingIsDone ;    
+    ibm:hasInvalidatingSentry :Reset .    
 
 
 # Sentries
@@ -58,6 +59,14 @@
         sp:subject example:Btn ;
         sp:predicate example:isPressed ;
         sp:object "true"^^xsd:boolean 
+    ]) .
+
+:Reset
+    a sp:Ask ;
+    sp:where ([
+        sp:subject example:Worker ;
+        sp:predicate example:didSomething ;
+        sp:object "false"^^xsd:boolean 
     ]) .
 
 :SomethingIsDone
