@@ -146,7 +146,7 @@
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestone ;
             ibm:hasState ibm:active ;
-            ibm:inWorkflowInstance ?WfInstance .
+            ibm:inWorkflowInstance ?wfInstance .
         } . 
 } .
 
