@@ -32,6 +32,17 @@ var workerTwoStateSuffix = "</ns0:didSomething></rdf:Description></rdf:RDF>";
 
 http.createServer(function (req, res) {
     console.log(new Date() + " - incoming request to " + req.url);
+
+    let body = [];
+        req.on('data', (chunk) => {
+            body.push(chunk);
+        }).on('end', () => {
+            body = Buffer.concat(body).toString();
+            // at this point, `body` has the entire request body stored in it as a string
+            console.log("> Request body is " + body);
+        });
+    
+
        /*
         *   BUTTON
         */
