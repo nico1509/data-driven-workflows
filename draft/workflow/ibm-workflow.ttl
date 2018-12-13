@@ -56,23 +56,23 @@
 :ButtonIsPressed 
     a sp:Ask ;
     sp:where ([
-        sp:subject example:Btn ;
-        sp:predicate example:isPressed ;
+        sp:subject btnstate:Btn ;
+        sp:predicate btnstate:isPressed ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
 :Reset
     a sp:Ask ;
     sp:where ([
-        sp:subject example:Worker ;
-        sp:predicate example:didSomething ;
+        sp:subject btnstate:Worker ;
+        sp:predicate btnstate:didSomething ;
         sp:object "false"^^xsd:boolean 
     ]) .
 
 :SomethingIsDone
     a sp:Ask ;
     sp:where ([
-        sp:subject example:Worker ;
-        sp:predicate example:didSomething ;
+        sp:subject btnstate:Worker ;
+        sp:predicate btnstate:didSomething ;
         sp:object "true"^^xsd:boolean 
     ]) .
