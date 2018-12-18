@@ -12,7 +12,7 @@
 
 
 # Workflow-specific Prefixes
-@prefix example: <http://example.org#> .
+@prefix example: <http://example.org#> . 
 @prefix btnstate: <http://localhost:8080/button/state#> .
 @prefix worker: <http://localhost:8080/worker/> .
 @prefix worstate: <http://localhost:8080/worker/state#> .
@@ -47,7 +47,7 @@
 
 # Milestones
 :DidSomething
-    a ibm:Milestone ;
+    a ibm:MilestoneModel ;
     ibm:hasAchievingSentry :SomethingIsDone ;    
     ibm:hasInvalidatingSentry :Reset .    
 

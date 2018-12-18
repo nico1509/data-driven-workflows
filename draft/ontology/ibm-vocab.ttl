@@ -79,7 +79,8 @@
     rdfs:domain :MilestoneModel .
 
 :hasValidatingSentry
-    rdfs:subPropertyOf :MilestoneModel .
+    rdfs:subPropertyOf :hasCondition ;
+    rdfs:domain :MilestoneModel .
 
 :hasGuard
     a rdf:Property ;
