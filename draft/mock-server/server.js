@@ -51,7 +51,7 @@ http.createServer(function (req, res) {
         */
     if(req.url.startsWith("/button/ui/api/test")){
         res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end("buttonPressed: " + buttonPressed + "<br/>workerDone: " + workerDone);
+        res.end("buttonPressed: " + buttonPressed + "<br/>workerDone: " + workerDone + "<br/>workerTwoDone: " + workerTwoDone);
     
     }else if (req.url.startsWith("/button/ui")) { // get clickable button
         fs.readFile('ui/button.html', function(err, data) {
