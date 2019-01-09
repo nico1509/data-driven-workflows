@@ -50,7 +50,7 @@
     a ibm:MilestoneModel ;
     ibm:hasAchievingSentry :SomethingIsDone ;    
     #ibm:hasInvalidatingSentry :Reset .    
-    ibm:hasInvalidatingSentry :ButtonIsNotPressed
+    ibm:hasInvalidatingSentry :ButtonIsNotPressed .
 
 # Sentries
 :ButtonIsPressed 
