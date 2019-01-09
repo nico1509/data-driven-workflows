@@ -179,6 +179,14 @@
     ?stageInstance ibm:isInstanceOf ?stage .
     ?stageInstance ibm:hasState ibm:inactive .
 
+    # Modifier - These changes are supposed to fix problems occuring due 
+    # to the database driven structure used by the IBM guys
+    # Note 1:   We only have one stage so this should work reliably
+    # Note 2:   Task is always done after one loop cycle because we don't lsiten for results
+    #           This should ensure that we don't trigger stage repeatedly.
+    ?stageModel ibm:hasTaskModel ?taskModel .
+    ?taskModel ibm:hasState ibm:inactive .
+
     # Antecedent
     ?guard ibm:hasCondition ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
