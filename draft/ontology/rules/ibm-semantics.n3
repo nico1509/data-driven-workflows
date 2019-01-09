@@ -175,12 +175,6 @@
     ?wfModel ibm:containsStageModel ?stageModel .
     ?stageModel ibm:hasGuard ?guard .
 
-    ##
-    ?stageModel ibm:hasMilestoneModel ?mileStoneModel .
-    ?milestoneInstance ibm:isInstanceOf ?mileStoneModel .
-    ?milestoneInstance ibm:hasState ibm:inactive .
-    ##
-
     # Prerequisite
     ?stageInstance ibm:isInstanceOf ?stage .
     ?stageInstance ibm:hasState ibm:inactive .
@@ -262,8 +256,6 @@
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
     ?stageModel ibm:hasMilestoneModel ?milestoneModel ;
             ibm:hasGuard ?guard .
     
@@ -294,14 +286,14 @@
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
     ?stageModel ibm:hasMilestoneModel ?milestoneModel .
-    ?milestoneModel ibm:hasValidatingSentry ?sentry .
+    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
     ?stageInstance ibm:isInstanceOf ?stageModel ;
                     ibm:hasState ibm:active .
 
     # Antecedent
-    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+    ?milestoneInstance ibm:hasState ibm:active .
 }
 =>
 {
