@@ -228,10 +228,10 @@
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stage .
-    ?stage ibm:hasMilestoneModel ?milestone .
-    ?milestone ibm:hasInvalidatingSentry ?sentry .
-    ?milestoneInstance ibm:isInstanceOf ?milestone .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel ibm:hasInvalidatingSentry ?sentry .
+    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
     ?milestoneInstance ibm:hasState ibm:active .
@@ -245,7 +245,7 @@
     _:h http:mthd http_m:PUT ; 
         http:requestURI ?milestoneInstance ; 
         http:body {
-            ?milestoneInstance ibm:isInstanceOf ?milestone ;
+            ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?wfInstance .
         } . 
@@ -255,14 +255,14 @@
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
+    ?wfModel ibm:containsStageModel ?stageModel .
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasMilestoneModel ?milestone ;
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel ;
             ibm:hasGuard ?guard .
     
     # Prerequisite
-    ?milestoneInstance ibm:isInstanceOf ?milestone ;
+    ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
                         ibm:hasState ibm:active .
 
     # Antecedent
@@ -276,7 +276,7 @@
     _:h http:mthd http_m:PUT ; 
         http:requestURI ?milestoneInstance ; 
         http:body {
-            ?milestoneInstance ibm:isInstanceOf ?milestone ;
+            ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?wfInstance .
         } .
@@ -286,12 +286,12 @@
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasMilestoneModel ?milestone .
-    ?milestone ibm:hasCondition ?sentry .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel ibm:hasCondition ?sentry .
 
     # Prerequisite
-    ?stageInstance ibm:isInstanceOf ?stage ;
+    ?stageInstance ibm:isInstanceOf ?stageModel ;
                     ibm:hasState ibm:active .
 
     # Antecedent
@@ -303,7 +303,7 @@
     _:h http:mthd http_m:PUT ; 
         http:requestURI ?stageInstance ; 
         http:body {
-            ?stageInstance ibm:isInstanceOf ?stage ;
+            ?stageInstance ibm:isInstanceOf ?stageModel ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?wfInstance .
         } . 
@@ -313,12 +313,12 @@
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
+    ?wfModel ibm:containsStageModel ?stageModel .
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
+    ?wfModel ibm:containsStageModel ?stageModel .
 
     # Prerequisite
-    ?stageInstance ibm:isInstanceOf ?stage .
+    ?stageInstance ibm:isInstanceOf ?stageModel .
     ?stageInstance ibm:hasState ibm:active .
 
     # Antecedent
@@ -330,7 +330,7 @@
     _:h http:mthd http_m:PUT ; 
         http:requestURI ?stageInstance ; 
         http:body {
-            ?stageInstance ibm:isInstanceOf ?stage ;
+            ?stageInstance ibm:isInstanceOf ?stageModel ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?wfInstance .
         } . 
