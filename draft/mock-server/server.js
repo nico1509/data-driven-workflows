@@ -3,7 +3,8 @@ var port = 80;
 var http = require('http');
 var fs = require('fs');
 
-var buttonPressed = "true";
+//var buttonPressed = "true";
+var buttonPressed = "false";
 var buttonStatePrefix = '<?xml version="1.0" encoding="utf-8" ?>'
     + '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
      +    'xmlns:ns0="http://localhost/button/state#">'
@@ -50,7 +51,7 @@ http.createServer(function (req, res) {
         */
     if(req.url.startsWith("/button/ui/api/test")){
         res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end("buttonPressed: " + (buttonPressed ? "true" : "false") + "<br/>workerDone: " + (workerDone ? "true" : "false"));
+        res.end("buttonPressed: " + buttonPressed + "<br/>workerDone: " + workerDone);
     
     }else if (req.url.startsWith("/button/ui")) { // get clickable button
         fs.readFile('ui/button.html', function(err, data) {

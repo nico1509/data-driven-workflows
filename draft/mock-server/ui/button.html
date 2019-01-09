@@ -84,12 +84,11 @@
   setInterval(updateOutput, 500);
   function updateOutput(){
     
-    $('#output').html('loading..');
+    //$('#output').html('loading..');
     $.get('/button/ui/api/test/').done(function(r){
         $('#output').html('Refresh Nr: ' + refreshs + '<br/>--------------<br/>' + r);
 
         refreshs++;
-
     });
 
     
