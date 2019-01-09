@@ -264,7 +264,9 @@
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
-    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel ;
+                ibm:hasTaskModel ?taskModel .
+    ?taskInstance ibm:isInstanceOf ?taskModel .
     ?milestoneModel ibm:hasInvalidatingSentry ?sentry .
     ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
