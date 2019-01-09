@@ -33,9 +33,14 @@
 </head>
 <body>
   <h1>Testing</h1>
-  <button id="#press-btn" onclick="buttonPress()">PRESS BUTTON</button><br>
-  <button id="#reset-btn" onclick="buttonReset()">RESET BUTTON AND WORKERS</button>
+  <button id="press-btn" onclick="buttonPress()">PRESS BUTTON</button><br>
+  <button id="reset-btn" onclick="buttonReset()">RESET BUTTON AND WORKERS</button>
   <p id="text"></p>
+
+  <div id="output" style="">
+
+  </div>
+
   <script>
   function buttonPress() {
       //$("#text").html("You pressed the button!");
@@ -73,6 +78,15 @@
               }, 1000);
           }
       });
+  }
+
+  var refreshs = 0;
+  function updateOutput(){
+    
+
+
+    $('#output').html('loading..');
+
   }
   </script>
 </body>
