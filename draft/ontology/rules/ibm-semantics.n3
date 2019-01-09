@@ -288,7 +288,7 @@
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
     ?stageModel ibm:hasMilestoneModel ?milestoneModel .
-    ?milestoneModel ibm:hasCondition ?sentry .
+    ?milestoneModel ibm:hasValidatingSentry ?sentry .
 
     # Prerequisite
     ?stageInstance ibm:isInstanceOf ?stageModel ;
