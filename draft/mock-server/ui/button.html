@@ -65,7 +65,7 @@
   function buttonReset() {
       //$("#text").html("You pressed the button!");
       $.ajax({
-          url: "/reset",
+          url: "/button/reset",
           success: function(data, status, xhr) {
               $("#text").html("You RESET all!");
               setTimeout(() => {

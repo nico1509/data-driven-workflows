@@ -49,8 +49,8 @@
 :DidSomething
     a ibm:MilestoneModel ;
     ibm:hasAchievingSentry :SomethingIsDone ;    
-    ibm:hasInvalidatingSentry :Reset .    
-
+    #ibm:hasInvalidatingSentry :Reset .    
+    ibm:hasInvalidatingSentry :ButtonIsNotPressed
 
 # Sentries
 :ButtonIsPressed 
@@ -59,6 +59,14 @@
         sp:subject btnstate:Btn ;
         sp:predicate btnstate:isPressed ;
         sp:object "true"^^xsd:boolean 
+    ]) .
+
+:ButtonIsNotPressed 
+    a sp:Ask ;
+    sp:where ([
+        sp:subject btnstate:Btn ;
+        sp:predicate btnstate:isPressed ;
+        sp:object "false"^^xsd:boolean 
     ]) .
 
 :Reset

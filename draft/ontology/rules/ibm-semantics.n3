@@ -46,6 +46,7 @@
             ibm:hasState ibm:active . 
         } .
 } .
+
 # Setup Stage Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
@@ -64,6 +65,7 @@
             ibm:inWorkflowInstance ?WfInstance . 
         } . 
 } .
+
 # Setup Task Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
@@ -83,6 +85,7 @@
         } .
     
 } .
+
 # Setup Milestone Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
