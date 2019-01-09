@@ -185,7 +185,8 @@
     # Note 2:   Task is always done after one loop cycle because we don't lsiten for results
     #           This should ensure that we don't trigger stage repeatedly.
     ?stageModel ibm:hasTaskModel ?taskModel .
-    ?taskModel ibm:hasState ibm:inactive .
+    ?taskInstance ibm:isInstanceOf ?taskModel .
+    ?taskInstance ibm:hasState ibm:inactive .
 
     # Antecedent
     ?guard ibm:hasCondition ?sentry .
