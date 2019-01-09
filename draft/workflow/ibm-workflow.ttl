@@ -1,7 +1,7 @@
 # Common Prefixes
 
 @prefix : <#> .
-@prefix ibm: <http://localhost/ldbbc/ibm-vocab.ttl#> .
+@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -13,9 +13,9 @@
 
 # Workflow-specific Prefixes
 @prefix example: <http://example.org#> . 
-@prefix btnstate: <http://localhost:8080/button/state#> .
-@prefix worker: <http://localhost:8080/worker/> .
-@prefix worstate: <http://localhost:8080/worker/state#> .
+@prefix btnstate: <http://localhost/button/state#> .
+@prefix worker: <http://localhost/worker/> .
+@prefix workstate: <http://localhost/worker/state#> .
 
 
 :MyWorkflowModel
@@ -32,7 +32,7 @@
 :DoSomething
     a ibm:StageModel ;
     ibm:hasGuard :PressButton ;
-    ibm:hasMilestone :DidSomething ;
+    ibm:hasMilestoneModel :DidSomething ;
     ibm:hasTaskModel :WorkingTask .
 
 # Tasks
@@ -64,15 +64,15 @@
 :Reset
     a sp:Ask ;
     sp:where ([
-        sp:subject btnstate:Worker ;
-        sp:predicate btnstate:didSomething ;
+        sp:subject workstate:Worker ;
+        sp:predicate workstate:didSomething ;
         sp:object "false"^^xsd:boolean 
     ]) .
 
 :SomethingIsDone
     a sp:Ask ;
     sp:where ([
-        sp:subject btnstate:Worker ;
-        sp:predicate btnstate:didSomething ;
+        sp:subject workstate:Worker ;
+        sp:predicate workstate:didSomething ;
         sp:object "true"^^xsd:boolean 
     ]) .

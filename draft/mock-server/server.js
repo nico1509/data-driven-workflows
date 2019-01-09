@@ -1,11 +1,13 @@
+var port = 80;
+
 var http = require('http');
 var fs = require('fs');
 
 var buttonPressed = "true";
 var buttonStatePrefix = '<?xml version="1.0" encoding="utf-8" ?>'
     + '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
-     +    'xmlns:ns0="http://localhost:8080/button/state#">'
-   + '<rdf:Description rdf:about="http://localhost:8080/button/state#Btn">'
+     +    'xmlns:ns0="http://localhost/button/state#">'
+   + '<rdf:Description rdf:about="http://localhost/button/state#Btn">'
     + '<ns0:isPressed rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">';
     
 var buttonStateSuffix = '</ns0:isPressed>' + '</rdf:Description>' + '</rdf:RDF>';
@@ -39,7 +41,7 @@ http.createServer(function (req, res) {
         }).on('end', () => {
             body = Buffer.concat(body).toString();
             // at this point, `body` has the entire request body stored in it as a string
-            console.log("> Request body is " + body);
+            //console.log("> Request body is " + body);
         });
     
 
@@ -112,4 +114,6 @@ http.createServer(function (req, res) {
     
     
 	
-}).listen(8080);
+}).listen(port);
+
+console.log(`> Listening on Port ${port}`);

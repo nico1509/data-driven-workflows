@@ -1,5 +1,5 @@
 @prefix : <#> .
-@prefix ibm: <http://localhost/ldbbc/ibm-vocab.ttl#> .
+@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -9,12 +9,12 @@
 @prefix http: <http://www.w3.org/2011/http#>.
 @prefix http_m: <http://www.w3.org/2011/http-methods#>.
 
-@prefix :       <http://localhost/ldbbc/> .
+@prefix :       <http://tok450s.lan:8080/ldbbc/> .
 
 @prefix this: <http://this.nxparser.github.io/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/#> .
-@prefix tmp:    <http://localhost/ldbbc/> .
-@prefix tmp_ha: <http://localhost/ldbbc/#> . # because we cannot parse local names with 0 or 1 letter
-@prefix webserver: <http://localhost/ldbbc/> .
+@prefix tmp:    <http://tok450s.lan:8080/ldbbc/> .
+@prefix tmp_ha: <http://tok450s.lan:8080/ldbbc/#> . # because we cannot parse local names with 0 or 1 letter
+@prefix webserver: <http://tok450s.lan:8080/ldbbc/> .
 
 
 { ?WfInstance a ibm:WorkflowInstance ; ibm:hasState ibm:uninitialized ; ibm:isInstanceOf ?td . }
@@ -40,12 +40,13 @@
 =>
 {
     _:h3 http:mthd http_m:PUT ; 
-        http:requestURI <http://localhost/ldbbc/ibm-workflow-instance.ttl> ; 
+        http:requestURI ?WfInstance ; 
         http:body { 
             this:it ibm:isInstanceOf ?WfModel ;
             ibm:hasState ibm:active . 
         } .
 } .
+# Setup Stage Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
                 ibm:hasState ibm:uninitialized ;
@@ -56,14 +57,14 @@
 =>
 {
     _:h1 http:mthd http_m:POST ; 
-        http:requestURI <http://localhost/ldbbc/> ; 
+        http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body {
-            ?WfInstance ibm:isInstanceOf ?stage ;
+            this:StageInstance ibm:isInstanceOf ?stage ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance . 
         } . 
 } .
-
+# Setup Task Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
                 ibm:hasState ibm:uninitialized ;
@@ -74,14 +75,33 @@
 =>
 {
     _:h2 http:mthd http_m:POST ; 
-        http:requestURI <http://localhost/ldbbc/> ; 
+        http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
-            ?WfInstance ibm:isInstanceOf ?taskModel ;
+            this:TaskInstance ibm:isInstanceOf ?taskModel ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance . 
         } .
     
 } .
+# Setup Milestone Instances
+{ 
+    ?WfInstance a ibm:WorkflowInstance ;
+                ibm:hasState ibm:uninitialized ;
+                ibm:isInstanceOf ?WfModel . 
+    ?WfModel ibm:containsStageModel ?stage .
+    ?stage ibm:hasMilestoneModel ?milestoneModel .
+}
+=>
+{
+    _:h2 http:mthd http_m:POST ; 
+        http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
+        http:body { 
+            this:MilestoneInstance ibm:isInstanceOf ?milestoneModel ;
+            ibm:hasState ibm:inactive ;
+            ibm:inWorkflowInstance ?WfInstance . 
+        } .
+} .
+
 
 # get precondition data
 {
@@ -93,13 +113,67 @@
             http:requestURI         ?subject .
 } .
 
+# execute active tasks
+# we need this rule for every supported kind of http method
+# (PUT, POST at least), see annotation below
+# 
+{
+    ?taskInstance ibm:inWorkflowInstance ?wfInstance ;
+        ibm:isInstanceOf ?taskModel ;
+        ibm:hasState ibm:active .
+
+    ?taskModel ibm:hasHttpRequest ?httpRequest .
+
+    ?httpRequest a http:Request ;
+        http:mthd ?httpMthd ;
+        http:requestURI ?httpUri ;
+        http:body ?httpBody .
+} 
+=> 
+{
+    _:h     http:mthd http_m:POST ;  # ?httpMthd breaks ldfu...
+            http:requestURI ?httpUri ; 
+            http:body ?httpBody . 
+
+    _:h2    http:mthd http_m:PUT ;
+            http:requestURI ?taskInstance ;
+            http:body {
+                ?taskInstance ibm:isInstanceOf ?taskModel ;
+                ibm:hasState ibm:done ;
+                ibm:inWorkflowInstance ?WfInstance .
+            } .
+} .
+# Set executed task to done
+{
+    ?taskInstance ibm:inWorkflowInstance ?wfInstance ;
+        ibm:isInstanceOf ?taskModel ;
+        ibm:hasState ibm:active .
+
+    ?taskModel ibm:hasHttpRequest ?httpRequest .
+
+    ?httpRequest a http:Request ;
+        http:mthd ?httpMthd ;
+        http:requestURI ?httpUri ;
+        http:body ?httpBody .
+} 
+=> 
+{
+    _:h2    http:mthd http_m:PUT ;
+            http:requestURI ?taskInstance ;
+            http:body {
+                ?taskInstance ibm:isInstanceOf ?taskModel ;
+                ibm:hasState ibm:done ;
+                ibm:inWorkflowInstance ?wfInstance .
+            } .
+} .
+
 # PAC-1
 
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasGuard ?guard .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasGuard ?guard .
 
     # Prerequisite
     ?stageInstance ibm:isInstanceOf ?stage .
@@ -113,7 +187,7 @@
 => 
 {
     # Consequent
-    _:h http:mthd http_m:POST ; 
+    _:h http:mthd http_m:PUT ; 
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance ibm:isInstanceOf ?stage ;
@@ -126,8 +200,8 @@
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasMilestone ?milestone .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasMilestoneModel ?milestone .
     ?milestone ibm:hasValidatingSentry ?sentry .
     ?milestoneInstance ibm:isInstanceOf ?milestone .
 
@@ -141,7 +215,7 @@
 =>
 {
     # Consequent
-    _:h http:mthd http_m:POST ; 
+    _:h http:mthd http_m:PUT ; 
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestone ;
@@ -155,7 +229,7 @@
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasMilestone ?milestone .
+    ?stage ibm:hasMilestoneModel ?milestone .
     ?milestone ibm:hasInvalidatingSentry ?sentry .
     ?milestoneInstance ibm:isInstanceOf ?milestone .
 
@@ -168,7 +242,7 @@
 =>
 {
     # Consequent
-    _:h http:mthd http_m:POST ; 
+    _:h http:mthd http_m:PUT ; 
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestone ;
@@ -184,7 +258,7 @@
     ?wfModel ibm:containsStage ?stage .
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasMilestone ?milestone ;
+    ?stage ibm:hasMilestoneModel ?milestone ;
             ibm:hasGuard ?guard .
     
     # Prerequisite
@@ -199,7 +273,7 @@
 =>
 {
     # Consequent
-    _:h http:mthd http_m:POST ; 
+    _:h http:mthd http_m:PUT ; 
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestone ;
@@ -213,7 +287,7 @@
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStage ?stage .
-    ?stage ibm:hasMilestone ?milestone .
+    ?stage ibm:hasMilestoneModel ?milestone .
     ?milestone ibm:hasCondition ?sentry .
 
     # Prerequisite
@@ -226,7 +300,7 @@
 =>
 {
     # Consequent
-    _:h http:mthd http_m:POST ; 
+    _:h http:mthd http_m:PUT ; 
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance ibm:isInstanceOf ?stage ;
@@ -253,7 +327,7 @@
 =>
 {
     # Consequent
-    _:h http:mthd http_m:POST ; 
+    _:h http:mthd http_m:PUT ; 
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance ibm:isInstanceOf ?stage ;

@@ -2,7 +2,7 @@
 @prefix http_m: <http://www.w3.org/2011/http-methods#>.
 @prefix ldp: <http://www.w3.org/ns/ldp#> .
 
-{ _:h http:mthd http_m:GET ; http:requestURI <http://localhost/ldbbc/> . } 
+{ _:h http:mthd http_m:GET ; http:requestURI <http://tok450s.lan:8080/ldbbc/> . } 
 
-{ <http://localhost/ldbbc/> ldp:contains ?y . } => { [] http:mthd http_m:GET; http:requestURI ?y . } .
+{ <http://tok450s.lan:8080/ldbbc/> ldp:contains ?y . } => { [] http:mthd http_m:GET; http:requestURI ?y . } .
 
