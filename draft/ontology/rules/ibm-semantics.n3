@@ -347,8 +347,6 @@
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stageModel .
 
     # Prerequisite
     ?stageInstance ibm:isInstanceOf ?stageModel .
