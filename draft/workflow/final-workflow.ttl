@@ -1,0 +1,222 @@
+# Common Prefixes
+
+@prefix : <#> .
+@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix http: <http://www.w3.org/2011/http#> .
+@prefix http_m: <http://www.w3.org/2011/http-methods#> .
+
+
+# Workflow-specific Prefixes
+@prefix speaker: <#speakeruri#> .
+@prefix window: <#windowuri#> .
+@prefix light: <#lighturi#> .
+@prefix room: <#roomuri#> .
+
+
+# Worfkflow
+:FinalWorkflowModel
+    a ibm:WorkflowModel .
+
+
+# Guards
+:InitializedGuard
+    a ibm:Guard ;
+    ibm:hasCondition :Initialized .
+
+:InstructedGuard
+    a ibm:Guard ;
+    ibm:hasCondition :Instructed .
+
+:AllWorkDoneGuard
+    a ibm:Guard ;
+    ibm:hasCondition :AllWorkDone .
+
+:NotAllWorkDoneGuard ;
+    a ibm:Guard ;
+    ibm:hasCondition :NotAllWorkDone .
+
+
+# Stages
+:TellInstructions ;
+    a ibm:StageModel ;
+    ibm:hasGuard :InitializedGuard ;
+    ibm:hasMilestoneModel :InstructedMilestone ; # Q1: Same as :Instructed ?
+    ibm:hasTaskModel :TellingInstructionsTask .
+
+:CloseWindow ;
+    a ibm:StageModel ;
+    ibm:hasGuard :InstructedGuard ;
+    ibm:hasMilestoneModel :WindowClosedMilestone ;
+    ibm:hasTaskModel :WindowClosingTask .
+
+:TurnOffLight ;
+    a ibm:StageModel ;
+    ibm:hasGuard :InstructedGuard ;
+    ibm:hasMilestoneModel :LightOffMilestone ;
+    ibm:hasTaskModel :LightOffTask .
+
+:LeaveRoom ;
+    a ibm:StageModel ;
+    ibm:hasGuard :InstructedGuard ;
+    ibm:hasMilestoneModel :RoomLeftMilestone ;
+    ibm:hasTaskModel :RoomLeavingTask .
+
+:TellCongrats ;
+    a ibm:StageModel ;
+    ibm:hasGuard :AllWorkDoneGuard ;
+    ibm:hasMilestoneModel :CongratsToldMilestone ;
+    ibm:hasTaskModel :TellingCongratsTask .
+
+:TellFail ;
+    a ibm:StageModel ;
+    ibm:hasGuard :NotAllWorkDoneGuard ;
+    ibm:hasMilestoneModel :FailToldMilestone ;
+    ibm:hasTaskModel :TellingFailTask .
+
+
+# Tasks
+:TellingInstructionsTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        ## TODO: Request .
+    ] .
+
+:WindowClosingTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        ## TODO: Request .
+    ] .
+
+:LightOffTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        ## TODO: Request .
+    ] .
+
+:RoomLeavingTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        ## TODO: Request .
+    ] .
+
+:TellingCongratsTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        ## TODO: Request .
+    ] .
+
+:TellingFailTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        ## TODO: Request .
+    ] .
+
+
+# Milestones
+:InstructedMilestone ;
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :SpeakerQuiet .
+    #ibm:hasInvalidatingSentry ??? .
+
+:WindowClosedMilestone ;
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :WindowClosed .
+    #ibm:hasInvalidatingSentry ??? .
+
+:LightOffMilestone ;
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :LightOff .
+    #ibm:hasInvalidatingSentry ??? .
+
+:RoomLeftMilestone ;
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :RoomLeft .
+    #ibm:hasInvalidatingSentry ??? .
+
+:CongratsToldMilestone ;
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :SpeakerQuiet .
+    #ibm:hasInvalidatingSentry ??? .
+
+:FailToldMilestone ;
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :SpeakerQuiet .
+    #ibm:hasInvalidatingSentry ??? .
+
+
+# Sentries
+:Initialized
+    a sp:Ask ;
+    sp:where ([
+        # TODO: Something to initialize the Workflow
+    ]) .
+
+:SpeakerQuiet
+    a sp:Ask ;
+    sp:where ([
+        sp:subject speaker:Speaker ;
+        sp:predicate speaker:isQuiet ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:AllWorkDone
+    a sp:Ask ;
+    sp:where ([
+        sp:subject window:Window ;
+        sp:predicate window:isClosed ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject light:Light ;
+        sp:predicate light:isDark ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject room:Room ;
+        sp:predicate room:isEmpty ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:NotAllWorkDone
+    a sp:Ask ;
+    sp:where ([  # TODO: OR, AND ?
+        sp:subject window:Window ;
+        sp:predicate window:isClosed ;
+        sp:object "false"^^xsd:boolean
+    ] [
+        sp:subject light:Light ;
+        sp:predicate light:isDark ;
+        sp:object "false"^^xsd:boolean
+    ] [
+        sp:subject room:Room ;
+        sp:predicate room:isEmpty ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+
+:WindowClosed
+    a sp:Ask ;
+    sp:where ([  # TODO: OR, AND ?
+        sp:subject window:Window ;
+        sp:predicate window:isClosed ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:LightOff
+    a sp:Ask ;
+    sp:where ([
+        sp:subject light:Light ;
+        sp:predicate light:isDark ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:RoomLeft
+    a sp:Ask ;
+    sp:where ([
+        sp:subject room:Room ;
+        sp:predicate room:isEmpty ;
+        sp:object "true"^^xsd:boolean
+    ]) .
