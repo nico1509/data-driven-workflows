@@ -54,6 +54,9 @@ http.createServer(function (req, res) {
             res.write(data);
             res.end();
         });
+    }else if(req.url.startsWith("/button/ui/api/test")){
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end("buttonPressed: " + (buttonPressed ? "true" : "false") + "<br/>workerDone: " + (workerDone ? "true" : "false"));
     } else if (req.url.startsWith("/button/state")) { // get Button State
         res.writeHead(200, {'Content-Type': 'application/xml'});
         res.end(buttonStatePrefix + buttonPressed + buttonStateSuffix);
