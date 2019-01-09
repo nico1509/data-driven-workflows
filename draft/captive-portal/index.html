@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Die 3 Meta-Tags oben *müssen* zuerst im head stehen; jeglicher sonstiger head-Inhalt muss *nach* diesen Tags kommen -->
+    <title>IBM Demo</title>
+
+    <!-- Bootstrap -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <style type="text/css">
+        body {
+            padding-top: 15rem;
+        }
+    </style>
+
+<script language="javascript">
+var ldpcHost = "tok450s.lan:8080"
+var ldpcPath = "/ldbbc/"
+var ldpc = "http://" + ldpcHost + ldpcPath;
+
+var instance = {
+  "@id" : "#it",
+  "@type" : "ibm:WorkflowInstance",
+  "ibm:isInstanceOf" : "http://tok450s.lan:8080/ldbbc/ibm-workflow.ttl#MyWorkflowModel",
+  "ibm:hasState": "ibm:uninitialized"
+};
+var context = {
+  "name": "http://xmlns.com/foaf/0.1/name",
+//  "home": "http://people.aifb.kit.edu/co1683/2018/iswcdemo/vocab#home",
+  "ibm": "http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#",
+  "ibm:isInstanceOf":  { "@type": "@id" },
+  "ibm:hasState": { "@type": "@id" }
+};
+
+// Convert a HTML form to JSON
+function formToJSON(elements, object) {
+  [].reduce.call(elements, (data, element) => {
+    if (element.nodeName == "BUTTON")
+      return data;
+    data[element.name] = element.value;
+    return data;
+  }, object);
+}
+
+function toggleShowJSON(event) {
+  // preventing the default action of the button event
+  event.preventDefault();
+
+  // building a JSON-LD object from the object
+  var jsonld = {
+    "@context": context ,
+    "@graph": [
+      instance
+    ]
+  };
+
+  // displaying the POST request to be made using the JSON-LD object
+  if (document.getElementById('JSON').innerHTML.length > 0)
+    document.getElementById('JSON').innerHTML = "";
+  else
+    document.getElementById('JSON').innerHTML = 
+    "<pre>"
+    + "POST " + ldpcPath + " HTTP/1.1\n"
+    + "Host: " + ldpcHost + "\n"
+    + "Content-type: application/ld+json\n"
+    + "\n"
+    + JSON.stringify(jsonld, null, 2)
+    + "</pre>";
+}
+
+function sendJSON(event) {
+  // preventing the default action of the button event
+  event.preventDefault();
+
+//  // reading the form contents into a JSON object
+//  var input = {};
+//  formToJSON(event.target.elements, input);
+
+  // building a JSON-LD object from the object
+  var jsonld = {
+    "@context": context ,
+    "@graph": [
+      instance
+//      input
+    ]
+  };
+
+  $.ajax({
+  type: "POST",
+  url: ldpc,
+  contentType: "application/ld+json",
+  data: JSON.stringify(jsonld, null, 2),
+  processData: false,
+  error: () => { window.alert("request failed") },
+  success: () => { window.alert("successfully submitted a workflow instance") }
+  });
+}
+</script>
+
+  </head>
+
+  <body class="container text-center">
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <a class="navbar-brand navbar-header">IBM Demo</a>
+    <ul class="nav navbar-nav">
+      <li><a href="#authors">Authors</a></li>
+      <li><a href="#references">References</a></li>
+    </ul>
+  </nav>
+
+  <h3>Demo: Using Workflows to Build Compositions of Read-Write Linked Data APIs on the Web of Things</h3>
+
+  <form id="show-workflow" class="text-center">
+    <button type="submit" class="btn">Show Workflow Instance Request</button>
+  </form>
+
+  <br />
+
+  <form id="submit-workflow" class="text-center">
+    <button type="submit" class="btn btn-primary">Submit Workflow Instance</button>
+  </form>
+
+  <script language="javascript">
+    // register the code with the form
+    document.getElementById('show-workflow').addEventListener("submit", toggleShowJSON);
+    document.getElementById('submit-workflow').addEventListener("submit", sendJSON);
+  </script>
+
+  <br />
+
+  <!-- place for the HTTP + JSON to appear -->
+  <div id="JSON" class="text-left"></div>
+
+  <h4 id="authors" class="text-left">Authors</h4>
+  <div class="text-left">
+    <ul>
+      <li><a href="http://www.aifb.kit.edu/web/Tobias_K%C3%A4fer/en">Tobias K&auml;fer</a>, Karlsruhe Institute of Technology, Germany</li>
+      <li><a href="http://slauber.de/">Sebastian Lauber</a>, Karlsruhe Institute of Technology, Germany</li>
+      <li><a href="http://harth.org/andreas">Andreas Harth</a>, University of Erlangen-Nuremberg, Germany</li>
+    </ul>
+  </div>
+
+
+  <h4 id="references" class="text-left">References</h4>
+  <div class="text-left">
+    <ul>
+      <li><a href="https://arxiv.org/abs/1804.05044">ISWC2018 Research Paper on WiLD</a></li>
+      <li><a href="http://ceur-ws.org/Vol-2073/article-05.pdf">LDOW2018 Paper on ASM4LD, the underlying Model of Computation</a></li>
+      <li><a href="http://people.aifb.kit.edu/co1683/2017/iswcdemo/">A Video of this Demo</a></li> 
+    </ul>
+  </div>
+
+  <!-- jQuery (wird für Bootstrap JavaScript-Plugins benötigt) -->
+  <script src="jquery.min.js"></script>
+  <!-- Binde alle kompilierten Plugins zusammen ein (wie hier unten) oder such dir einzelne Dateien nach Bedarf aus -->
+  <script src="bootstrap.min.js"></script>
+
+  </body>
+</html>

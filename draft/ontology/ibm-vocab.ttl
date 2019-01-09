@@ -87,10 +87,10 @@
     rdfs:domain :StageModel ;
     rdfs:range :Guard .      
     
-:hasMilestone
+:hasMilestoneModel
     a rdf:Property ;
     rdfs:domain :StageModel ;
-    rdfs:range :Milestone .
+    rdfs:range :MilestoneModel .
 
 :hasState
     a rdf:Property ;

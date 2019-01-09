@@ -13,6 +13,6 @@
 @prefix schema: <http://schema.org/> .
 @prefix this: <http://this.nxparser.github.io/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <http://localhost/ldbbc/ibm-vocab.ttl#> .
+@prefix : <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
 
-<#it> a :WorkflowInstance ; :isInstanceOf <http://localhost/ldbbc/ibm-workflow.ttl#MyWorkflowModel> ; :hasState :uninitialized .
+<#it> a :WorkflowInstance ; :isInstanceOf <http://tok450s.lan:8080/ldbbc/ibm-workflow.ttl#MyWorkflowModel> ; :hasState :uninitialized .
