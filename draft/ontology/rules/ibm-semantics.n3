@@ -46,7 +46,6 @@
             ibm:hasState ibm:active . 
         } .
 } .
-
 # Setup Stage Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
@@ -65,7 +64,6 @@
             ibm:inWorkflowInstance ?WfInstance . 
         } . 
 } .
-
 # Setup Task Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
@@ -85,7 +83,6 @@
         } .
     
 } .
-
 # Setup Milestone Instances
 { 
     ?WfInstance a ibm:WorkflowInstance ;
@@ -231,7 +228,7 @@
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStage ?stage .
+    ?wfModel ibm:containsStageModel ?stage .
     ?stage ibm:hasMilestoneModel ?milestone .
     ?milestone ibm:hasInvalidatingSentry ?sentry .
     ?milestoneInstance ibm:isInstanceOf ?milestone .
