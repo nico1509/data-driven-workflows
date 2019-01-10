@@ -1,0 +1,121 @@
+@prefix : <#> .
+@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+# Workflow-specific Prefixes
+@prefix speaker: <http://t2-rest-speaker.lan#> .
+@prefix lightsensor: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+
+# Workflow
+:WildWorkflow
+    a ibm:WorkflowModel ;
+    ibm:containsStageModel 
+        :TellInstructions , 
+        :DarkenSensor ,
+        :Congratulate .
+
+# Guards
+:Initialized
+    a ibm:Guard ;
+    ibm:hasCondition :AlwaysTrueCondition .
+
+:InstructionsTold 
+    a ibm:Guard ;
+    ibm:hasCondition :InstructionsToldCondition .
+
+:SensorDark 
+    a ibm:Guard ;
+    ibm:hasCondition :SensorDarkCondition .
+
+# Stages
+:TellInstructions
+    a ibm:StageModel ;
+    ibm:hasGuard :Initialized ;
+    ibm:hasMilestoneModel :Instructed ;
+    ibm:hasTaskModel :TellInstructionsTask .
+
+:DarkenSensor  
+    a ibm:StageModel ;
+    ibm:hasGuard :InstructionsTold ;
+    ibm:hasMilestoneModel :SensorDarkened ;
+    ibm:hasTaskModel :DarkenSensorTask .
+    
+:Congratulate
+    a ibm:StageModel ;
+    ibm:hasGuard :SensorDark ;
+    ibm:hasMilestoneModel :CongratulationsTold ;
+    ibm:hasTaskModel :TellCongratulationsTask .
+
+# Tasks
+:TellInstructionsTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI speaker:spk ;
+        http:body "value=Hi, please make it dark or cover the light sensor"^^xsd:string
+    ] .
+
+:DarkenSensorTask
+    a ibm:TaskModel .
+
+:TellCongratulationsTask
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI speaker:spk ;
+        http:body "value=You are such a wonderful person"^^xsd:string
+    ] .
+
+# Milestones
+:Instructed
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :InstructionsToldCondition .
+
+:SensorDarkened 
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :SensorDarkCondition .
+
+:CongratulationsTold
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :CongratulationsToldCondition .
+
+# Sentries
+:AlwaysTrueCondition 
+    a sp:Ask ;
+    sp:where ([
+        sparql-result:boolean "true"^^xsd:boolean
+    ]) .
+
+:InstructionsToldCondition 
+    a sp:Ask ;
+    sp:where ([
+        sp:subject speaker:spk ;
+        sp:predicate <http://example.org/speaking> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:CongratulationsToldCondition
+    a sp:Ask ;
+    sp:where ([
+        sp:subject speaker:spk ;
+        sp:predicate <http://example.org/speaking> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:SensorDarkCondition    
+    a sp:Ask ;  
+    sp:where ([
+        sp:subject lightsensor:Light ;
+        sp:predicate <http://example.org/isBright> ;
+        sp:object "false"^^xsd:boolean 
+    ]) .

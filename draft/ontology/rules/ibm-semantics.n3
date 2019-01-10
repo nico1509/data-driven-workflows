@@ -118,9 +118,14 @@
 # (PUT, POST at least), see annotation below
 # 
 {
-    ?taskInstance ibm:inWorkflowInstance ?wfInstance ;
-        ibm:isInstanceOf ?taskModel ;
-        ibm:hasState ibm:active .
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageInstance ibm:isInstanceOf ?stageModel ;
+                    ibm:hasState ibm:active .
+    ?stageModel ibm:hasTaskModel ?taskModel .
+
+    ?taskInstance ibm:isInstanceOf ?taskModel ;
+                    ibm:hasState ibm:inactive .
 
     ?taskModel ibm:hasHttpRequest ?httpRequest .
 
@@ -135,19 +140,17 @@
             http:requestURI ?httpUri ; 
             http:body ?httpBody . 
 
-    _:h2    http:mthd http_m:PUT ;
-            http:requestURI ?taskInstance ;
-            http:body {
-                ?taskInstance ibm:isInstanceOf ?taskModel ;
-                ibm:hasState ibm:done ;
-                ibm:inWorkflowInstance ?WfInstance .
-            } .
 } .
 # Set executed task to done
 {
-    ?taskInstance ibm:inWorkflowInstance ?wfInstance ;
-        ibm:isInstanceOf ?taskModel ;
-        ibm:hasState ibm:active .
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageInstance ibm:isInstanceOf ?stageModel ;
+                    ibm:hasState ibm:active .
+    ?stageModel ibm:hasTaskModel ?taskModel .
+
+    ?taskInstance ibm:isInstanceOf ?taskModel ;
+                    ibm:hasState ibm:inactive .
 
     ?taskModel ibm:hasHttpRequest ?httpRequest .
 

@@ -1,0 +1,13 @@
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sparql-results: <http://www.w3.org/2005/sparql-results#> .
+
+{ _:h http:mthd http_m:GET ; http:requestURI <http://t2-rest-rfid-ambient.lan/ambient/light> . } 
+{ _:h http:mthd http_m:GET ; http:requestURI <http://t2-rest-rfid-ambient.lan/rfid/> . } 
+
+{ ?x <http://example.org/hasLightValue> ?val . ?val math:lessThan "0.02"^^xsd:double . } => { ?x <http://example.org/isBright> "false"^^xsd:boolean . } .
+{ ?x <http://example.org/hasLightValue> ?val . ?val math:notLessThan "0.02"^^xsd:double . } => { ?x <http://example.org/isBright> "true"^^xsd:boolean . } .
