@@ -1,0 +1,19 @@
+digraph G {
+	rankdir=LR;
+"http://tok450s.lan:8080/ldbbc/" -> "http://tok450s.lan:8080/ldbbc/wild-workflow.ttl";
+
+"http://tok450s.lan:8080/ldbbc/" -> "http://tok450s.lan:8080/ldbbc/list-vocab.ttl";
+
+"http://tok450s.lan:8080/ldbbc/wild-workflow.ttl" -> "http://t2-rest-speaker.lan/";
+
+"file:/home/nico/Dokumente/Workspaces/semantic-iot/draft/workflow/rules/lightCheck.n3" -> "http://t2-rest-rfid-ambient.lan/rfid/";
+
+"http://tok450s.lan:8080/ldbbc/" -> "http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl";
+
+"file:/home/nico/Dokumente/Workspaces/semantic-iot/draft/ontology/rules/data-retrieval-ldpc.n3" -> "http://tok450s.lan:8080/ldbbc/";
+
+"file:/home/nico/Dokumente/Workspaces/semantic-iot/draft/workflow/rules/lightCheck.n3" -> "http://t2-rest-rfid-ambient.lan/ambient/light";
+
+"http://tok450s.lan:8080/ldbbc/wild-workflow.ttl" -> "http://t2-rest-rfid-ambient.lan/rfid";
+
+}

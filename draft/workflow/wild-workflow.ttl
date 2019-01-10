@@ -13,6 +13,7 @@
 # Workflow-specific Prefixes
 @prefix speaker: <http://t2-rest-speaker.lan#> .
 @prefix lightsensor: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+@prefix rfidsensor: <http://t2-rest-rfid-ambient.lan/rfid#> .
 
 # Workflow
 :WildWorkflow
@@ -93,7 +94,9 @@
 :AlwaysTrueCondition 
     a sp:Ask ;
     sp:where ([
-        sparql-result:boolean "true"^^xsd:boolean
+        sp:subject rfidsensor:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean
     ]) .
 
 :InstructionsToldCondition 
