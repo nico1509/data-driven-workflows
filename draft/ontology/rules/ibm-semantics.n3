@@ -141,6 +141,35 @@
             http:body ?httpBody . 
 
 } .
+
+# Set tasks in stage active
+    # Modifier - These changes are supposed to fix problems occuring due 
+    # to the database driven structure used by the IBM guys
+    # Note 1:   We only have one stage so this should work reliably
+    # Note 2:   Task is always done after one loop cycle because we don't lsiten for results
+    #           This should ensure that we don't trigger stage repeatedly.
+{
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageInstance ibm:isInstanceOf ?stageModel .
+    ?stageInstance ibm:hasState ibm:active .
+
+    ?stageModel ibm:hasTaskModel ?taskModel .
+    ?taskInstance ibm:isInstanceOf ?taskModel ;
+                    ibm:hasState ibm:inactive .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI ?taskInstance ; 
+        http:body {
+            ?taskInstance ibm:isInstanceOf ?taskModel ;
+            ibm:hasState ibm:active ;
+            ibm:inWorkflowInstance ?wfInstance .
+        } . 
+}
+
 # Set executed task to done
 {
     ?wfInstance ibm:isInstanceOf ?wfModel .
@@ -179,17 +208,8 @@
     ?stageModel ibm:hasGuard ?guard .
 
     # Prerequisite
-    ?stageInstance ibm:isInstanceOf ?stage .
+    ?stageInstance ibm:isInstanceOf ?stageModel .
     ?stageInstance ibm:hasState ibm:inactive .
-
-    # Modifier - These changes are supposed to fix problems occuring due 
-    # to the database driven structure used by the IBM guys
-    # Note 1:   We only have one stage so this should work reliably
-    # Note 2:   Task is always done after one loop cycle because we don't lsiten for results
-    #           This should ensure that we don't trigger stage repeatedly.
-    ?stageModel ibm:hasTaskModel ?taskModel .
-    ?taskInstance ibm:isInstanceOf ?taskModel .
-    ?taskInstance ibm:hasState ibm:inactive .
 
     # Antecedent
     ?guard ibm:hasCondition ?sentry .
@@ -202,7 +222,7 @@
     _:h http:mthd http_m:PUT ; 
         http:requestURI ?stageInstance ; 
         http:body {
-            ?stageInstance ibm:isInstanceOf ?stage ;
+            ?stageInstance ibm:isInstanceOf ?stageModel ;
             ibm:hasState ibm:active ;
             ibm:inWorkflowInstance ?wfInstance .
         } . 
