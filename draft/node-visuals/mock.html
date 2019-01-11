@@ -6,6 +6,41 @@
         <!-- styles -->
         <style type="text/css">
         
+            button{
+                margin: 10px;
+                font-size: 18px;
+                padding: 10px;
+                background: rgb(239, 239, 239);
+                border: 1px solid rgb(182, 182, 182);
+                border-radius: 3px;
+                width: 280px;
+                cursor: pointer;
+            }
+
+            input{
+                margin: 10px 10px;
+                font-size: 18px;
+                padding: 10px 5px;
+                background: rgb(249, 249, 249);
+                border: 1px solid rgb(182, 182, 182);
+                border-radius: 3px;
+                width: 270px;
+                border-bottom-width: 2px;
+                
+                transition: border 200ms ease;
+            }
+
+            input:focus{
+                border-bottom-color: rgb(45, 143, 255);
+            }
+
+            #cmdReset{
+                color: red;
+            }
+
+            #cmdInstantiate{
+                color: orange;
+            }
         
         </style>
 
@@ -40,11 +75,17 @@
                     uploadMilestoneValues();
                 });
 
-                $('button').each(function(i, e){
+                $('button[data-name]').each(function(i, e){
                     var $button = $(e);
                     var name = $button.attr('data-name'); 
                     $button.text(name + ': ' + (milestoneValues[name] ? 'true' : 'false'));
-                })
+                });
+
+                $('input[data-name]').each(function(i, e){
+                    var $input = $(e);
+                    var name = $input.attr('data-name'); 
+                    $input.attr('placeholder', name);
+                });
 
             });
 
@@ -56,18 +97,69 @@
                 });
 
             }
+
+            function reset(){                
+                $.get('/mock/reset').done(function(){
+                    location.reload();
+                });
+            }
+
+            function instantiate(){
+
+                var ldpcHost = "129.13.3.67:8080"
+                var ldpcPath = "/ldbbc/"
+                var ldpc = "http://" + ldpcHost + ldpcPath;
+
+                var instance = {
+                "@id" : "#it",
+                "@type" : "ibm:WorkflowInstance",
+                "ibm:isInstanceOf" : "http://tok450s.lan:8080/ldbbc/ibm-workflow.ttl#MyWorkflowModel",
+                "ibm:hasState": "ibm:uninitialized"
+                };
+
+                var context = {
+                "name": "http://xmlns.com/foaf/0.1/name",
+                //  "home": "http://people.aifb.kit.edu/co1683/2018/iswcdemo/vocab#home",
+                "ibm": "http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#",
+                "ibm:isInstanceOf":  { "@type": "@id" },
+                "ibm:hasState": { "@type": "@id" }
+                };
+
+                // building a JSON-LD object from the object
+                var jsonld = {
+                    "@context": context ,
+                    "@graph": [
+                    instance
+                    ]
+                };
+
+
+                $.ajax({
+                    type: "POST",
+                    url: ldpc,
+                    contentType: "application/ld+json",
+                    data: JSON.stringify(jsonld, null, 2),
+                    processData: false,
+                    error: () => { window.alert("request failed") },
+                    success: () => { window.alert("successfully submitted a workflow instance") }
+                });
+                
+            }
         </script>
     </head>
     <body>
 
+        <button id="cmdInstantiate" onclick="instantiate();">Instantiate</button><br/><br/>
+
         <button data-name="firealarmButtonPressed"></button><br/>
-        <input type="text" data-name="temperature" /><br/>
+        <input type="number" data-name="temperature" /><br/>
         <button data-name="emergencyArrived"></button><br/>
         <button data-name="peopleEvacuated"></button><br/>
         <button data-name="peopleCounted"></button><br/>
         <button data-name="peopleComplete"></button><br/>
         <button data-name="peopleIncomplete"></button><br/>
-        <button data-name="fireExtinguished"></button><br/>
+        <button data-name="fireExtinguished"></button><br/><br/>
 
+        <button id="cmdReset" onclick="reset();">RESET</button>
     </body>
 </html>

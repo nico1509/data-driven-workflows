@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 var milestoneValues = {
     firealarmButtonPressed: false,
-    temperature: 100,
+    temperature: 25,
     emergencyArrived: false,
     peopleEvacuated: false,
     peopleCounted: false,
@@ -78,6 +78,21 @@ app.post('/mock',function(request,response){
     console.log('MilestoneValues Updated!');
 });
 
+app.get('/mock/reset', function(req, res){
+    milestoneValues = {
+        firealarmButtonPressed: false,
+        temperature: 25,
+        emergencyArrived: false,
+        peopleEvacuated: false,
+        peopleCounted: false,
+        peopleComplete: false,
+        peopleIncomplete: false,
+        fireExtinguished: false
+    };
+
+    res.send('done');
+});
+
 app.get('/mock/ui', function(req, res){
     fs.readFile('mock.html', function(err, data) {
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -106,7 +121,7 @@ app.get('/test2', function (req, res) {
 
 });
 
-app.get('/', function (req, res) {
+app.get('/stages', function (req, res) {
     //res.send('Hello World!');
 
     
@@ -118,6 +133,11 @@ app.get('/', function (req, res) {
 
 
 });
+
+app.get('/', function (req, res) {
+    res.send('Hello open World!');
+});
+
 
 
 
