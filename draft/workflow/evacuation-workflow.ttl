@@ -11,7 +11,7 @@
 
 
 # Workflow-specific Prefixes
-@prefix mock: <http://mock-server.lan/mock#> .
+@prefix mock: <http://mock-server.lan:3000/mock#> .
 
 
 # Workflow
@@ -286,7 +286,7 @@
     sp:where ([
         sp:subject mock:People ;
         sp:predicate <http://example.org/incomplete> ;
-        sp:object "true"^^xds:boolean
+        sp:object "true"^^xsd:boolean
     ] [
         sp:subject mock:Fire ;
         sp:predicate <http://example.org/extinguished> ;
@@ -306,7 +306,7 @@
     sp:where ([
         sp:subject mock:People ;
         sp:predicate <http://example.org/incomplete> ;
-        sp:object "true"^^xds:boolean
+        sp:object "true"^^xsd:boolean
     ]) .
 
 :FireExtinguished
