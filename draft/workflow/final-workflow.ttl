@@ -20,7 +20,14 @@
 
 # Worfkflow
 :FinalWorkflowModel
-    a ibm:WorkflowModel .
+    a ibm:WorkflowModel ;
+    ibm:containsStageModel 
+        :TellInstructions ,
+        :CloseWindow ,
+        :TurnOffLight ,
+        :LeaveRoom ,
+        :TellCongrats ,
+        :TellFail .
 
 
 # Guards
