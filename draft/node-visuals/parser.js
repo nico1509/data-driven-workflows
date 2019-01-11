@@ -146,7 +146,8 @@ exports.getStages = function(callback){
         var stagesParsed = function(){
 
             for(var i in milestones)
-                stages[milestones[i].stage].milestones.push(milestones[i]);
+                 stages[milestones[i].stage].milestones.push(milestones[i]);
+            
             
             for(var i in tasks)
                 stages[tasks[i].stage].tasks.push(tasks[i]);

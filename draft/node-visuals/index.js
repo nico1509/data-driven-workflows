@@ -65,7 +65,9 @@ app.get('/mock', function(req, res){
     
     xmlStr += '</rdf:RDF>';
 
-    res.send(xmlStr);
+    res.writeHead(200, {'Content-Type': 'application/rdf+xml'});
+    res.write(xmlStr);
+    res.end();
 });
 
 app.post('/mock',function(request,response){
@@ -138,9 +140,9 @@ app.get('/', function (req, res) {
     res.send('Hello open World!');
 });
 
-
-
-
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  
+    var ip = require('ip');
+    console.log('Mock server started on '+ip.address()+':3000.');
+
 });

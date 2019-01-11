@@ -13,6 +13,7 @@
     "body-parser": "^1.18.3",
     "curl-request": "^1.1.1",
     "express": "^4.16.4",
+    "ip": "^1.1.5",
     "nodemon": "^1.18.9",
     "xml2js": "^0.4.19"
   }
