@@ -18,7 +18,7 @@
 :EvacuationWorkflowModel
     a ibm:WorkflowModel ;
     ibm:containsStageModel 
-        :CallEmergency , 
+        :CallEmergency .
         :StartEvacuatingPeople , 
         :ActivateSiren , 
         :OpenChimney , 
@@ -64,52 +64,62 @@
 :CallEmergency
     a ibm:StageModel ;
     ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :C1 .
+    ibm:hasMilestoneModel :C1 ;
+    ibm:hasTaskModel :CallEmergencyTask .
 
 :StartEvacuatingPeople
     a ibm:StageModel ;
     ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :C2 .
+    ibm:hasMilestoneModel :C2 ;
+    ibm:hasTaskModel :StartEvacuatingPeopleTask .
 
 :ActivateSiren
     a ibm:StageModel ;
     ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :CX .
+    ibm:hasMilestoneModel :CX ;
+    ibm:hasTaskModel :ActivateSirenTask .
 
 :OpenChimney
     a ibm:StageModel ;
     ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :CX .
+    ibm:hasMilestoneModel :CX ;
+    ibm:hasTaskModel :OpenChimneyTask .
 
 :CloseFireDoors
     a ibm:StageModel ;
     ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :CX .
+    ibm:hasMilestoneModel :CX ;
+    ibm:hasTaskModel :CloseFireDoorsTask .
 
 :CountPeople
     a ibm:StageModel ;
     ibm:hasGuard :G2 ;
-    ibm:hasMilestoneModel :C3 .
+    ibm:hasMilestoneModel :C3 ;
+    ibm:hasTaskModel :CountPeopleTask .
 
 :StartExtinguishing
     a ibm:StageModel ;
     ibm:hasGuard :G3 ;
-    ibm:hasMilestoneModel :C6 .
+    ibm:hasMilestoneModel :C6 ;
+    ibm:hasTaskModel :StartExtinguishingTask .
 
 :CheckForCompleteness 
     a ibm:StageModel ;
     ibm:hasGuard :G5 ;
-    ibm:hasMilestoneModel :C4 , :C5 .
+    ibm:hasMilestoneModel :C4 , :C5 ;
+    ibm:hasTaskModel :CheckForCompletenessTask .
 
 :StartSearching
     a ibm:StageModel ;
     ibm:hasGuard :G6 ;
-    ibm:hasMilestoneModel :C4 .
+    ibm:hasMilestoneModel :C4 ;
+    ibm:hasTaskModel :StartSearchingTask .
 
 :SayItsDone
     a ibm:StageModel ;
     ibm:hasGuard :G7 ;
-    ibm:hasMilestoneModel :CX .
+    ibm:hasMilestoneModel :CX ;
+    ibm:hasTaskModel :SayItsDoneTask .
 
 # Tasks
 :CallEmergencyTask 
