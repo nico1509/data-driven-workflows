@@ -110,10 +110,13 @@
                 var ldpcPath = "/ldbbc/"
                 var ldpc = "http://" + ldpcHost + ldpcPath;
 
+                var WFModel = 'EvacuationWorkflowModel';
+                var WFTurtle = 'evacuation-workflow.ttl';
+
                 var instance = {
                 "@id" : "#it",
                 "@type" : "ibm:WorkflowInstance",
-                "ibm:isInstanceOf" : "http://tok450s.lan:8080/ldbbc/ibm-workflow.ttl#MyWorkflowModel",
+                "ibm:isInstanceOf" : "http://tok450s.lan:8080/ldbbc/"+WFTurtle+"#" + WFModel,
                 "ibm:hasState": "ibm:uninitialized"
                 };
 
