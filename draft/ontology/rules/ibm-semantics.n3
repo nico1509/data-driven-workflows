@@ -79,7 +79,9 @@
         http:body { 
             this:TaskInstance ibm:isInstanceOf ?taskModel ;
             ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?WfInstance . 
+            ibm:inWorkflowInstance ?WfInstance ;
+            # UI modifications
+            ibm:forStageModel ?stage .
         } .
     
 } .
@@ -98,7 +100,9 @@
         http:body { 
             this:MilestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?WfInstance . 
+            ibm:inWorkflowInstance ?WfInstance ;
+            # UI modifications
+            ibm:forStageModel ?stage .
         } .
 } .
 
@@ -166,7 +170,9 @@
         http:body {
             ?taskInstance ibm:isInstanceOf ?taskModel ;
             ibm:hasState ibm:active ;
-            ibm:inWorkflowInstance ?wfInstance .
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modifications
+            ibm:forStageModel ?stageModel .
         } . 
 } .
 
@@ -195,7 +201,9 @@
             http:body {
                 ?taskInstance ibm:isInstanceOf ?taskModel ;
                 ibm:hasState ibm:done ;
-                ibm:inWorkflowInstance ?wfInstance .
+                ibm:inWorkflowInstance ?wfInstance ;
+                # UI modifications
+                ibm:forStageModel ?stageModel .
             } .
 } .
 
@@ -252,7 +260,9 @@
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:active ;
-            ibm:inWorkflowInstance ?wfInstance .
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modifications
+            ibm:forStageModel ?stage .
         } . 
 } .
 
@@ -279,7 +289,9 @@
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?wfInstance .
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modifications
+            ibm:forStageModel ?stageModel .
         } . 
 } .
 
@@ -307,7 +319,9 @@
         http:body {
             ?taskInstance ibm:isInstanceOf ?taskModel ;
             ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?wfInstance .
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modification
+            ibm:forStageModel ?stageModel .
         } . 
 } .
 
