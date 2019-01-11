@@ -216,32 +216,32 @@
 # Milestones
 :C1
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :EmergencyArrived .
+    ibm:hasValidatingSentry :EmergencyArrived .
 
 :C2
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :PeopleEvacuated .
+    ibm:hasValidatingSentry :PeopleEvacuated .
 
 :C3
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :PeopleCounted .
+    ibm:hasValidatingSentry :PeopleCounted .
 
 :C4 
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :PeopleComplete .
+    ibm:hasValidatingSentry :PeopleComplete .
 
 :C5 
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :PeopleIncomplete .
+    ibm:hasValidatingSentry :PeopleIncomplete .
 
 :C6
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :FireExtinguished .
+    ibm:hasValidatingSentry :FireExtinguished .
 
 # dummy milestone for stages with no explicit milestone
 :CX
     a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :AlwaysTrue .
+    ibm:hasValidatingSentry :AlwaysTrue .
 
 
 # Sentries

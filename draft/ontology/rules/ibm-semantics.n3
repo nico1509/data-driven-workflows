@@ -246,7 +246,7 @@
     ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?stageInstance ibm:isInstanceOf ?stage ;
+    ?stageInstance ibm:isInstanceOf ?stageModel ;
                     ibm:hasState ibm:active .
 
     # Antecedent
@@ -262,7 +262,7 @@
             ibm:hasState ibm:active ;
             ibm:inWorkflowInstance ?wfInstance ;
             # UI modifications
-            ibm:forStageModel ?stage .
+            ibm:forStageModel ?stageModel .
         } . 
 } .
 
