@@ -361,6 +361,10 @@
 
             function buildTask(stage, task){
 
+                var $stage = $('.stage[data-id="'+stage.id+'"]');
+
+                var $task = $('<div class="task"></div>').appendTo($stage);
+
             }
 
         </script>
