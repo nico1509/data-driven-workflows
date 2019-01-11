@@ -1,0 +1,12 @@
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sparql-results: <http://www.w3.org/2005/sparql-results#> .
+
+{ _:h http:mthd http_m:GET ; http:requestURI <http://mock-server.lan/mock> . } 
+
+{ ?temperature <http://example.org/value> ?val . ?val math:lessThan "50"^^xsd:double . } => { ?temperature <http://example.org/isHigh> "false"^^xsd:boolean . } .
+{ ?temperature <http://example.org/value> ?val . ?val math:notLessThan "50"^^xsd:double . } => { ?temperature <http://example.org/isHigh> "true"^^xsd:boolean . } .
