@@ -93,7 +93,7 @@
 
 :CountPeople
     a ibm:StageModel ;
-    ibm:hasGuard :G2 ;
+    ibm:hasGuard :G4 ;
     ibm:hasMilestoneModel :C3 ;
     ibm:hasTaskModel :CountPeopleTask .
 
