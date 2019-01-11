@@ -103,6 +103,22 @@ app.get('/mock/ui', function(req, res){
     });
 });
 
+app.get('/stages', function(req, res){
+    fs.readFile('stages.html', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    });
+});
+
+app.get('/stages/stages.json', function(req, res){
+    fs.readFile('stages.json', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.write(data);
+        res.end();
+    });
+});
+
 app.get('/test', function (req, res) {
 
     parser.getRessource(41, function(ressource){

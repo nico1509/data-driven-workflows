@@ -1,0 +1,222 @@
+{
+    "StartSearching": {
+        "id": "91",
+        "name": "StartSearching",
+        "state": "inactive",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "84",
+                "name": "C4",
+                "state": "inactive",
+                "stage": "StartSearching"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "79",
+                "name": "StartSearchingTask",
+                "state": "inactive",
+                "stage": "StartSearching"
+            }
+        ]
+    },
+    "CountPeople": {
+        "id": "71",
+        "name": "CountPeople",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "78",
+                "name": "C3",
+                "state": "inactive",
+                "stage": "CountPeople"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "88",
+                "name": "CountPeopleTask",
+                "state": "done",
+                "stage": "CountPeople"
+            }
+        ]
+    },
+    "CloseFireDoors": {
+        "id": "73",
+        "name": "CloseFireDoors",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "85",
+                "name": "CX",
+                "state": "inactive",
+                "stage": "CloseFireDoors"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "90",
+                "name": "CloseFireDoorsTask",
+                "state": "done",
+                "stage": "CloseFireDoors"
+            }
+        ]
+    },
+    "CallEmergency": {
+        "id": "77",
+        "name": "CallEmergency",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "95",
+                "name": "C1",
+                "state": "inactive",
+                "stage": "CallEmergency"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "101",
+                "name": "CallEmergencyTask",
+                "state": "done",
+                "stage": "CallEmergency"
+            }
+        ]
+    },
+    "StartEvacuatingPeople": {
+        "id": "74",
+        "name": "StartEvacuatingPeople",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "98",
+                "name": "C2",
+                "state": "inactive",
+                "stage": "StartEvacuatingPeople"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "97",
+                "name": "StartEvacuatingPeopleTask",
+                "state": "done",
+                "stage": "StartEvacuatingPeople"
+            }
+        ]
+    },
+    "StartExtinguishing": {
+        "id": "99",
+        "name": "StartExtinguishing",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "80",
+                "name": "C6",
+                "state": "inactive",
+                "stage": "StartExtinguishing"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "72",
+                "name": "StartExtinguishingTask",
+                "state": "done",
+                "stage": "StartExtinguishing"
+            }
+        ]
+    },
+    "CheckForCompleteness": {
+        "id": "100",
+        "name": "CheckForCompleteness",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "92",
+                "name": "C5",
+                "state": "inactive",
+                "stage": "CheckForCompleteness"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "82",
+                "name": "CheckForCompletenessTask",
+                "state": "done",
+                "stage": "CheckForCompleteness"
+            }
+        ]
+    },
+    "OpenChimney": {
+        "id": "81",
+        "name": "OpenChimney",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "75",
+                "name": "CX",
+                "state": "inactive",
+                "stage": "OpenChimney"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "96",
+                "name": "OpenChimneyTask",
+                "state": "done",
+                "stage": "OpenChimney"
+            }
+        ]
+    },
+    "ActivateSiren": {
+        "id": "87",
+        "name": "ActivateSiren",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "76",
+                "name": "CX",
+                "state": "inactive",
+                "stage": "ActivateSiren"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "93",
+                "name": "ActivateSirenTask",
+                "state": "done",
+                "stage": "ActivateSiren"
+            }
+        ]
+    },
+    "SayItsDone": {
+        "id": "86",
+        "name": "SayItsDone",
+        "state": "active",
+        "guards": null,
+        "milestones": [
+            {
+                "id": "94",
+                "name": "CX",
+                "state": "inactive",
+                "stage": "SayItsDone"
+            }
+        ],
+        "tasks": [
+            {
+                "id": "83",
+                "name": "SayItsDoneTask",
+                "state": "done",
+                "stage": "SayItsDone"
+            }
+        ]
+    }
+}
