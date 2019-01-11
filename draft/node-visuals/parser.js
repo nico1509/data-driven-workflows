@@ -88,7 +88,7 @@ exports.getRessource = function (ressource_id, callback) {
 
             console.log('TYPE: ' + type)
 
-            var attributes = ['hasState', 'isInstanceOf', 'hasStage'];
+            var attributes = ['hasState', 'isInstanceOf', 'forStageModel'];
             var values = {};
             
             var description_node = null;
@@ -133,3 +133,84 @@ exports.getRessource = function (ressource_id, callback) {
     });
 };
 
+
+exports.getStages = function(callback){
+
+
+    module.exports.getRessources(function(ressourceIds){
+
+        var stages = {};
+        var milestones = {};
+        var tasks = {};
+
+        var stagesParsed = function(){
+
+            for(var i in milestones)
+                stages[milestones[i].stage].milestones.push(milestones[i]);
+            
+            for(var i in tasks)
+                stages[tasks[i].stage].tasks.push(tasks[i]);
+
+            callback(stages);
+        };
+        
+        for(var i = 0; i < ressourceIds.length; i++){
+            var ressourceId = ressourceIds[i];
+            var ressources_fetch_cnt = 0;
+
+            //console.log('--id->' + ressourceId);
+
+            module.exports.getRessource(ressourceId, function(ressource){
+
+                console.log('PARSING: ' + ressource.id + ' - ' + ressource.type);
+
+                switch(ressource.type){
+                    case 'StageInstance':
+
+                        stages[ressource.values.isInstanceOf] = {
+                            id: ressource.id,
+                            name: ressource.values.isInstanceOf,
+                            state: ressource.values.hasState,
+                            guards: null,
+                            milestones: [],
+                            tasks: []
+                        };
+
+                    break;
+                    case 'MilestoneInstance':
+
+
+                        milestones[ressource.values.forStageModel] = {
+                            id: ressource.id,
+                            name: ressource.values.isInstanceOf,
+                            state: ressource.values.hasState,
+                            stage: ressource.values.forStageModel
+                        };
+
+                    break;
+                    case 'TaskInstance':
+
+                        tasks[ressource.values.forStageModel] = {
+                            id: ressource.id,
+                            name: ressource.values.isInstanceOf,
+                            state: ressource.values.hasState,
+                            stage: ressource.values.forStageModel
+                        };
+
+
+                    break;
+                    
+                }
+
+                if(++ressources_fetch_cnt == ressourceIds.length){
+                    console.log('DONE');
+                    stagesParsed();
+                }
+                
+            });
+
+        }
+    });
+
+
+}

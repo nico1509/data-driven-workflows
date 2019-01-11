@@ -1,16 +1,106 @@
 
 var express = require('express');
+var bodyParser = require("body-parser");
+
 var parser = require('./parser.js');
-
-
+var fs = require('fs');
 
 var app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+var milestoneValues = {
+    firealarmButtonPressed: false,
+    temperature: 100,
+    emergencyArrived: false,
+    peopleEvacuated: false,
+    peopleCounted: false,
+    peopleComplete: false,
+    peopleIncomplete: false,
+    fireExtinguished: false
+};
+
+var milestoneRDF = {
+    firealarmButtonPressed: {name: 'AlarmButton', predicate: 'isPressed'},
+    temperature: {name: 'Temperature', predicate: 'value'},
+    emergencyArrived: {name: 'Emergency', predicate: 'isArrived'},
+    peopleEvacuated: {name: 'People', predicate: 'evacuated'},
+    peopleCounted: {name: 'People', predicate: 'counted'},
+    peopleComplete: {name: 'People', predicate: 'complete'},
+    peopleIncomplete: {name: 'People', predicate: 'incomplete'},
+    fireExtinguished: {name: 'Fire', predicate: 'extinguished'}
+}
+
+app.get('/mock', function(req, res){
+
+    var name = 'Worker';
+    var predicate = 'didSomething';
+
+    var xmlStr = '<?xml version="1.0" encoding="utf-8" ?>';
+    xmlStr += '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns0="http://example.org/">';
+    
+
+    for(i in milestoneValues){
+
+        var dataType = /^\d+$/.test(milestoneValues[i]) ? 'integer' : 'boolean';
+        var name = milestoneRDF[i].name;
+        var predicate = milestoneRDF[i].predicate;
+
+        xmlStr += '<rdf:Description rdf:about="#'+name+'">';
+        xmlStr += '<ns0:'+predicate+' rdf:datatype="http://www.w3.org/2001/XMLSchema#'+dataType+'">';
+        
+        switch(dataType){
+            case 'boolean':
+                xmlStr += (milestoneValues[i] ? 'true' : 'false');
+            break;
+            case 'integer':
+                xmlStr += milestoneValues[i];
+            break;
+        }
+
+        xmlStr += '</ns0:'+predicate+'></rdf:Description>';
+
+    }
+
+    
+    xmlStr += '</rdf:RDF>';
+
+    res.send(xmlStr);
+});
+
+app.post('/mock',function(request,response){
+    //var query1=request.body.var1;
+    //var query2=request.body.var2;
+
+   
+    milestoneValues = JSON.parse(request.body.data);
+
+    console.log('MilestoneValues Updated!');
+});
+
+app.get('/mock/ui', function(req, res){
+    fs.readFile('mock.html', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    });
+});
 
 app.get('/test', function (req, res) {
 
-    parser.getRessource(15, function(ressource){
+    parser.getRessource(41, function(ressource){
 
         res.send(JSON.stringify(ressource));
+
+    });
+
+});
+
+app.get('/test2', function (req, res) {
+
+    parser.getRessources(function(ids){
+
+        res.send(JSON.stringify(ids));
 
     });
 
@@ -22,60 +112,14 @@ app.get('/', function (req, res) {
     
 
     /// test
-    parser.getRessources(function(ressourceIds){
-
-        var stages = {};
-        var stagesParsed = function(){
-            res.send(JSON.stringify(stages));
-        };
-        
-        for(var i = 0; i < ressourceIds.length; i++){
-            var ressourceId = ressourceIds[i];
-            var ressources_fetch_cnt = 0;
-
-            console.log('--id->' + ressourceId);
-
-            parser.getRessource(ressourceId, function(ressource){
-
-                console.log('PARSING: ' + ressource.id + ' - ' + ressource.type);
-
-                switch(ressource.type){
-                    case 'StageInstance':
-
-                        stages[ressource.id] = {
-                            id: ressource.id,
-                            name: ressource.values.isInstanceOf,
-                            state: ressource.values.hasState,
-                            guards: [],
-                            milestones: []
-                        };
-
-                    break;
-                    case 'MilestoneInstance':
-
-
-                    break;
-                    case 'TaskInstance':
-
-
-                    break;
-                    
-                }
-
-                if(++ressources_fetch_cnt == ressourceIds.length){
-                    console.log('DONE');
-                    stagesParsed();
-                }
-                
-            });
-
-        }
-    });
-
-    
+    parser.getStages(function(stages){
+        res.send(JSON.stringify(stages));
+    });   
 
 
 });
+
+
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
