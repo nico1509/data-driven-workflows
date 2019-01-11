@@ -1,0 +1,126 @@
+@prefix : <#> .
+@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+# Workflow-specific Prefixes
+@prefix addme: <#> .
+
+
+# Workflow
+:EvacuationWorkflowModel
+    a ibm:WorkflowModel ;
+    ibm:containsStageModel a ;
+
+
+# Guards
+:G1 
+    a ibm:Guard ;
+    ibm:hasCondition :FireAlarmButtonPressed .
+
+:G2
+    a ibm:Guard ;
+    ibm:hasCondition :HighTemperatureDetected .
+
+:G3 
+    a ibm:Guard ;
+    ibm:hasCondition :EmergencyArrived .
+
+:G4
+    a ibm:Guard ;
+    ibm:hasCondition :PeopleEvacuated .
+
+:G5
+    a ibm:Guard ;
+    ibm:hasCondition :PeopleCounted .
+
+:G6
+    a ibm:Guard ;
+    ibm:hasCondition :PeopleIncompleteFireExtinguished .
+
+
+# Stages
+:CallEmergency
+    a ibm:StageModel ;
+    ibm:hasGuard :G1 , :G2 ;
+    ibm:hasMilestoneModel :C1 .
+
+:StartEvacuatingPeople
+    a ibm:StageModel ;
+    ibm:hasGuard :G1 , :G2 ;
+    ibm:hasMilestoneModel :C2 .
+
+:ActivateSiren
+    a ibm:StageModel ;
+    ibm:hasGuard :G1 , :G2 ;
+    ibm:hasMilestoneModel :CX .
+
+:OpenChimney
+    a ibm:StageModel ;
+    ibm:hasGuard :G1 , :G2 ;
+    ibm:hasMilestoneModel :CX .
+
+:CloseFireDoors
+    a ibm:StageModel ;
+    ibm:hasGuard :G1 , :G2 ;
+    ibm:hasMilestoneModel :CX .
+
+:CountPeople
+    a ibm:StageModel ;
+    ibm:hasGuard :G2 ;
+    ibm:hasMilestoneModel :C3 .
+
+:StartExtinguishing
+    a ibm:StageModel ;
+    ibm:hasGuard :C1 ;
+    ibm:hasMilestoneModel :C6 .
+
+:CheckForCompleteness 
+    a ibm:StageModel ;
+    ibm:hasGuard :C3 ;
+    ibm:hasMilestoneModel :C4 , :C5 .
+
+:StartSearching
+    a ibm:StageModel ;
+    ibm:hasGuard :
+
+
+# Tasks
+:
+
+
+# Milestones
+:C1
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :EmergencyArrived .
+
+:C2
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :PeopleEvacuated .
+
+:C3
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :PeopleCounted .
+
+:C4 
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :PeopleComplete .
+
+:C5 
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :PeopleIncomplete .
+
+:C6
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :FireExtinguished .
+
+# dummy milestone for stages with no explicit milestone
+:CX
+    a ibm:MilestoneModel ;
+    ibm:hasAchievingSentry :AlwaysTrue .
