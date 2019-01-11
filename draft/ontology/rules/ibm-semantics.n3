@@ -98,7 +98,9 @@
         http:body { 
             this:MilestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?WfInstance . 
+            ibm:inWorkflowInstance ?WfInstance ;
+            # UI modification
+            ibm:forStageModel ?stage .
         } .
 } .
 
@@ -168,7 +170,7 @@
             ibm:hasState ibm:active ;
             ibm:inWorkflowInstance ?wfInstance .
         } . 
-}
+} .
 
 # Set executed task to done
 {
@@ -252,7 +254,9 @@
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:active ;
-            ibm:inWorkflowInstance ?wfInstance .
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modification
+            ibm:forStageModel ?stage .
         } . 
 } .
 
@@ -279,7 +283,9 @@
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
             ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?wfInstance .
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modification
+            ibm:forStageModel ?stageModel .
         } . 
 } .
 
