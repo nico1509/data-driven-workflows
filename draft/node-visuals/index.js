@@ -112,11 +112,15 @@ app.get('/stages', function(req, res){
 });
 
 app.get('/stages/stages.json', function(req, res){
-    fs.readFile('stages.json', function(err, data) {
+
+    //stages = {"test": "test"};
+
+    parser.getStages(function(stages){
+        //res.send(JSON.stringify(stages));
         res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(data);
+        res.write(JSON.stringify(stages));
         res.end();
-    });
+    });  
 });
 
 app.get('/test', function (req, res) {
@@ -139,6 +143,7 @@ app.get('/test2', function (req, res) {
 
 });
 
+/*
 app.get('/stages', function (req, res) {
     //res.send('Hello World!');
 
@@ -151,6 +156,7 @@ app.get('/stages', function (req, res) {
 
 
 });
+*/
 
 app.get('/', function (req, res) {
     res.send('Hello open World!');

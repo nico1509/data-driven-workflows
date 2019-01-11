@@ -303,10 +303,12 @@
 
             function loadStages(){
 
-                //$.get('stages/stages.json').done(function(jsonStr){
+                $('#workflow').html('');
+
+                $.get('/stages/stages.json').done(function(stages){
 
                     //var stages = JSON.parse(jsonStr);
-                    var stages = getTestStagesJSON();
+                    //var stages = getTestStagesJSON();
                     console.log('STAGES: ', stages);
 
                     for(var i in stages){
@@ -314,13 +316,21 @@
                         buildStage(stage);
                     }
 
-                //});
+                }).fail(function(){
+                    var stages = getTestStagesJSON();
+                    console.log('STAGES: ', stages);
+
+                    for(var i in stages){
+                        var stage = stages[i];
+                        buildStage(stage);
+                    }
+                });
 
 
             }
 
             $(document).ready(function(){
-                loadStages();
+                setInterval(loadStages, 2000);
             });
 
             function buildStage(stage){

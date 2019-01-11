@@ -59,6 +59,7 @@ exports.getRessources = function (callback) {
     })
     .catch((e) => {
         console.log(e);
+        callback([]);
     });
 
 }; 
