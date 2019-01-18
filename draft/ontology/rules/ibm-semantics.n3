@@ -200,7 +200,7 @@
             http:requestURI ?taskInstance ;
             http:body {
                 ?taskInstance ibm:isInstanceOf ?taskModel ;
-                ibm:hasState ibm:done ;
+                ibm:hasState ibm:triggered ;
                 ibm:inWorkflowInstance ?wfInstance ;
                 # UI modifications
                 ibm:forStageModel ?stageModel .

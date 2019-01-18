@@ -132,6 +132,6 @@
     a :State .
     # owl:disjointWith :inactive .
     
-:done
+:triggered
     a :State .
     # owl:disjointWith :inactive .
