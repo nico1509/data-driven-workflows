@@ -34,8 +34,8 @@
     ?WfInstance a ibm:WorkflowInstance ;
                 ibm:hasState ibm:uninitialized ;
                 ibm:isInstanceOf ?WfModel . 
-                ?WfModel ibm:containsStageModel ?stage .
-                ?stage ibm:hasTaskModel ?taskModel .
+                ?WfModel ibm:containsStageModel ?stageModel .
+                ?stageModel ibm:hasTaskModel ?taskModel .
 }
 =>
 {
@@ -51,15 +51,15 @@
     ?WfInstance a ibm:WorkflowInstance ;
                 ibm:hasState ibm:uninitialized ;
                 ibm:isInstanceOf ?WfModel . 
-                ?WfModel ibm:containsStageModel ?stage .
-                ?stage ibm:hasTaskModel ?taskModel .
+                ?WfModel ibm:containsStageModel ?stageModel .
+                ?stageModel ibm:hasTaskModel ?taskModel .
 }
 =>
 {
     _:h1 http:mthd http_m:POST ; 
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body {
-            this:StageInstance ibm:isInstanceOf ?stage ;
+            this:StageInstance ibm:isInstanceOf ?stageModel ;
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance . 
         } . 
@@ -69,8 +69,8 @@
     ?WfInstance a ibm:WorkflowInstance ;
                 ibm:hasState ibm:uninitialized ;
                 ibm:isInstanceOf ?WfModel . 
-                ?WfModel ibm:containsStageModel ?stage .
-                ?stage ibm:hasTaskModel ?taskModel .
+                ?WfModel ibm:containsStageModel ?stageModel .
+                ?stageModel ibm:hasTaskModel ?taskModel .
 }
 =>
 {
@@ -78,10 +78,10 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
             this:TaskInstance ibm:isInstanceOf ?taskModel ;
-            ibm:hasState ibm:inactive ;
+            #ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance ;
             # UI modifications
-            ibm:forStageModel ?stage .
+            ibm:forStageModel ?stageModel .
         } .
     
 } .
@@ -90,8 +90,8 @@
     ?WfInstance a ibm:WorkflowInstance ;
                 ibm:hasState ibm:uninitialized ;
                 ibm:isInstanceOf ?WfModel . 
-    ?WfModel ibm:containsStageModel ?stage .
-    ?stage ibm:hasMilestoneModel ?milestoneModel .
+    ?WfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
 }
 =>
 {
@@ -102,7 +102,7 @@
             ibm:hasState ibm:inactive ;
             ibm:inWorkflowInstance ?WfInstance ;
             # UI modifications
-            ibm:forStageModel ?stage .
+            ibm:forStageModel ?stageModel .
         } .
 } .
 

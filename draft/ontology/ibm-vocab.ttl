@@ -132,6 +132,22 @@
     a :State .
     # owl:disjointWith :inactive .
     
-:done
+:achieved
+    a :State .
+    # owl:disjointWith :active .
+
+:unachieved
     a :State .
     # owl:disjointWith :inactive .
+
+:triggered
+    a :State .
+
+:running
+    a :State .
+
+:inactive
+    a :State .
+
+:done 
+    a :State .
