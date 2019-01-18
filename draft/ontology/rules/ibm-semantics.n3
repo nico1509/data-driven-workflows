@@ -125,11 +125,11 @@
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
     ?stageInstance ibm:isInstanceOf ?stageModel ;
-                    ibm:hasState ibm:active .
+                    ibm:hasState ibm:triggered .
     ?stageModel ibm:hasTaskModel ?taskModel .
 
-    ?taskInstance ibm:isInstanceOf ?taskModel ;
-                    ibm:hasState ibm:active .
+    #?taskInstance ibm:isInstanceOf ?taskModel ;
+    #                ibm:hasState ibm:active .
 
     ?taskModel ibm:hasHttpRequest ?httpRequest .
 
@@ -152,47 +152,47 @@
     # Note 1:   We only have one stage so this should work reliably
     # Note 2:   Task is always done after one loop cycle because we don't lsiten for results
     #           This should ensure that we don't trigger stage repeatedly.
-{
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stageModel .
-    ?stageInstance ibm:isInstanceOf ?stageModel .
-    ?stageInstance ibm:hasState ibm:active .
+#{
+#    ?wfInstance ibm:isInstanceOf ?wfModel .
+#    ?wfModel ibm:containsStageModel ?stageModel .
+#    ?stageInstance ibm:isInstanceOf ?stageModel .
+#    ?stageInstance ibm:hasState ibm:active .#
 
-    ?stageModel ibm:hasTaskModel ?taskModel .
-    ?taskInstance ibm:isInstanceOf ?taskModel ;
-                    ibm:hasState ibm:inactive .
-}
-=>
-{
+#    ?stageModel ibm:hasTaskModel ?taskModel .
+#    ?taskInstance ibm:isInstanceOf ?taskModel ;
+#                    ibm:hasState ibm:inactive .
+#}
+#=>
+#{
     # Consequent
-    _:h http:mthd http_m:PUT ; 
-        http:requestURI ?taskInstance ; 
-        http:body {
-            ?taskInstance ibm:isInstanceOf ?taskModel ;
-            ibm:hasState ibm:active ;
-            ibm:inWorkflowInstance ?wfInstance ;
-            # UI modifications
-            ibm:forStageModel ?stageModel .
-        } . 
-} .
+#    _:h http:mthd http_m:PUT ; 
+#        http:requestURI ?taskInstance ; 
+#        http:body {
+#            ?taskInstance ibm:isInstanceOf ?taskModel ;
+#            ibm:hasState ibm:active ;
+#            ibm:inWorkflowInstance ?wfInstance ;
+#            # UI modifications
+#            ibm:forStageModel ?stageModel .
+#        } . 
+#} .
 
 # Set executed task to done
 {
     ?wfInstance ibm:isInstanceOf ?wfModel .
     ?wfModel ibm:containsStageModel ?stageModel .
     ?stageInstance ibm:isInstanceOf ?stageModel ;
-                    ibm:hasState ibm:active .
-    ?stageModel ibm:hasTaskModel ?taskModel .
+                    ibm:hasState ibm:triggered .
+    #?stageModel ibm:hasTaskModel ?taskModel .
 
-    ?taskInstance ibm:isInstanceOf ?taskModel ;
-                    ibm:hasState ibm:active .
+    #?taskInstance ibm:isInstanceOf ?taskModel ;
+    #                ibm:hasState ibm:active .
 
-    ?taskModel ibm:hasHttpRequest ?httpRequest .
+    #?taskModel ibm:hasHttpRequest ?httpRequest .
 
-    ?httpRequest a http:Request ;
-        http:mthd ?httpMthd ;
-        http:requestURI ?httpUri ;
-        http:body ?httpBody .
+    #?httpRequest a http:Request ;
+    #    http:mthd ?httpMthd ;
+    #    http:requestURI ?httpUri ;
+    #    http:body ?httpBody .
 } 
 => 
 {
