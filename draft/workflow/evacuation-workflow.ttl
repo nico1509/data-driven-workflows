@@ -128,7 +128,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=CallEmergencyTask"^^xsd:string
+        http:body "value=Oh my God a fire! I will now call emergency, start evacuating people, activate sirens, open the chimney and close the fire doors"^^xsd:string
     ] .
 
 :StartEvacuatingPeopleTask 
@@ -136,8 +136,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=StartEvacuatingPeopleTask"^^xsd:string
+        http:requestURI <http://example.org/dummy> ;
+        http:body "value="^^xsd:string
     ] .
 
 :ActivateSirenTask 
@@ -145,8 +145,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=ActivateSirenTask"^^xsd:string
+        http:requestURI <http://example.org/dummy> ;
+        http:body "value="^^xsd:string
     ] .
 
 :OpenChimneyTask 
@@ -154,8 +154,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=OpenChimneyTask"^^xsd:string
+        http:requestURI <http://example.org/dummy> ;
+        http:body "value="^^xsd:string
     ] .
 
 :CloseFireDoorsTask 
@@ -163,8 +163,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=CloseFireDoorsTask"^^xsd:string
+        http:requestURI <http://example.org/dummy> ;
+        http:body "value="^^xsd:string
     ] .
 
 :CountPeopleTask 
@@ -173,7 +173,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=CountPeopleTask"^^xsd:string
+        http:body "value=Is everyone evacuated? Let's count the people!"^^xsd:string
     ] .
 
 :StartExtinguishingTask 
@@ -182,7 +182,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=StartExtinguishingTask"^^xsd:string
+        http:body "value=Emergency is here, they will now start extinguishing the fire!"^^xsd:string
     ] .
 
 :CheckForCompletenessTask 
@@ -191,7 +191,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=CheckForCompletenessTask"^^xsd:string
+        http:body "value=People counted! Are they complete?"^^xsd:string
     ] .
 
 :StartSearchingTask 
@@ -200,7 +200,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=StartSearchingTask"^^xsd:string
+        http:body "value=Oh jeez. Some people are missing! Let's look for them!"^^xsd:string
     ] .
 
 :SayItsDoneTask 
@@ -209,7 +209,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=SayItsDoneTask"^^xsd:string
+        http:body "value=Great! Everyone is now safe!"^^xsd:string
     ] .
 
 
