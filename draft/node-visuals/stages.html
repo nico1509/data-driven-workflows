@@ -305,18 +305,23 @@
 
                 $('#workflow').html('');
 
-                $.get('/stages/stages.json').done(function(stages){
+                if(false){
+                    $.get('/stages/stages.json').done(function(stages){
 
+                        var stages = JSON.parse(jsonStr);
+                        //var stages = getTestStagesJSON();
+                        console.log('STAGES: ', stages);
+
+                        for(var i in stages){
+                            var stage = stages[i];
+                            buildStage(stage);
+                        }
+
+                    }).fail(function(){
+                        console.log('FAIL :(');
+                    });
+                }else{
                     //var stages = JSON.parse(jsonStr);
-                    //var stages = getTestStagesJSON();
-                    console.log('STAGES: ', stages);
-
-                    for(var i in stages){
-                        var stage = stages[i];
-                        buildStage(stage);
-                    }
-
-                }).fail(function(){
                     var stages = getTestStagesJSON();
                     console.log('STAGES: ', stages);
 
@@ -324,8 +329,7 @@
                         var stage = stages[i];
                         buildStage(stage);
                     }
-                });
-
+                }
 
             }
 

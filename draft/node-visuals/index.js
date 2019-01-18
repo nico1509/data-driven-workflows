@@ -59,7 +59,6 @@ app.get('/mock', function(req, res){
         }
 
         xmlStr += '</ns0:'+predicate+'></rdf:Description>';
-
     }
 
     
@@ -140,6 +139,13 @@ app.get('/test2', function (req, res) {
         res.send(JSON.stringify(ids));
 
     });
+
+});
+
+app.get('/iphs', function(req, res){
+
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    
 
 });
 
