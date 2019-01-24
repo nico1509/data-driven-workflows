@@ -131,10 +131,10 @@
     a :State .
 
 :done 
-    a :Stage .
+    a :State .
 
 :inactive
-    a :Stage .
+    a :State .
     
 :active
     a :State .
