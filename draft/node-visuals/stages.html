@@ -26,7 +26,7 @@
                 position: relative;
                 border-radius: 20px;
                 min-height: 100px;
-                width: 200px;
+                width: 220px;
 
                 transition: all 200ms ease;
             }
@@ -47,10 +47,21 @@
                 padding: 5px 0 5px 18px;
             }
 
+            .stage > .status{
+                margin: 30px 20px 5px 10px;
+            }
+
+            .stage > .status > span{
+                background: #222;
+                color: #fff;
+                padding: 2px 4px;
+                border-radius: 3px;
+            }
+
             .stage > .milestones{
                 /* background: lime; */
                 position: absolute;
-                right: -15px;
+                right: -18px;
                 top: 30px;
             }
 
@@ -66,9 +77,17 @@
                 line-height: 20px;
             }
 
-            stage > .milestones > .milestone[data-active="true"]{
+            .stage > .milestones > .milestone[data-active="true"]{
                 background: #ecffe7;
                 border: 1px solid #388c27;
+            }
+
+            .stage > .tasks{
+                margin: 20px 10px 5px 10px;
+            }
+
+            .stage > .tasks > .task{
+
             }
         </style>
 
@@ -87,7 +106,7 @@
                             {
                                 "id": "84",
                                 "name": "C4",
-                                "state": "inactive",
+                                "state": "active",
                                 "stage": "StartSearching"
                             }
                         ],
@@ -347,7 +366,7 @@
                 }else{
                     //var stages = JSON.parse(jsonStr);
                     var stages = getTestStagesJSON();
-                    console.log('STAGES: ', stages);
+                    console.log('STAGES (test): ', stages);
 
                     for(var i in stages){
                         var stage = stages[i];
@@ -357,7 +376,8 @@
             }
 
             $(document).ready(function(){
-                setInterval(loadStages, 2000);
+               // setInterval(loadStages, 2000);
+                loadStages();
             });
 
             function buildStage(stage){
@@ -368,7 +388,7 @@
                 var $stage = $('<div class="stage"></div>')
                     .attr('data-name', stage.name)
                     .attr('data-id', stage.id)
-                    .attr('data-active', stage.state == 'active' ? 'true' : 'false')
+                    .attr('data-active', ['triggered', 'running'].indexOf(stage.state) > -1 ? 'true' : 'false')
                     .css({order: pos})
                     .appendTo($wf);
 
@@ -376,13 +396,24 @@
 
                 $('<p></p>').text(stage.name).appendTo($stage);
 
+                $('<div class="status"></div>')
+                    .append($('<span></span>').text(stage.state))
+                    .appendTo($stage);
+
+                /// milestones
                 $('<div class="milestones"></div>').appendTo($stage);
 
                 for(var i in stage.milestones){
                     var milestone = stage.milestones[i];
                     buildMilestone(stage, milestone);
-                    buildMilestone(stage, milestone);
-                    buildMilestone(stage, milestone);
+                }
+
+                /// tasks
+                $('<div class="tasks"></div>').appendTo($stage);
+
+                for(var i in stage.tasks){
+                    var task = stage.tasks[i];
+                    buildTask(stage, task);
                 }
             }
 
@@ -394,7 +425,7 @@
 
                 $('<div class="milestone"></div>')
                     .text(milestone.name)
-                    .attr('data-active', milestone.state == 'active' ? 'true' : 'false')
+                    .attr('data-active', milestone.state == 'archived' ? 'true' : 'false')
                     .appendTo($milestones);
 
             }
@@ -402,8 +433,11 @@
             function buildTask(stage, task){
 
                 var $stage = $('.stage[data-id="'+stage.id+'"]');
+                var $tasks = $stage.children('.tasks');
 
-                var $task = $('<div class="task"></div>').appendTo($stage);
+                var $task = $('<div class="task"></div>')
+                    .text(task.name + ' ' + (stage.state == 'done' ? '[x]' : '[o]'))
+                    .appendTo($tasks);
 
             }
 
