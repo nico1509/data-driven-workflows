@@ -98,7 +98,7 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
             this:MilestoneInstance ibm:isInstanceOf ?milestoneModel ;
-            ibm:hasState ibm:inactive ;
+            ibm:hasState ibm:unachieved ;
             ibm:inWorkflowInstance ?WfInstance ;
             # UI modifications
             ibm:forStageModel ?stage .
@@ -245,7 +245,7 @@
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
-            ibm:hasState ibm:active ;
+            ibm:hasState ibm:achieved ;
             ibm:inWorkflowInstance ?wfInstance ;
             # UI modifications
             ibm:forStageModel ?stageModel .
@@ -262,7 +262,7 @@
     ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?milestoneInstance ibm:hasState ibm:active .
+    ?milestoneInstance ibm:hasState ibm:achieved .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
@@ -274,7 +274,7 @@
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
-            ibm:hasState ibm:inactive ;
+            ibm:hasState ibm:unachieved ;
             ibm:inWorkflowInstance ?wfInstance ;
             # UI modifications
             ibm:forStageModel ?stageModel .
@@ -291,7 +291,7 @@
     ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?milestoneInstance ibm:hasState ibm:active .
+    ?milestoneInstance ibm:hasState ibm:achieved .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
@@ -352,7 +352,7 @@
                     ibm:hasState ibm:running .
 
     # Antecedent
-    ?milestoneInstance ibm:hasState ibm:active .
+    ?milestoneInstance ibm:hasState ibm:achieved .
 }
 =>
 {

@@ -138,3 +138,9 @@
     
 :active
     a :State .
+
+:achieved
+    a :State .
+
+:unachieved
+    a :State .
