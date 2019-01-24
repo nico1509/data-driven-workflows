@@ -301,6 +301,29 @@
                 };
             }
 
+            function resetStagePos(){
+                localStorage.removeItem('stagePos');
+            }
+
+            function getStagePos(stage){
+                var name = stage.name;
+
+                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '[]');
+
+                return stagePosArr[name];
+            }
+
+            function setStagePos(stage, pos){
+                var name = stage.name;
+
+                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '[]');
+
+                if(stagePosArr[name] === undefined)
+                    stagePosArr[name] = pos;   
+
+                localStorage.setItem('stagePos', JSON.stringify(stagePosArr));
+            }
+
             function loadStages(){
 
                 $('#workflow').html('');
@@ -314,6 +337,7 @@
 
                         for(var i in stages){
                             var stage = stages[i];
+                            setStagePos(stage, i);
                             buildStage(stage);
                         }
 
@@ -340,10 +364,13 @@
             function buildStage(stage){
                 var $wf = $('#workflow');
 
+                var pos = getStagePos(stage);
+
                 var $stage = $('<div class="stage"></div>')
                     .attr('data-name', stage.name)
                     .attr('data-id', stage.id)
                     .attr('data-active', stage.state == 'active' ? 'true' : 'false')
+                    .css({order: pos})
                     .appendTo($wf);
 
 

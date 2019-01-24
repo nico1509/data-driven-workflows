@@ -1,0 +1,27 @@
+
+
+---* petition einreichen --- antwort von politiker erhalten --- petition einreichen ---
+												 --- keine ANtwort erhalten (->*)
+                        
+                        
+                        
+Stage S
+- Guard G
+
+
+Stage S', S'', S'''
+- Milestone G
+
+
+____GUARD/MILESTONE____
+ S'   ->
+ S''  -> -----> S
+ S''' ->
+ 
+ _____BAUM_____
+ S'   -> -----> S
+ S''  -> -----> S
+ S''' -> -----> S
+ 
+ ==> Redundanz 2
+ 
