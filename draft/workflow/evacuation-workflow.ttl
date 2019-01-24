@@ -216,36 +216,44 @@
 # Milestones
 :C1
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :EmergencyArrived .
+    ibm:hasValidatingSentry :EmergencyArrived ;
+    ibm:hasInvalidatingSentry :Reset .
 
 :C2
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleEvacuated .
+    ibm:hasValidatingSentry :PeopleEvacuated ;
+    ibm:hasInvalidatingSentry :Reset .
 
 :C3
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleCounted .
+    ibm:hasValidatingSentry :PeopleCounted ;
+    ibm:hasInvalidatingSentry :Reset .
 
 :C4a 
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleComplete .
+    ibm:hasValidatingSentry :PeopleComplete ;
+    ibm:hasInvalidatingSentry :Reset .
 
 :C4b 
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleComplete .
+    ibm:hasValidatingSentry :PeopleComplete ;
+    ibm:hasInvalidatingSentry :Reset .
 
 :C5 
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleIncomplete .
+    ibm:hasValidatingSentry :PeopleIncomplete ;
+    ibm:hasInvalidatingSentry :Reset .
 
 :C6
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :FireExtinguished .
+    ibm:hasValidatingSentry :FireExtinguished ;
+    ibm:hasInvalidatingSentry :Reset .
 
 # dummy milestone for stages with no explicit milestone
 :CX
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :AlwaysTrue .
+    ibm:hasValidatingSentry :AlwaysTrue ;
+    ibm:hasInvalidatingSentry :Reset .
 
 
 # Sentries
@@ -260,7 +268,7 @@
     sp:where ([
         sp:subject mock:AlarmButton ;
         sp:predicate <http://example.org/isPressed> ;
-        sp:predicate "true"^^xsd:boolean
+        sp:object "true"^^xsd:boolean
     ]) .
 
 :HighTemperatureDetected
@@ -341,5 +349,17 @@
         sp:subject mock:Fire ;
         sp:predicate <http://example.org/extinguished> ;
         sp:object "true"^^xsd:boolean
+    ]) .
+
+:Reset 
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:AlarmButton ;
+        sp:predicate <http://example.org/isPressed> ;
+        sp:object "false"^^xsd:boolean
+    ] [
+        sp:subject mock:Temperature ;
+        sp:predicate <http://example.org/isHigh> ;
+        sp:object "false"^^xsd:boolean 
     ]) .
 
