@@ -57,7 +57,7 @@
 
 :G7
     a ibm:Guard ;
-    ibm:hasCondition :PeopleComplete .
+    ibm:hasCondition :PeopleCompleteFireExtinguished .
 
 
 # Stages
@@ -106,13 +106,13 @@
 :CheckForCompleteness 
     a ibm:StageModel ;
     ibm:hasGuard :G5 ;
-    ibm:hasMilestoneModel :C4 , :C5 ;
+    ibm:hasMilestoneModel :C5 , :C4a ;
     ibm:hasTaskModel :CheckForCompletenessTask .
 
 :StartSearching
     a ibm:StageModel ;
     ibm:hasGuard :G6 ;
-    ibm:hasMilestoneModel :C4 ;
+    ibm:hasMilestoneModel :C4b ;
     ibm:hasTaskModel :StartSearchingTask .
 
 :SayItsDone
@@ -226,7 +226,11 @@
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleCounted .
 
-:C4 
+:C4a 
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :PeopleComplete .
+
+:C4b 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleComplete .
 
@@ -309,6 +313,18 @@
         sp:subject mock:People ;
         sp:predicate <http://example.org/complete> ;
         sp:object "true"^^xsd:boolean 
+    ]) .
+
+:PeopleCompleteFireExtinguished
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "true"^^xsd:boolean 
+    ] [
+        sp:subject mock:Fire ;
+        sp:predicate <http://example.org/extinguished> ;
+        sp:object "true"^^xsd:boolean
     ]) .
 
 :PeopleIncomplete
