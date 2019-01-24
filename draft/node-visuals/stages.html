@@ -100,9 +100,17 @@
 
         <!-- scripts -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/regular.css" integrity="sha384-aubIA90W7NxJ+Ly4QHAqo1JBSwQ0jejV75iHhj59KRwVjLVHjuhS3LkDAoa/ltO4" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
+
         <script>
 
             var stagePosArr = {};
+            var stop = false;
+
+            $.ajaxSetup({timeout: 5 * 1000}); //in milliseconds
 
             function getTestStagesJSON(){
                 return {
@@ -363,13 +371,34 @@
 
             function loadStages(){
 
+                if(stop) return;
+
                 $('#uistate').text('loading...');
+                //$('#uistate').html('<i class="fa fa-circle-notch fa-spin"></i>');
 
                 if(true){
                     $.get('/stages/stages.json').done(function(stages){
 
                         $('#uistate').text('rendering...');
                         $('#workflow').html('');
+                        $('#workflow').css({opacity: 1});
+
+                        var stagesSort = [];
+
+                        for(var i in stages)
+                            stagesSort.push(stages[i]);
+
+                        stagesSort.sort(function(st1, st2){
+                            if (st1.name < st2.name) {
+                                return -1;
+                            }
+                            if (st1.name > st2.name) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+
+                        stages = stagesSort;
 
                         //var stages = JSON.parse(jsonStr);
                         //var stages = getTestStagesJSON();
@@ -389,6 +418,7 @@
                     }).fail(function(){
                         console.log('FAIL :(');
                         $('#uistate').text('error.');
+                        $('#workflow').css({opacity: 0.2});
                         setTimeout(loadStages, 1000);
                     });
                 }else{
@@ -431,9 +461,19 @@
 
                 /// milestones
                 $('<div class="milestones"></div>').appendTo($stage);
+                var milestones = stage.milestones;
+                milestones.sort(function(ms1, ms2) {
+                    if (ms1.id < ms2.id) {
+                        return -1;
+                    }
+                    if (ms1.id > ms2.id) {
+                        return 1;
+                    }
+                    return 0;
+                    });
 
-                for(var i in stage.milestones){
-                    var milestone = stage.milestones[i];
+                for(var i in milestones){
+                    var milestone = milestones[i];
                     buildMilestone(stage, milestone);
                 }
 
@@ -450,13 +490,17 @@
 
             function buildMilestone(stage, milestone){
 
+                /// do not render the always true milestone
+                if(milestone.name == 'CX')
+                    return;
+
                 var $stage = $('.stage[data-id="'+stage.id+'"]');
                 var $milestones = $stage.children('.milestones').eq(0);
                
 
                 $('<div class="milestone"></div>')
                     .text(milestone.name)
-                    .attr('data-active', milestone.state == 'archived' ? 'true' : 'false')
+                    .attr('data-active', milestone.state == 'achieved' ? 'true' : 'false')
                     .appendTo($milestones);
 
             }
@@ -467,7 +511,8 @@
                 var $tasks = $stage.children('.tasks');
 
                 var $task = $('<div class="task"></div>')
-                    .text(task.name + ' ' + (stage.state == 'done' ? '[x]' : '[o]'))
+                    //.html(task.name + ' ' + (stage.state == 'done' ? '<i class="fa fa-check"></i>' : ''))
+                    .html((stage.state == 'done' ? '<i class="fa fa-check-square"></i>' : '<i class="far fa-square"></i>') + ' ' + task.name)
                     .appendTo($tasks);
 
             }

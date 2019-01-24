@@ -124,7 +124,7 @@ app.get('/stages/stages.json', function(req, res){
 
 app.get('/test', function (req, res) {
 
-    parser.getRessource(41, function(ressource){
+    parser.getRessource(18, function(ressource){
 
         res.send(JSON.stringify(ressource));
 
@@ -132,14 +132,17 @@ app.get('/test', function (req, res) {
 
 });
 
+
 app.get('/test2', function (req, res) {
-
     parser.getRessources(function(ids){
-
         res.send(JSON.stringify(ids));
-
     });
+});
 
+app.get('/test3', function (req, res) {
+    parser.getStages(function(stages){
+        res.send(JSON.stringify(stages));
+    });  
 });
 
 app.get('/iphs', function(req, res){

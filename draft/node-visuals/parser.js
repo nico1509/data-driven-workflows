@@ -87,7 +87,7 @@ exports.getRessource = function (ressource_id, callback) {
             var about = description[0]['$']['rdf:about'];
             var type = about.split("#")[1];
 
-            console.log('TYPE: ' + type)
+            //console.log('TYPE: ' + type)
 
             var attributes = ['hasState', 'isInstanceOf', 'forStageModel'];
             var values = {};
@@ -141,15 +141,18 @@ exports.getStages = function(callback){
     module.exports.getRessources(function(ressourceIds){
 
         var stages = {};
-        var milestones = {};
-        var tasks = {};
+        var milestones = [];
+        var tasks = [];
 
         var stagesParsed = function(){
 
-            for(var i in milestones)
+            console.log('_____ stargeParsed_____');
+            for(var i in milestones){
                  stages[milestones[i].stage].milestones.push(milestones[i]);
-            
-            
+                console.log(milestones[i].name + ' [' + milestones[i].id + '] ---> ' + milestones[i].stage);
+            }
+            console.log('_______________________');
+
             for(var i in tasks)
                 stages[tasks[i].stage].tasks.push(tasks[i]);
 
@@ -164,7 +167,7 @@ exports.getStages = function(callback){
 
             module.exports.getRessource(ressourceId, function(ressource){
 
-                console.log('PARSING: ' + ressource.id + ' - ' + ressource.type);
+                console.log('PARSING: ' + ressource.values.isInstanceOf + ' [' + ressource.id + '] a ' + ressource.type);
 
                 switch(ressource.type){
                     case 'StageInstance':
@@ -181,23 +184,23 @@ exports.getStages = function(callback){
                     break;
                     case 'MilestoneInstance':
 
-
-                        milestones[ressource.values.forStageModel] = {
+                        milestones.push({
                             id: ressource.id,
                             name: ressource.values.isInstanceOf,
                             state: ressource.values.hasState,
                             stage: ressource.values.forStageModel
-                        };
+                        });
 
                     break;
                     case 'TaskInstance':
 
-                        tasks[ressource.values.forStageModel] = {
+                       // tasks[ressource.values.forStageModel] = {
+                        tasks.push({
                             id: ressource.id,
                             name: ressource.values.isInstanceOf,
                             state: ressource.values.hasState,
                             stage: ressource.values.forStageModel
-                        };
+                        });
 
 
                     break;
