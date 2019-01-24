@@ -349,7 +349,7 @@
 
     # Prerequisite
     ?stageInstance ibm:isInstanceOf ?stageModel ;
-                    ibm:hasState ibm:active .
+                    ibm:hasState ibm:running .
 
     # Antecedent
     ?milestoneInstance ibm:hasState ibm:active .
