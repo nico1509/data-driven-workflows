@@ -41,6 +41,18 @@
             #cmdInstantiate{
                 color: orange;
             }
+
+            #ldbbchost{
+                background: #efefef;
+                padding: 5px 10px;
+                margin: 10px;
+                width: 260px;
+                border: 1px solid #b6b6b6;
+                border-radius: 3px;
+                color: #222;
+                font-family: arial;
+                font-size: 13px;
+            }
         
         </style>
 
@@ -48,13 +60,13 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script>
 
-            var ldpcHost = "129.13.28.47:8080";
+            var ldpcHost = "xxx.xxx.xxx.xxx:xxxx";
             var ldpcPath = "/ldbbc/";
             var ldpc = "http://" + ldpcHost + ldpcPath;
 
             var milestoneValues = {
                 firealarmButtonPressed: false,
-                temperature: 100,
+                temperature: 45,
                 emergencyArrived: false,
                 peopleEvacuated: false,
                 peopleCounted: false,
@@ -64,6 +76,8 @@
             };
 
             $(document).ready(function(){
+
+                $('#ldbbchost').text(ldpc);
 
                 $('button[data-name]').on('click', function(){
                     var $button = $(this);
@@ -168,10 +182,12 @@
     </head>
     <body>
 
+        <p id="ldbbchost"></p>
+
         <button id="cmdInstantiate" onclick="instantiate();">Instantiate</button><br/><br/>
 
         <button data-name="firealarmButtonPressed"></button><br/>
-        <input type="number" data-name="temperature" /><br/>
+        <input type="number" data-name="temperature" value="45"/><br/>
         <button data-name="emergencyArrived"></button><br/>
         <button data-name="peopleEvacuated"></button><br/>
         <button data-name="peopleCounted"></button><br/>
