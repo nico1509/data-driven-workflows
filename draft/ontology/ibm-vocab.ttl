@@ -124,14 +124,17 @@
 :initialized
     a :State .
 
-:inactive
-    a :State .
-    # owl:disjointWith :active .
-
-:active
-    a :State .
-    # owl:disjointWith :inactive .
-    
 :triggered
     a :State .
-    # owl:disjointWith :inactive .
+
+:running
+    a :State .
+
+:done 
+    a :Stage .
+
+:inactive
+    a :Stage .
+    
+:active
+    a :State .
