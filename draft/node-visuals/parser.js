@@ -1,6 +1,6 @@
 var xmlParser = require('xml2js').parseString;
 
-var rdfhost_ip = "129.13.3.67";
+var rdfhost_ip = "129.13.28.47";
 var rdfhost_port = "8080";
 
 exports.getRessources = function (callback) {

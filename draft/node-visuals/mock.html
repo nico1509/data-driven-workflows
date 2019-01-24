@@ -47,6 +47,11 @@
         <!-- scripts -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script>
+
+            var ldpcHost = "129.13.28.47:8080";
+            var ldpcPath = "/ldbbc/";
+            var ldpc = "http://" + ldpcHost + ldpcPath;
+
             var milestoneValues = {
                 firealarmButtonPressed: false,
                 temperature: 100,
@@ -106,10 +111,6 @@
 
             function instantiate(){
 
-                var ldpcHost = "129.13.3.67:8080"
-                var ldpcPath = "/ldbbc/"
-                var ldpc = "http://" + ldpcHost + ldpcPath;
-
                 var WFModel = 'EvacuationWorkflowModel';
                 var WFTurtle = 'evacuation-workflow.ttl';
 
@@ -148,6 +149,21 @@
                 });
                 
             }
+
+            function startLDBPC(){
+
+
+                $.ajax({
+                    type: "POST",
+                    url: ldpc,
+                    contentType: "application/ld+json",
+                    data: JSON.stringify(jsonld, null, 2),
+                    processData: false,
+                    error: () => { window.alert("request failed") },
+                    success: () => { window.alert("successfully submitted a workflow instance") }
+                });
+            }
+
         </script>
     </head>
     <body>

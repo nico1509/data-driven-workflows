@@ -12,6 +12,13 @@
                 font-size: 14px;
             }
 
+            #uistate{
+                background: #ededed;
+                margin: 0 0 0px 0;
+                padding: 2px 10px;
+                border-radius: 3px;
+            }
+
             #workflow{
                 display: flex;
                 flex-direction: row;
@@ -94,6 +101,8 @@
         <!-- scripts -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script>
+
+            var stagePosArr = {};
 
             function getTestStagesJSON(){
                 return {
@@ -325,43 +334,62 @@
             }
 
             function getStagePos(stage){
-                var name = stage.name;
+                return stagePosArr[stage.name];
 
-                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '[]');
+                /*
+                var name = stage.id;
+
+                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '{}');
 
                 return stagePosArr[name];
+                */
             }
 
             function setStagePos(stage, pos){
-                var name = stage.name;
+                if(stagePosArr[stage.name] === undefined)
+                    stagePosArr[stage.name] = pos;   
 
-                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '[]');
+                /*
+                var name = stage.id;
+
+                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '{}');
 
                 if(stagePosArr[name] === undefined)
                     stagePosArr[name] = pos;   
 
                 localStorage.setItem('stagePos', JSON.stringify(stagePosArr));
+                */
             }
 
             function loadStages(){
 
-                $('#workflow').html('');
+                $('#uistate').text('loading...');
 
-                if(false){
+                if(true){
                     $.get('/stages/stages.json').done(function(stages){
 
-                        var stages = JSON.parse(jsonStr);
+                        $('#uistate').text('rendering...');
+                        $('#workflow').html('');
+
+                        //var stages = JSON.parse(jsonStr);
                         //var stages = getTestStagesJSON();
                         console.log('STAGES: ', stages);
 
+                        var pos = 0;
                         for(var i in stages){
                             var stage = stages[i];
-                            setStagePos(stage, i);
+                            setStagePos(stage, ++pos);
                             buildStage(stage);
                         }
 
+                        $('#uistate').text('done.');
+
+                        setTimeout(loadStages, 1000);
+
                     }).fail(function(){
                         console.log('FAIL :(');
+                        $('#uistate').text('error.');
+                        setTimeout(loadStages, 1000);
                     });
                 }else{
                     //var stages = JSON.parse(jsonStr);
@@ -376,8 +404,9 @@
             }
 
             $(document).ready(function(){
-               // setInterval(loadStages, 2000);
                 loadStages();
+                //setInterval(loadStages, 3000);
+                //loadStages();
             });
 
             function buildStage(stage){
@@ -415,6 +444,8 @@
                     var task = stage.tasks[i];
                     buildTask(stage, task);
                 }
+
+                //setTimeout(loadStages, 500);
             }
 
             function buildMilestone(stage, milestone){
@@ -445,6 +476,7 @@
     </head>
     <body>
 
+        <div id="uistate"></div>
         <div id="workflow"></div>
        
     </body>
