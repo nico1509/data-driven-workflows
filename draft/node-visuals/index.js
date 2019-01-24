@@ -9,6 +9,9 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+var rdfhost_ip = "xxx.xxx.xxx.xxx";
+var rdfhost_port = "8080";
+
 var milestoneValues = {
     firealarmButtonPressed: false,
     temperature: 25,
@@ -95,7 +98,10 @@ app.get('/mock/reset', function(req, res){
 });
 
 app.get('/mock/ui', function(req, res){
-    fs.readFile('mock.html', function(err, data) {
+    fs.readFile('mock.html', "utf8", function(err, data) {
+
+        data = data.replace('xxx.xxx.xxx.xxx:xxxx', rdfhost_ip + ':' + rdfhost_port);
+
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
         res.end();
@@ -147,9 +153,19 @@ app.get('/test3', function (req, res) {
 
 app.get('/iphs', function(req, res){
 
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    
+    var ip = req.connection.remoteAddress;
+    ip = ip.replace('::ffff:', '');
 
+    console.log('iphs: ldbbc running on: ' + ip);
+
+    /// set here 
+    rdfhost_ip = ip;
+    rdfhost_port = 8080;
+
+    /// set in parser
+    parser.setIP(ip, rdfhost_port);
+    
+    res.end();
 });
 
 /*
@@ -168,7 +184,12 @@ app.get('/stages', function (req, res) {
 */
 
 app.get('/', function (req, res) {
-    res.send('Hello open World!');
+    var self_ip = require('ip');
+    var self_host = self_ip.address()+':3000';
+
+    var ldbbc_host = rdfhost_ip + ':' + rdfhost_port;
+
+    res.send('<style type="text/css">body{padding:20px;font-family: Arial;}a{display:inline-block;margin: 3px 0;color:#08729c;}</style><p>Running on '+self_host+'.</p>LDBBC connected on '+ldbbc_host+'. <a href="/iphs">iphs</a><br/><h2>Mock Server</h2><a href="/mock">RDF XML</a><br/><a href="/mock/ui">UI</a><br/><h2>Visualization Server</h2><a href="/stages">UI</a><br/><a href="/stages/stages.json">parsed stages json</a><br/>');
 });
 
 app.listen(3000, function () {

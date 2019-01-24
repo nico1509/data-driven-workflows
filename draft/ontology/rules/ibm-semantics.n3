@@ -253,6 +253,7 @@
 } .
 
 # PAC-3
+# reset milestone
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
@@ -281,6 +282,7 @@
         } . 
 } .
 
+# reset stage
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .

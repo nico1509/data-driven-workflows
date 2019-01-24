@@ -3,6 +3,11 @@ var xmlParser = require('xml2js').parseString;
 var rdfhost_ip = "129.13.28.47";
 var rdfhost_port = "8080";
 
+exports.setIP = function(ip, port){
+    rdfhost_ip = ip;
+    rdfhost_port = port;
+}
+
 exports.getRessources = function (callback) {
     
     var url = 'http://' + rdfhost_ip + ':' + rdfhost_port + '/ldbbc/';
