@@ -15,4 +15,4 @@
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
 
-<#it> a :WorkflowInstance ; :isInstanceOf <http://tok450s.lan:8080/ldbbc/ibm-workflow.ttl#EvacuationWorkflowModel> ; :hasState :uninitialized .
+<#it> a :WorkflowInstance ; :isInstanceOf <http://tok450s.lan:8080/ldbbc/evacuation-workflow.ttl#EvacuationWorkflowModel> ; :hasState :uninitialized .

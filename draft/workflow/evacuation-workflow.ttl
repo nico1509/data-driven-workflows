@@ -12,6 +12,13 @@
 
 # Workflow-specific Prefixes
 @prefix mock: <http://mock-server.lan:3000/mock#> .
+@prefix rfid-bright: <http://t2-rest-bright.lan/#> .
+@prefix rfid-dark: <http://t2-rest-dark.lan/#> .
+@prefix rfid-ambient: <http://t2-rest-rfid-ambient.lan/rfid#> .
+@prefix ambient-light: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+@prefix ambient-sound: <http://t2-rest-rfid-ambient.lan/ambient/sound#> .
+@prefix speaker: <http://t2-rest-speaker.lan/#> .
+
 
 
 # Workflow
@@ -23,7 +30,7 @@
         :ActivateSiren , 
         :OpenChimney , 
         :CloseFireDoors , 
-        :CountPeople , 
+        # :CountPeople , 
         :StartExtinguishing , 
         :CheckForCompleteness , 
         :StartSearching , 
@@ -47,9 +54,9 @@
     a ibm:Guard ;
     ibm:hasCondition :PeopleEvacuated .
 
-:G5
-    a ibm:Guard ;
-    ibm:hasCondition :PeopleCounted .
+#:G5
+#    a ibm:Guard ;
+#    ibm:hasCondition :PeopleCounted .
 
 :G6
     a ibm:Guard ;
@@ -91,11 +98,11 @@
     ibm:hasMilestoneModel :CX ;
     ibm:hasTaskModel :CloseFireDoorsTask .
 
-:CountPeople
-    a ibm:StageModel ;
-    ibm:hasGuard :G4 ;
-    ibm:hasMilestoneModel :C3 ;
-    ibm:hasTaskModel :CountPeopleTask .
+#:CountPeople
+#    a ibm:StageModel ;
+#    ibm:hasGuard :G4 ;
+#    ibm:hasMilestoneModel :C3 ;
+#    ibm:hasTaskModel :CountPeopleTask .
 
 :StartExtinguishing
     a ibm:StageModel ;
@@ -105,7 +112,7 @@
 
 :CheckForCompleteness 
     a ibm:StageModel ;
-    ibm:hasGuard :G5 ;
+    ibm:hasGuard :G4 ;
     ibm:hasMilestoneModel :C5 , :C4a ;
     ibm:hasTaskModel :CheckForCompletenessTask .
 
@@ -128,7 +135,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=Oh my God a fire! I will now call emergency, start evacuating people, activate sirens, open the chimney and close the fire doors"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"Call Emergency!\"}"^^xsd:string
     ] .
 
 :StartEvacuatingPeopleTask 
@@ -136,8 +143,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://example.org/dummy> ;
-        http:body "value="^^xsd:string
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Evacuate People!\"}"^^xsd:string
     ] .
 
 :ActivateSirenTask 
@@ -145,8 +152,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://example.org/dummy> ;
-        http:body "value="^^xsd:string
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Activate Siren!\"}"^^xsd:string
     ] .
 
 :OpenChimneyTask 
@@ -154,8 +161,8 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://example.org/dummy> ;
-        http:body "value="^^xsd:string
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Open the chimney!\"}"^^xsd:string
     ] .
 
 :CloseFireDoorsTask 
@@ -163,18 +170,18 @@
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
-        http:requestURI <http://example.org/dummy> ;
-        http:body "value="^^xsd:string
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Close the fire doors!\"}"^^xsd:string
     ] .
 
-:CountPeopleTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
-        a http:Request ;
-        http:mthd http_m:POST ;
-        http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=Is everyone evacuated? Let's count the people!"^^xsd:string
-    ] .
+#:CountPeopleTask 
+#    a ibm:TaskModel ;
+#    ibm:hasHttpRequest [
+#        a http:Request ;
+#        http:mthd http_m:POST ;
+#        http:requestURI <http://t2-rest-speaker.lan> ;
+#        http:body "{\"http://schema.org/text\":\"Counting People\"}"^^xsd:string
+#    ] .
 
 :StartExtinguishingTask 
     a ibm:TaskModel ;
@@ -182,7 +189,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=Emergency is here, they will now start extinguishing the fire!"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"Emergency arrived! Start extinguishing\"}"^^xsd:string
     ] .
 
 :CheckForCompletenessTask 
@@ -191,7 +198,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=People counted! Are they complete?"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"People are now evacuated. Check if everyone is here!\"}"^^xsd:string
     ] .
 
 :StartSearchingTask 
@@ -200,7 +207,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=Oh jeez. Some people are missing! Let's look for them!"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"Oh jeez! There are people missing. Let's search them!\"}"^^xsd:string
     ] .
 
 :SayItsDoneTask 
@@ -209,7 +216,7 @@
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "value=Great! Everyone is now safe!"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"Great! Everyone is save now.\"}"^^xsd:string
     ] .
 
 
@@ -217,50 +224,52 @@
 :C1
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :EmergencyArrived ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 :C2
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleEvacuated ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
-:C3
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleCounted ;
-    ibm:hasInvalidatingSentry :Reset .
+#:C3
+#    a ibm:MilestoneModel ;
+#    ibm:hasValidatingSentry :PeopleCounted ;
+#   ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 :C4a 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleComplete ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 :C4b 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleComplete ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 :C5 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleIncomplete ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 :C6
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :FireExtinguished ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 # dummy milestone for stages with no explicit milestone
 :CX
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :AlwaysTrue ;
-    ibm:hasInvalidatingSentry :Reset .
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
 
 # Sentries
 :AlwaysTrue
     a sp:Ask ;
     sp:where ([
-        sparql-result:boolean "true"^^xsd:boolean
+        sp:subject speaker:spk ;
+        sp:predicate <http://example.org/speaking> ;
+        sp:object "false"^^xsd:boolean
     ]) .
 
 :FireAlarmButtonPressed
@@ -274,8 +283,8 @@
 :HighTemperatureDetected
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:Temperature ;
-        sp:predicate <http://example.org/isHigh> ;
+        sp:subject ambient-light:value ;
+        sp:predicate <http://example.org/isBright> ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
@@ -290,25 +299,25 @@
 :PeopleEvacuated
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:People ;
-        sp:predicate <http://example.org/evacuated> ;
+        sp:subject rfid-ambient:sensor ;
+        sp:predicate rdf:value ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
-:PeopleCounted
-    a sp:Ask ;
-    sp:where ([
-        sp:subject mock:People ;
-        sp:predicate <http://example.org/counted> ;
-        sp:object "true"^^xsd:boolean 
-    ]) .
+#:PeopleCounted
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-bright:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean
+#    ]) .
 
 :PeopleIncompleteFireExtinguished
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:People ;
-        sp:predicate <http://example.org/incomplete> ;
-        sp:object "true"^^xsd:boolean
+        sp:subject rfid-bright:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean 
     ] [
         sp:subject mock:Fire ;
         sp:predicate <http://example.org/extinguished> ;
@@ -318,17 +327,17 @@
 :PeopleComplete
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:People ;
-        sp:predicate <http://example.org/complete> ;
+        sp:subject rfid-dark:sensor ;
+        sp:predicate rdf:value ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
 :PeopleCompleteFireExtinguished
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:People ;
-        sp:predicate <http://example.org/complete> ;
-        sp:object "true"^^xsd:boolean 
+        sp:subject rfid-dark:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean  
     ] [
         sp:subject mock:Fire ;
         sp:predicate <http://example.org/extinguished> ;
@@ -338,9 +347,9 @@
 :PeopleIncomplete
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:People ;
-        sp:predicate <http://example.org/incomplete> ;
-        sp:object "true"^^xsd:boolean
+        sp:subject rfid-bright:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean 
     ]) .
 
 :FireExtinguished
@@ -354,12 +363,9 @@
 :Reset 
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:AlarmButton ;
-        sp:predicate <http://example.org/isPressed> ;
+        sp:subject rfid-bright:sensor ;
+        sp:predicate rdf:value ;
         sp:object "false"^^xsd:boolean
-    ] [
-        sp:subject mock:Temperature ;
-        sp:predicate <http://example.org/isHigh> ;
-        sp:object "false"^^xsd:boolean 
-    ]) .
+    ] ) .
+
 
