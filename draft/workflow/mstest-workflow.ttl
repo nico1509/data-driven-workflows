@@ -11,7 +11,7 @@
 
 
 # Workflow-specific Prefixes
-@prefix mock: <http://mock-server.lan:3000/mock#> .
+@prefix mock: <http://mock-server.lan:3000/mock/rdf#> .
 @prefix rfid-bright: <http://t2-rest-bright.lan/#> .
 @prefix rfid-dark: <http://t2-rest-dark.lan/#> .
 @prefix rfid-ambient: <http://t2-rest-rfid-ambient.lan/rfid#> .
