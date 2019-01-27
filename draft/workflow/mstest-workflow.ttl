@@ -77,6 +77,15 @@
 
 # Sentries
 
+:S1
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Fire ;
+        sp:predicate <http://example.org/extinguished> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+
 :V1
     a sp:Ask ;
     sp:where ([
