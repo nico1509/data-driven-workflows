@@ -31,7 +31,7 @@
 # Guards
 :G1 
     a ibm:Guard ;
-    ibm:hasCondition :FireAlarmButtonPressed .
+    ibm:hasCondition :S1 .
 
 # Stages
 :Stage1
