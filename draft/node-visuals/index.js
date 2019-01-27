@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 
 var parser = require('./parser.js');
 var fs = require('fs');
-
+ 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -14,7 +14,7 @@ var rdfhost_port = "8080";
 
 var milestoneValues = {
     firealarmButtonPressed: false,
-    temperature: 25,
+    temperature: 45,
     emergencyArrived: false,
     peopleEvacuated: false,
     peopleCounted: false,
@@ -34,7 +34,36 @@ var milestoneRDF = {
     fireExtinguished: {name: 'Fire', predicate: 'extinguished'}
 }
 
-app.get('/mock', function(req, res){
+app.get('/res/jQuery.js', function(req, res){
+    fs.readFile('jQuery.js', "utf8", function(err, data) {
+        res.writeHead(200, {'Content-Type': 'application/javascript'});
+        res.write(data);
+        res.end();
+    });  
+});
+
+app.get('/mock/setup', function(req, res){
+    
+    
+    var ldbbc = "http://"+rdfhost_ip+":"+rdfhost_port+"/ldbbc/";
+
+    var script = `curl -f -X DELETE `+ldbbc+` && 
+    curl -f -X PUT -T ../workflow/evacuation-workflow.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
+    curl -f -X PUT -T ../ontology/ibm-vocab.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
+    curl -f -X PUT -T ../ontology/list-vocab.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
+    curl -f -X PUT -T ../workflow/evacuation-workflow-instance.ttl `+ldbbc+` -Hcontent-type:text/turtle`;
+
+    const shellExec = require('shell-exec')
+ 
+    shellExec(script).then(function(x){
+        console.log(x); res.send('done'); 
+    }).catch(function(x){
+        console.log(x); res.send('err'); 
+    });
+
+});
+
+app.get('/mock/rdf', function(req, res){
 
     var name = 'Worker';
     var predicate = 'didSomething';
@@ -69,6 +98,12 @@ app.get('/mock', function(req, res){
 
     res.writeHead(200, {'Content-Type': 'application/rdf+xml'});
     res.write(xmlStr);
+    res.end();
+});
+
+app.get('/mock/json', function(req, res){
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.write(JSON.stringify(milestoneValues));
     res.end();
 });
 
@@ -107,6 +142,7 @@ app.get('/mock/ui', function(req, res){
         res.end();
     });
 });
+
 
 app.get('/stages', function(req, res){
     fs.readFile('stages.html', function(err, data) {
@@ -189,7 +225,7 @@ app.get('/', function (req, res) {
 
     var ldbbc_host = rdfhost_ip + ':' + rdfhost_port;
 
-    res.send('<style type="text/css">body{padding:20px;font-family: Arial;}a{display:inline-block;margin: 3px 0;color:#08729c;}</style><p>Running on '+self_host+'.</p>LDBBC connected on '+ldbbc_host+'. <a href="/iphs">iphs</a><br/><h2>Mock Server</h2><a href="/mock">RDF XML</a><br/><a href="/mock/ui">UI</a><br/><h2>Visualization Server</h2><a href="/stages">UI</a><br/><a href="/stages/stages.json">parsed stages json</a><br/>');
+    res.send('<style type="text/css">body{padding:20px;font-family: Arial;}a{display:inline-block;margin: 3px 0;color:#08729c;}</style><p>Running on '+self_host+'.</p>LDBBC connected on '+ldbbc_host+'. <a href="/iphs">iphs</a><br/><h2>Mock Server</h2><a href="/mock/rdf">Milestone Values (RDF XML)</a><br/><a href="/mock/json">Milestone Values (JSON)</a><br/><a href="/mock/ui">UI</a><br/><h2>Visualization Server</h2><a href="/stages">UI</a><br/><a href="/stages/stages.json">parsed stages json</a><br/><script>setInterval(function(){window.location.reload()}, 2000);</script>');
 });
 
 app.listen(3000, function () {

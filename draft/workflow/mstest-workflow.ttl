@@ -1,0 +1,127 @@
+@prefix : <#> .
+@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+# Workflow-specific Prefixes
+@prefix mock: <http://mock-server.lan:3000/mock#> .
+@prefix rfid-bright: <http://t2-rest-bright.lan/#> .
+@prefix rfid-dark: <http://t2-rest-dark.lan/#> .
+@prefix rfid-ambient: <http://t2-rest-rfid-ambient.lan/rfid#> .
+@prefix ambient-light: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+@prefix ambient-sound: <http://t2-rest-rfid-ambient.lan/ambient/sound#> .
+@prefix speaker: <http://t2-rest-speaker.lan/#> .
+
+
+
+# Workflow
+:MSTestWorkflowModel
+    a ibm:WorkflowModel ;
+    ibm:containsStageModel 
+        :Stage1. 
+
+
+# Guards
+:G1 
+    a ibm:Guard ;
+    ibm:hasCondition :FireAlarmButtonPressed .
+
+# Stages
+:Stage1
+    a ibm:StageModel ;
+    ibm:hasGuard :G1 ;
+    ibm:hasMilestoneModel :C1, :C2, :C3 ;
+    ibm:hasTaskModel :Task1 .
+
+
+# Tasks
+:Task1 
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Task done. Activate milestone now.\"}"^^xsd:string
+    ] .
+
+# Milestones
+:C1
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :V1 ;
+    ibm:hasInvalidatingSentry :I1 .
+
+:C2
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :V2 ;
+    ibm:hasInvalidatingSentry :I2 .
+
+:C3
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :V3 ;
+    ibm:hasInvalidatingSentry :I3 .
+
+
+# dummy milestone for stages with no explicit milestone
+:CX
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :AlwaysTrue ;
+    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+
+
+# Sentries
+
+:V1
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:AlarmButton ;
+        sp:predicate <http://example.org/isPressed> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:I1
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:AlarmButton ;
+        sp:predicate <http://example.org/isPressed> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:V2
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Emergency ;
+        sp:predicate <http://example.org/isArrived> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:I2
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Emergency ;
+        sp:predicate <http://example.org/isArrived> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:V3
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/evacuated> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:I3
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/evacuated> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
