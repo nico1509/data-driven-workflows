@@ -276,7 +276,7 @@
         http:body {
             ?stageInstance ibm:isInstanceOf ?stageModel ;
             ibm:hasState ibm:done ;
-            ibm:inWorkflowInstance ?wfInstance ;
+            ibm:inWorkflowInstance ?wfInstance .
         } . 
 } .
 
@@ -304,6 +304,41 @@
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
+            ibm:hasState ibm:unachieved ;
+            ibm:inWorkflowInstance ?wfInstance ;
+            # UI modifications
+            ibm:forStageModel ?stageModel .
+        } . 
+} .
+
+# reset OTHER milestones of the stage
+{
+    # Basis
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel ibm:hasInvalidatingSentry ?sentry .
+    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
+
+    # Prerequisite
+    ?milestoneInstance ibm:hasState ibm:achieved .
+
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+
+    # Addition
+    ?milestoneInstance ibm:forStageModel ?stageModelOfInstance .
+    ?stageModelOfInstance ibm:hasMilestoneModel ?otherMilestoneModel .
+    ?otherMilestoneInstance ibm:isInstanceOf ?otherMilestoneModel ;
+                            ibm:hasState ibm:achieved .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI ?otherMilestoneInstance ; 
+        http:body {
+            ?otherMilestoneInstance ibm:isInstanceOf ?otherMilestoneModel ;
             ibm:hasState ibm:unachieved ;
             ibm:inWorkflowInstance ?wfInstance ;
             # UI modifications
