@@ -223,6 +223,7 @@
 } .
 
 # PAC-2
+# set milestone achieved
 {
     # Basis
     ?wfInstance ibm:isInstanceOf ?wfModel .
@@ -251,6 +252,34 @@
             ibm:forStageModel ?stageModel .
         } . 
 } .
+# set stage done
+{
+    # Basis
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel ibm:hasValidatingSentry ?sentry .
+    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
+
+    # Prerequisite
+    ?stageInstance ibm:isInstanceOf ?stageModel ;
+                    ibm:hasState ibm:running .
+
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI ?stageInstance ; 
+        http:body {
+            ?stageInstance ibm:isInstanceOf ?stageModel ;
+            ibm:hasState ibm:done ;
+            ibm:inWorkflowInstance ?wfInstance ;
+        } . 
+} .
+
 
 # PAC-3
 # reset milestone
@@ -342,31 +371,31 @@
 #} .
 
 # PAC-5
-{
-    # Basis
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stageModel .
-    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
-    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
+#{
+#    # Basis
+#    ?wfInstance ibm:isInstanceOf ?wfModel .
+#    ?wfModel ibm:containsStageModel ?stageModel .
+#    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
+#    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
 
-    # Prerequisite
-    ?stageInstance ibm:isInstanceOf ?stageModel ;
-                    ibm:hasState ibm:running .
-
-    # Antecedent
-    ?milestoneInstance ibm:hasState ibm:achieved .
-}
-=>
-{
-    # Consequent
-    _:h http:mthd http_m:PUT ; 
-        http:requestURI ?stageInstance ; 
-        http:body {
-            ?stageInstance ibm:isInstanceOf ?stageModel ;
-            ibm:hasState ibm:done ;
-            ibm:inWorkflowInstance ?wfInstance .
-        } . 
-} .
+#    # Prerequisite
+#    ?stageInstance ibm:isInstanceOf ?stageModel ;
+#                    ibm:hasState ibm:running .
+#
+#    # Antecedent
+#    ?milestoneInstance ibm:hasState ibm:achieved .
+#}
+#=>
+#{
+#    # Consequent
+#    _:h http:mthd http_m:PUT ; 
+#       http:requestURI ?stageInstance ; 
+#        http:body {
+#            ?stageInstance ibm:isInstanceOf ?stageModel ;
+#            ibm:hasState ibm:done ;
+#            ibm:inWorkflowInstance ?wfInstance .
+#        } . 
+#} .
 
 # PAC-6
 {
