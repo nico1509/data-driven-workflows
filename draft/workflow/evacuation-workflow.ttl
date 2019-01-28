@@ -30,7 +30,7 @@
         :ActivateSiren , 
         :OpenChimney , 
         :CloseFireDoors , 
-        # :CountPeople , 
+        :CountPeople , 
         :StartExtinguishing , 
         :CheckForCompleteness , 
         :StartSearching , 
@@ -66,6 +66,10 @@
     a ibm:Guard ;
     ibm:hasCondition :PeopleCompleteFireExtinguished .
 
+:Gcount
+    a ibm:Guard ;
+    ibm:hasCondition :CountButtonPressed .
+
 
 # Stages
 :CallEmergency
@@ -98,11 +102,11 @@
     ibm:hasMilestoneModel :CX ;
     ibm:hasTaskModel :CloseFireDoorsTask .
 
-#:CountPeople
-#    a ibm:StageModel ;
-#    ibm:hasGuard :G4 ;
-#    ibm:hasMilestoneModel :C3 ;
-#    ibm:hasTaskModel :CountPeopleTask .
+:CountPeople
+    a ibm:StageModel ;
+    ibm:hasGuard :Gcount ;
+    ibm:hasMilestoneModel :CXcount ;
+    ibm:hasTaskModel :CountPeopleTask .
 
 :StartExtinguishing
     a ibm:StageModel ;
@@ -174,14 +178,14 @@
         http:body "{\"http://schema.org/text\":\"Close the fire doors!\"}"^^xsd:string
     ] .
 
-#:CountPeopleTask 
-#    a ibm:TaskModel ;
-#    ibm:hasHttpRequest [
-#        a http:Request ;
-#        http:mthd http_m:POST ;
-#        http:requestURI <http://t2-rest-speaker.lan> ;
-#        http:body "{\"http://schema.org/text\":\"Counting People\"}"^^xsd:string
-#    ] .
+:CountPeopleTask 
+    a ibm:TaskModel ;
+    ibm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://mock-server.lan:3000/mock/cntPeople/add> ;
+        http:body ""^^xsd:string
+    ] .
 
 :StartExtinguishingTask 
     a ibm:TaskModel ;
@@ -224,12 +228,12 @@
 :C1
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :EmergencyArrived ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 :C2
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleEvacuated ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 #:C3
 #    a ibm:MilestoneModel ;
@@ -239,28 +243,33 @@
 :C4a 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleComplete ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 :C4b 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleComplete ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 :C5 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleIncomplete ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 :C6
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :FireExtinguished ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 # dummy milestone for stages with no explicit milestone
 :CX
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :AlwaysTrue ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    ibm:hasInvalidatingSentry :NoFireAnymore .
+
+:CXcount
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :AlwaysTrue ;
+    ibm:hasInvalidatingSentry :CountButtonNotPressed .
 
 
 # Sentries
@@ -344,12 +353,20 @@
         sp:object "true"^^xsd:boolean
     ]) .
 
-:PeopleIncomplete
+:CountButtonPressed
     a sp:Ask ;
     sp:where ([
         sp:subject rfid-bright:sensor ;
         sp:predicate rdf:value ;
         sp:object "true"^^xsd:boolean 
+    ]) .
+
+:CountButtonNotPressed
+    a sp:Ask ;
+    sp:where ([
+        sp:subject rfid-bright:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "false"^^xsd:boolean 
     ]) .
 
 :FireExtinguished
@@ -360,12 +377,16 @@
         sp:object "true"^^xsd:boolean
     ]) .
 
-:Reset 
+:NoFireAnymore 
     a sp:Ask ;
     sp:where ([
-        sp:subject rfid-bright:sensor ;
-        sp:predicate rdf:value ;
+        sp:subject mock:AlarmButton ;
+        sp:predicate <http://example.org/isPressed> ;
         sp:object "false"^^xsd:boolean
-    ] ) .
+    ] [
+        sp:subject ambient-light:value ;
+        sp:predicate <http://example.org/isBright> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
 
 
