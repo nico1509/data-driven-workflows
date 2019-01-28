@@ -109,7 +109,7 @@
                     var $button = $(this);
                     var name = $button.attr('data-name');
                     milestoneValues[name] = !milestoneValues[name];
-                    $button.text(milestoneValuesLabels[name] + ': ' + (milestoneValues[name] ? 'true' : 'false'));
+                    $button.text(milestoneValuesLabels[name] + ': ' + (milestoneValues[name] ? '<i class="fa fa-check-square"></i>' : '<i class="far fa-square"></i>'));
                     uploadMilestoneValues();
                 });
 
@@ -128,7 +128,7 @@
                 $('button[data-name]').each(function(i, e){
                     var $button = $(e);
                     var name = $button.attr('data-name'); 
-                    $button.text(milestoneValuesLabels[name] + ': ' + (milestoneValues[name] ? 'true' : 'false'));
+                    $button.text(milestoneValuesLabels[name] + ': ' + (milestoneValues[name] ? '<i class="fa fa-check-square"></i>' : '<i class="far fa-square"></i>'));
                 });
 
                 $('input[data-name]').each(function(i, e){

@@ -334,37 +334,20 @@
                 };
             }
 
+            /*
             function resetStagePos(){
                 localStorage.removeItem('stagePos');
             }
 
             function getStagePos(stage){
                 return stagePosArr[stage.name];
-
-                /*
-                var name = stage.id;
-
-                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '{}');
-
-                return stagePosArr[name];
-                */
             }
 
             function setStagePos(stage, pos){
                 if(stagePosArr[stage.name] === undefined)
                     stagePosArr[stage.name] = pos;   
-
-                /*
-                var name = stage.id;
-
-                var stagePosArr = JSON.parse(localStorage.getItem('stagePos') || '{}');
-
-                if(stagePosArr[name] === undefined)
-                    stagePosArr[name] = pos;   
-
-                localStorage.setItem('stagePos', JSON.stringify(stagePosArr));
-                */
             }
+            */
 
             function loadStages(){
 
@@ -380,6 +363,7 @@
                         $('#workflow').html('');
                         $('#workflow').css({opacity: 1});
 
+                        /// sort stages alphabetically by name
                         var stagesSort = [];
 
                         for(var i in stages)
@@ -404,7 +388,7 @@
                         var pos = 0;
                         for(var i in stages){
                             var stage = stages[i];
-                            setStagePos(stage, ++pos);
+                            //setStagePos(stage, ++pos);
                             buildStage(stage);
                         }
 
@@ -439,13 +423,13 @@
             function buildStage(stage){
                 var $wf = $('#workflow');
 
-                var pos = getStagePos(stage);
+                //var pos = getStagePos(stage);
 
                 var $stage = $('<div class="stage"></div>')
                     .attr('data-name', stage.name)
                     .attr('data-id', stage.id)
                     .attr('data-active', ['triggered', 'running'].indexOf(stage.state) > -1 ? 'true' : 'false')
-                    .css({order: pos})
+                    //.css({order: pos})
                     .appendTo($wf);
 
 
