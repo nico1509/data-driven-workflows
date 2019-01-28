@@ -52,7 +52,7 @@
 
 :G4
     a ibm:Guard ;
-    ibm:hasCondition :PeopleEvacuated .
+    ibm:hasCondition :PeopleEvacuated , :PeopleEvacuatedMOCK .
 
 :G5
     a ibm:Guard ;
@@ -234,7 +234,7 @@
 
 :C2
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleEvacuated ;
+    ibm:hasValidatingSentry :PeopleEvacuated , :PeopleEvacuatedMOCK ;
     ibm:hasInvalidatingSentry :NoFireAnymore .
 
 #:C3
@@ -278,9 +278,7 @@
 :AlwaysTrue
     a sp:Ask ;
     sp:where ([
-        sp:subject speaker:spk ;
-        sp:predicate <http://example.org/speaking> ;
-        sp:object "false"^^xsd:boolean
+        sparql-result:boolean "true"^^xsd:boolean
     ]) .
 
 :FireAlarmButtonPressed
@@ -330,6 +328,15 @@
         sp:predicate rdf:value ;
         sp:object "true"^^xsd:boolean 
     ]) .
+
+:PeopleEvacuatedMOCK
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/evacuated> ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
 
 :PeopleCounted
     a sp:Ask ;
