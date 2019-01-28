@@ -1,3 +1,4 @@
+
 @prefix : <#> .
 @prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
