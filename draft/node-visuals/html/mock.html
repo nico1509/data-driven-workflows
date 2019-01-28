@@ -5,6 +5,18 @@
 
         <!-- styles -->
         <style type="text/css">
+
+            body{
+                margin: 0;
+                padding: 0;
+            }
+
+            #page{
+                width: 300px;
+                position: relative;
+                margin: 0 auto;
+                padding-top: 10px;
+            }
         
             button{
                 margin: 10px;
@@ -58,17 +70,22 @@
                 color: orange;
             }
 
-            #ldbbchost{
+            #info{
                 background: #efefef;
                 padding: 5px 10px;
                 margin: 10px;
-                width: 260px;
+                width: 258px;
                 border: 1px solid #b6b6b6;
                 border-radius: 3px;
                 color: #222;
                 font-family: arial;
                 font-size: 13px;
                 cursor: pointer;
+                text-align: center;
+
+                font-weight: bold;
+                border-color: rgb(45, 143, 255);
+                background: rgba(45, 143, 255, 0.2);
             }
         
         </style>
@@ -78,10 +95,6 @@
         <link rel="stylesheet" type="text/css" href="/res/fa/css/all.css" />
             
         <script>
-
-            var ldpcHost = "xxx.xxx.xxx.xxx:xxxx";
-            var ldpcPath = "/ldbbc/";
-            var ldpc = "http://" + ldpcHost + ldpcPath;
 
             var milestoneValues = {
                 firealarmButtonPressed: false,
@@ -108,8 +121,6 @@
             }
 
             $(document).ready(function(){
-
-                $('#ldbbchost').text(ldpc);
 
                 $('button[data-name]').on('click', function(){
                     var $button = $(this);
@@ -157,6 +168,10 @@
                 });
             }
 
+            function updateHost(){
+
+            }
+
             function uploadMilestoneValues(){
                 console.log('PREPARING UPDATE');
                 
@@ -182,21 +197,28 @@
     </head>
     <body>
 
-        <p id="ldbbchost" title="Click to refresh page after ip handshake." onclick="window.location.reload();"></p>
+        <div id="page">
 
-       <!-- <button id="cmdInstantiate" onclick="instantiate();">Instantiate</button><br/><br/> -->
+            <p id="info">
+                Building Evacuation Workflow Mock
+            </p>
 
-        <button data-name="firealarmButtonPressed" data-iot="true"></button><br/>
-        <input type="number" data-name="temperature" value="45" data-iot="true"/><br/>
-        <button data-name="emergencyArrived"></button><br/>
-        <button data-name="peopleEvacuated"></button><br/>
-        <input type="number" data-name="cntPeople" value="0"/><br/>
-        <span data-name="cntPeople"></span><br/>
-        <button data-name="peopleCounted" data-iot="true"></button><br/>
-        <!-- <button data-name="peopleComplete"></button><br/> -->
-        <!-- <button data-name="peopleIncomplete"></button><br/> -->
-        <button data-name="fireExtinguished"></button><br/><br/>
+        <!-- <button id="cmdInstantiate" onclick="instantiate();">Instantiate</button><br/><br/> -->
 
-        <button id="cmdReset" onclick="reset();">RESET</button>
+            <button data-name="firealarmButtonPressed" data-iot="true"></button><br/>
+            <input type="number" data-name="temperature" value="45" data-iot="true"/><br/>
+            <button data-name="emergencyArrived"></button><br/>
+            <button data-name="peopleEvacuated"></button><br/>
+            <input type="number" data-name="cntPeople" value="0"/><br/>
+            <span data-name="cntPeople"></span><br/>
+            <button data-name="peopleCounted" data-iot="true"></button><br/>
+            <!-- <button data-name="peopleComplete"></button><br/> -->
+            <!-- <button data-name="peopleIncomplete"></button><br/> -->
+            <button data-name="fireExtinguished"></button><br/><br/>
+
+            <button id="cmdReset" onclick="reset();">RESET</button>
+
+        </div>
+
     </body>
 </html>

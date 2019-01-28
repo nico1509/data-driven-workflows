@@ -171,7 +171,7 @@ app.get('/mock/cntPeople/add', function(req, res){
 app.get('/mock/ui', function(req, res){
     fs.readFile('html/mock.html', "utf8", function(err, data) {
 
-        data = data.replace('xxx.xxx.xxx.xxx:xxxx', rdfhost_ip + ':' + rdfhost_port);
+        //data = data.replace('xxx.xxx.xxx.xxx:xxxx', rdfhost_ip + ':' + rdfhost_port);
 
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
@@ -221,7 +221,7 @@ app.get('/iphs', function(req, res){
 
 // fetch the ldbbc host ip:port
 app.get('/iphs/host', function(req, res){
-    res.send(ip + ':' + rdfhost_port);
+    res.send(rdfhost_ip + ':' + rdfhost_port);
 });
 
 /*
