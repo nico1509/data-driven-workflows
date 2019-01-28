@@ -34,6 +34,17 @@
                 border-bottom-color: rgb(45, 143, 255);
             }
 
+            span{
+                background: #b6b6b6;
+                margin: -12px 10px -10px 10px;
+                display: block;
+                width: 272px;
+                padding: 7px 5px 6px;
+                font-family: Arial;
+                font-size: 15px;
+                border-radius: 0 0 3px 3px;
+            }
+
             #cmdReset{
                 color: red;
             }
@@ -70,11 +81,24 @@
                 temperature: 45,
                 emergencyArrived: false,
                 peopleEvacuated: false,
+                cntPeople: 0, 
                 peopleCounted: false,
-                peopleComplete: false,
-                peopleIncomplete: false,
+                //peopleComplete: false,
+                //peopleIncomplete: false,
                 fireExtinguished: false
             };
+
+            var milestoneValuesLabels = {
+                firealarmButtonPressed: "Fire Alarm Trigger",
+                temperature: "Temperature",
+                emergencyArrived: "Emergancy has arrived",
+                peopleEvacuated: "People has been evacuated",
+                cntPeople: "People counter", 
+                peopleCounted: "People are counted",
+                //peopleComplete: false,
+                //peopleIncomplete: false,
+                fireExtinguished: "The fire has been extinguished"
+            }
 
             $(document).ready(function(){
 
@@ -84,7 +108,7 @@
                     var $button = $(this);
                     var name = $button.attr('data-name');
                     milestoneValues[name] = !milestoneValues[name];
-                    $button.text(name + ': ' + (milestoneValues[name] ? 'true' : 'false'));
+                    $button.text(milestoneValuesLabels[name] + ': ' + (milestoneValues[name] ? 'true' : 'false'));
                     uploadMilestoneValues();
                 });
 
@@ -103,13 +127,19 @@
                 $('button[data-name]').each(function(i, e){
                     var $button = $(e);
                     var name = $button.attr('data-name'); 
-                    $button.text(name + ': ' + (milestoneValues[name] ? 'true' : 'false'));
+                    $button.text(milestoneValuesLabels[name] + ': ' + (milestoneValues[name] ? 'true' : 'false'));
                 });
 
                 $('input[data-name]').each(function(i, e){
                     var $input = $(e);
                     var name = $input.attr('data-name'); 
-                    $input.attr('placeholder', name);
+                    $input.attr('placeholder', milestoneValuesLabels[name]);
+                });
+
+                $('span[data-name]').each(function(i, e){
+                    var $span = $(e);
+                    var name = $span.attr('data-name'); 
+                    $span.text(milestoneValuesLabels[name] + ': ' + milestoneValues[name]);
                 });
             }
 
@@ -145,17 +175,21 @@
     </head>
     <body>
 
-        <p id="ldbbchost"></p>
+        <p id="ldbbchost">
 
-        <button id="cmdInstantiate" onclick="instantiate();">Instantiate</button><br/><br/>
+        </p>
+
+       <!-- <button id="cmdInstantiate" onclick="instantiate();">Instantiate</button><br/><br/> -->
 
         <button data-name="firealarmButtonPressed"></button><br/>
         <input type="number" data-name="temperature" value="45"/><br/>
         <button data-name="emergencyArrived"></button><br/>
         <button data-name="peopleEvacuated"></button><br/>
+        <input type="number" data-name="cntPeople" value="0"/><br/>
+        <span data-name="cntPeople"></span><br/>
         <button data-name="peopleCounted"></button><br/>
-        <button data-name="peopleComplete"></button><br/>
-        <button data-name="peopleIncomplete"></button><br/>
+        <!-- <button data-name="peopleComplete"></button><br/> -->
+        <!-- <button data-name="peopleIncomplete"></button><br/> -->
         <button data-name="fireExtinguished"></button><br/><br/>
 
         <button id="cmdReset" onclick="reset();">RESET</button>

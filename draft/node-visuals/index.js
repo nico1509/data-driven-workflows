@@ -17,6 +17,7 @@ var milestoneValues = {
     temperature: 45,
     emergencyArrived: false,
     peopleEvacuated: false,
+    cntPeople: 0,
     peopleCounted: false,
     peopleComplete: false,
     peopleIncomplete: false,
@@ -28,20 +29,31 @@ var milestoneRDF = {
     temperature: {name: 'Temperature', predicate: 'value'},
     emergencyArrived: {name: 'Emergency', predicate: 'isArrived'},
     peopleEvacuated: {name: 'People', predicate: 'evacuated'},
+    cntPeople: {name: 'People', predicate: 'count'},
     peopleCounted: {name: 'People', predicate: 'counted'},
     peopleComplete: {name: 'People', predicate: 'complete'},
     peopleIncomplete: {name: 'People', predicate: 'incomplete'},
     fireExtinguished: {name: 'Fire', predicate: 'extinguished'}
 }
 
+// ressources (html)
 app.get('/res/jQuery.js', function(req, res){
-    fs.readFile('jQuery.js', "utf8", function(err, data) {
+    fs.readFile('res/jQuery.js', "utf8", function(err, data) {
         res.writeHead(200, {'Content-Type': 'application/javascript'});
         res.write(data);
         res.end();
     });  
 });
 
+app.get('/res/fa.css', function(req, res){
+    fs.readFile('res/fa.css', "utf8", function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/css'});
+        res.write(data);
+        res.end();
+    });  
+});
+
+// setup the mock
 app.get('/mock/setup', function(req, res){
     
     
@@ -63,6 +75,7 @@ app.get('/mock/setup', function(req, res){
 
 });
 
+// get mock milestone values as rdf+xml
 app.get('/mock/rdf', function(req, res){
 
     var name = 'Worker';
@@ -101,12 +114,14 @@ app.get('/mock/rdf', function(req, res){
     res.end();
 });
 
+// get mock milestone values as json 
 app.get('/mock/json', function(req, res){
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(JSON.stringify(milestoneValues));
     res.end();
 });
 
+// set the mock milestone values (json expected)
 app.post('/mock',function(request,response){
     //var query1=request.body.var1;
     //var query2=request.body.var2;
@@ -117,10 +132,12 @@ app.post('/mock',function(request,response){
     console.log('MilestoneValues Updated!');
 });
 
+// reset the mock milestone values
 app.get('/mock/reset', function(req, res){
     milestoneValues = {
         firealarmButtonPressed: false,
         temperature: 25,
+        cntPeople: 0,
         emergencyArrived: false,
         peopleEvacuated: false,
         peopleCounted: false,
@@ -132,8 +149,25 @@ app.get('/mock/reset', function(req, res){
     res.send('done');
 });
 
+// mock people counter 
+app.post('/mock/cntPeople/add', function(req, res){
+    milestoneValues.cntPeople++;
+    res.end();
+});
+
+app.post('/mock/cntPeople/remove', function(req, res){
+    milestoneValues.cntPeople--;
+    res.end();
+});
+
+app.get('/mock/cntPeople/add', function(req, res){
+    milestoneValues.cntPeople++;
+    res.send('dev: ' + milestoneValues.cntPeople);
+});
+
+// display the mock ui (html)
 app.get('/mock/ui', function(req, res){
-    fs.readFile('mock.html', "utf8", function(err, data) {
+    fs.readFile('html/mock.html', "utf8", function(err, data) {
 
         data = data.replace('xxx.xxx.xxx.xxx:xxxx', rdfhost_ip + ':' + rdfhost_port);
 
@@ -143,15 +177,16 @@ app.get('/mock/ui', function(req, res){
     });
 });
 
-
+// display the stages ui (html)
 app.get('/stages', function(req, res){
-    fs.readFile('stages.html', function(err, data) {
+    fs.readFile('html/stages.html', function(err, data) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
         res.end();
     });
 });
 
+// get the stages data as json
 app.get('/stages/stages.json', function(req, res){
 
     //stages = {"test": "test"};
@@ -164,29 +199,7 @@ app.get('/stages/stages.json', function(req, res){
     });  
 });
 
-app.get('/test', function (req, res) {
-
-    parser.getRessource(18, function(ressource){
-
-        res.send(JSON.stringify(ressource));
-
-    });
-
-});
-
-
-app.get('/test2', function (req, res) {
-    parser.getRessources(function(ids){
-        res.send(JSON.stringify(ids));
-    });
-});
-
-app.get('/test3', function (req, res) {
-    parser.getStages(function(stages){
-        res.send(JSON.stringify(stages));
-    });  
-});
-
+// make an ip handshake to recieve the ldbbc host's ip
 app.get('/iphs', function(req, res){
 
     var ip = req.connection.remoteAddress;
@@ -204,6 +217,11 @@ app.get('/iphs', function(req, res){
     res.end();
 });
 
+// fetch the ldbbc host ip:port
+app.get('/iphs/host', function(req, res){
+    res.send(ip + ':' + rdfhost_port);
+});
+
 /*
 app.get('/stages', function (req, res) {
     //res.send('Hello World!');
@@ -219,6 +237,7 @@ app.get('/stages', function (req, res) {
 });
 */
 
+// landing page
 app.get('/', function (req, res) {
     var self_ip = require('ip');
     var self_host = self_ip.address()+':3000';
@@ -228,6 +247,30 @@ app.get('/', function (req, res) {
     res.send('<style type="text/css">body{padding:20px;font-family: Arial;}a{display:inline-block;margin: 3px 0;color:#08729c;}</style><p>Running on '+self_host+'.</p>LDBBC connected on '+ldbbc_host+'. <a href="/iphs">iphs</a><br/><h2>Mock Server</h2><a href="/mock/rdf">Milestone Values (RDF XML)</a><br/><a href="/mock/json">Milestone Values (JSON)</a><br/><a href="/mock/ui">UI</a><br/><h2>Visualization Server</h2><a href="/stages">UI</a><br/><a href="/stages/stages.json">parsed stages json</a><br/><script>setInterval(function(){window.location.reload()}, 2000);</script>');
 });
 
+/// testing
+app.get('/test', function (req, res) {
+
+    parser.getRessource(18, function(ressource){
+
+        res.send(JSON.stringify(ressource));
+
+    });
+
+});
+
+app.get('/test2', function (req, res) {
+    parser.getRessources(function(ids){
+        res.send(JSON.stringify(ids));
+    });
+});
+
+app.get('/test3', function (req, res) {
+    parser.getStages(function(stages){
+        res.send(JSON.stringify(stages));
+    });  
+});
+
+// run server
 app.listen(3000, function () {
   
     var ip = require('ip');
