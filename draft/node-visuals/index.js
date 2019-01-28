@@ -19,8 +19,8 @@ var milestoneValues = {
     peopleEvacuated: false,
     cntPeople: 0,
     peopleCounted: false,
-    peopleComplete: false,
-    peopleIncomplete: false,
+    //peopleComplete: false,
+    //peopleIncomplete: false,
     fireExtinguished: false
 };
 
@@ -31,8 +31,8 @@ var milestoneRDF = {
     peopleEvacuated: {name: 'People', predicate: 'evacuated'},
     cntPeople: {name: 'People', predicate: 'count'},
     peopleCounted: {name: 'People', predicate: 'counted'},
-    peopleComplete: {name: 'People', predicate: 'complete'},
-    peopleIncomplete: {name: 'People', predicate: 'incomplete'},
+    //peopleComplete: {name: 'People', predicate: 'complete'},
+    //peopleIncomplete: {name: 'People', predicate: 'incomplete'},
     fireExtinguished: {name: 'Fire', predicate: 'extinguished'}
 }
 
@@ -143,8 +143,8 @@ app.get('/mock/reset', function(req, res){
         emergencyArrived: false,
         peopleEvacuated: false,
         peopleCounted: false,
-        peopleComplete: false,
-        peopleIncomplete: false,
+        //peopleComplete: false,
+        //peopleIncomplete: false,
         fireExtinguished: false
     };
 
