@@ -115,51 +115,28 @@
             http:requestURI         ?subject .
 } .
 
-# execute active tasks
-# we need this rule for every supported kind of http method
-# (PUT, POST at least), see annotation below
-# 
-{
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stageModel .
-    ?stageInstance ibm:isInstanceOf ?stageModel ;
-                    ibm:hasState ibm:triggered .
-    ?stageModel ibm:hasTaskModel ?taskModel .
 
-    ?taskModel ibm:hasHttpRequest ?httpRequest .
-
-    ?httpRequest http:mthd ?httpMthd ;
-                http:requestURI ?httpUri ;
-                http:body ?httpBody .
-} 
-=> 
-{
-    _:h     http:mthd http_m:POST ;  # ?httpMthd breaks ldfu...
-            http:requestURI ?httpUri ; 
-            http:body ?httpBody . 
-
-} .
   
 # Set executed task to done
-{
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stageModel .
-    ?stageInstance ibm:isInstanceOf ?stageModel ;
-                    ibm:hasState ibm:triggered .
-    ?stageModel ibm:hasTaskModel ?taskModel .
-} 
-=> 
-{
-    _:h2    http:mthd http_m:PUT ;
-            http:requestURI ?stageInstance ;
-            http:body {
-                ?stageInstance ibm:isInstanceOf ?stageModel ;
-                ibm:hasState ibm:running ;
-                ibm:inWorkflowInstance ?wfInstance ;
-                # UI modifications
-                ibm:forStageModel ?stageModel .
-            } .
-} .
+#{
+#    ?wfInstance ibm:isInstanceOf ?wfModel .
+#    ?wfModel ibm:containsStageModel ?stageModel .
+#    ?stageInstance ibm:isInstanceOf ?stageModel ;
+#                    ibm:hasState ibm:triggered .
+#    ?stageModel ibm:hasTaskModel ?taskModel .
+#} 
+#=> 
+#{
+#    _:h2    http:mthd http_m:PUT ;
+#            http:requestURI ?stageInstance ;
+#            http:body {
+#                ?stageInstance ibm:isInstanceOf ?stageModel ;
+#                ibm:hasState ibm:running ;
+#                ibm:inWorkflowInstance ?wfInstance ;
+#                # UI modifications
+#                ibm:forStageModel ?stageModel .
+#            } .
+#} .
 
 # FCR-1
 
@@ -185,9 +162,43 @@
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance ibm:isInstanceOf ?stageModel ;
-            ibm:hasState ibm:triggered ;
+            ibm:hasState ibm:running ;
             ibm:inWorkflowInstance ?wfInstance .
         } . 
+} .
+
+# execute active tasks
+# we need this rule for every supported kind of http method
+# (PUT, POST at least), see annotation below
+# 
+{
+    # Basis
+    ?wfInstance ibm:isInstanceOf ?wfModel .
+    ?wfModel ibm:containsStageModel ?stageModel .
+    ?stageModel ibm:hasGuard ?guard ;
+                ibm:hasTaskModel ?taskModel .
+
+    # Prerequisite
+    ?stageInstance ibm:isInstanceOf ?stageModel .
+    ?stageInstance ibm:hasState ibm:inactive .
+
+    # Antecedent
+    ?guard ibm:hasCondition ?sentry .
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+    ?wfInstance ibm:hasState ibm:active .
+
+    ?taskModel ibm:hasHttpRequest ?httpRequest .
+
+    ?httpRequest http:mthd ?httpMthd ;
+                http:requestURI ?httpUri ;
+                http:body ?httpBody .
+} 
+=> 
+{
+    _:h     http:mthd http_m:POST ;  # ?httpMthd breaks ldfu...
+            http:requestURI ?httpUri ; 
+            http:body ?httpBody . 
+
 } .
 
 # PAC-2
