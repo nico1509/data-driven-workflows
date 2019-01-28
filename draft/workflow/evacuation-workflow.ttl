@@ -40,11 +40,11 @@
 # Guards
 :G1 
     a ibm:Guard ;
-    ibm:hasCondition :FireAlarmButtonPressed .
+    ibm:hasCondition :FireAlarmButtonPressed, :FireAlarmButtonPressedMOCK .
 
 :G2
     a ibm:Guard ;
-    ibm:hasCondition :HighTemperatureDetected .
+    ibm:hasCondition :HighTemperatureDetected, :HighTemperatureDetectedMOCK .
 
 :G3 
     a ibm:Guard ;
@@ -54,9 +54,9 @@
     a ibm:Guard ;
     ibm:hasCondition :PeopleEvacuated .
 
-#:G5
-#    a ibm:Guard ;
-#    ibm:hasCondition :PeopleCounted .
+:G5
+    a ibm:Guard ;
+    ibm:hasCondition :PeopleCounted, :PeopleCountedMOCK .
 
 :G6
     a ibm:Guard ;
@@ -117,13 +117,15 @@
 :CheckForCompleteness 
     a ibm:StageModel ;
     ibm:hasGuard :G4 ;
-    ibm:hasMilestoneModel :C5 , :C4a ;
+ #   ibm:hasMilestoneModel :C5 , :C4a ;
+    ibm:hasMilestoneModel :CX ;
     ibm:hasTaskModel :CheckForCompletenessTask .
 
 :StartSearching
     a ibm:StageModel ;
     ibm:hasGuard :G6 ;
-    ibm:hasMilestoneModel :C4b ;
+    #ibm:hasMilestoneModel :C4b ;
+    ibm:hasMilestoneModel :CX ;
     ibm:hasTaskModel :StartSearchingTask .
 
 :SayItsDone
@@ -240,20 +242,20 @@
 #    ibm:hasValidatingSentry :PeopleCounted ;
 #   ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
-:C4a 
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleComplete ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+#:C4a 
+#    a ibm:MilestoneModel ;
+#    ibm:hasValidatingSentry :PeopleComplete ;
+#    ibm:hasInvalidatingSentry :NoFireAnymore .
 
-:C4b 
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleComplete ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+#:C4b 
+#    a ibm:MilestoneModel ;
+#    ibm:hasValidatingSentry :PeopleComplete ;
+#    ibm:hasInvalidatingSentry :NoFireAnymore .
 
-:C5 
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleIncomplete ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+#:C5 
+#    a ibm:MilestoneModel ;
+#    ibm:hasValidatingSentry :PeopleIncomplete ;
+#    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 :C6
     a ibm:MilestoneModel ;
@@ -284,6 +286,14 @@
 :FireAlarmButtonPressed
     a sp:Ask ;
     sp:where ([
+        sp:subject rfid-ambient:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:FireAlarmButtonPressedMOCK
+    a sp:Ask ;
+    sp:where ([
         sp:subject mock:AlarmButton ;
         sp:predicate <http://example.org/isPressed> ;
         sp:object "true"^^xsd:boolean
@@ -293,6 +303,14 @@
     a sp:Ask ;
     sp:where ([
         sp:subject ambient-light:value ;
+        sp:predicate <http://example.org/isBright> ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
+:HighTemperatureDetectedMOCK
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Temperature ;
         sp:predicate <http://example.org/isBright> ;
         sp:object "true"^^xsd:boolean 
     ]) .
@@ -313,39 +331,47 @@
         sp:object "true"^^xsd:boolean 
     ]) .
 
-#:PeopleCounted
-#    a sp:Ask ;
-#    sp:where ([
-#        sp:subject rfid-bright:sensor ;
-#        sp:predicate rdf:value ;
-#        sp:object "true"^^xsd:boolean
-#    ]) .
-
-:PeopleIncompleteFireExtinguished
+:PeopleCounted
     a sp:Ask ;
     sp:where ([
         sp:subject rfid-bright:sensor ;
         sp:predicate rdf:value ;
-        sp:object "true"^^xsd:boolean 
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:PeopleCountedMOCK
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:PeopleIncompleteFireExtinguished
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "false"^^xsd:boolean
     ] [
         sp:subject mock:Fire ;
         sp:predicate <http://example.org/extinguished> ;
         sp:object "true"^^xsd:boolean
     ]) .
 
-:PeopleComplete
-    a sp:Ask ;
-    sp:where ([
-        sp:subject rfid-dark:sensor ;
-        sp:predicate rdf:value ;
-        sp:object "true"^^xsd:boolean 
-    ]) .
+#:PeopleComplete
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-dark:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean 
+#    ]) .
 
 :PeopleCompleteFireExtinguished
     a sp:Ask ;
     sp:where ([
-        sp:subject rfid-dark:sensor ;
-        sp:predicate rdf:value ;
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
         sp:object "true"^^xsd:boolean  
     ] [
         sp:subject mock:Fire ;
