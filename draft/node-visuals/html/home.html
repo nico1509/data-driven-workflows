@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+
+        <title>Welcome - Mock and Visualization Server</title>
+
+        <!-- scripts -->
+        <script src="/res/jQuery.js"></script>       
+        <link rel="stylesheet" type="text/css" href="/res/fa/css/all.css" />
+        
+        <style type="text/css">
+            body{
+                padding:20px;
+                font-family: Arial;
+            }
+            
+            a{
+                display:inline-block;
+                margin: 3px 0;
+                color:#08729c;
+            }
+        </style>
+
+    </head>
+    <body>
+        
+        <p>Running on 172.23.231.73:3000.</p>
+        <p>LDBBC connected on xxx.xxx.xxx.xxx:8080.<a href="/iphs">iphs</a> </p>
+        
+       <br/>
+        
+        <h2>Mock Server</h2>
+        <a href="/mock/rdf">Milestone Values (RDF XML)</a><br/>
+        <a href="/mock/json">Milestone Values (JSON)</a><br/>
+        <a href="/mock/ui">UI</a><br/>
+        
+        <h2>Visualization Server</h2>
+        <a href="/stages">UI</a><br/>
+        <a href="/stages/stages.json">parsed stages json</a><br/>
+        
+        <script>
+            
+            //setInterval(function(){window.location.reload()}, 2000);
+        
+            setInterval(function(){
+                $(document.body).load(window.location.href);
+            }, 2000);
+
+        </script>
+        
+    </body>
+</html>

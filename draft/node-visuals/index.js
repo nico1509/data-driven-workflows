@@ -37,6 +37,8 @@ var milestoneRDF = {
 }
 
 // ressources (html)
+app.use('/res', express.static('res'));
+/*
 app.get('/res/jQuery.js', function(req, res){
     fs.readFile('res/jQuery.js', "utf8", function(err, data) {
         res.writeHead(200, {'Content-Type': 'application/javascript'});
@@ -52,7 +54,7 @@ app.get('/res/fa.css', function(req, res){
         res.end();
     });  
 });
-
+*/
 // setup the mock
 app.get('/mock/setup', function(req, res){
     
@@ -239,12 +241,23 @@ app.get('/stages', function (req, res) {
 
 // landing page
 app.get('/', function (req, res) {
-    var self_ip = require('ip');
-    var self_host = self_ip.address()+':3000';
+    var ip = require('ip');
+    
+    //var self_host = ip.address()+':3000';
+    //var ldbbc_host = rdfhost_ip + ':' + rdfhost_port;
 
-    var ldbbc_host = rdfhost_ip + ':' + rdfhost_port;
+    fs.readFile('html/home.html', 'utf8', function(err, data) {
 
-    res.send('<style type="text/css">body{padding:20px;font-family: Arial;}a{display:inline-block;margin: 3px 0;color:#08729c;}</style><p>Running on '+self_host+'.</p>LDBBC connected on '+ldbbc_host+'. <a href="/iphs">iphs</a><br/><h2>Mock Server</h2><a href="/mock/rdf">Milestone Values (RDF XML)</a><br/><a href="/mock/json">Milestone Values (JSON)</a><br/><a href="/mock/ui">UI</a><br/><h2>Visualization Server</h2><a href="/stages">UI</a><br/><a href="/stages/stages.json">parsed stages json</a><br/><script>setInterval(function(){window.location.reload()}, 2000);</script>');
+        data = data.replace('[self|xxx.xxx.xxx.xxx:xxxx]', ip.address() + ':' + 3000);
+        data = data.replace('[ldbbc|xxx.xxx.xxx.xxx:xxxx]', rdfhost_ip + ':' + rdfhost_port);
+
+
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    });
+    
+    //res.send('<style type="text/css">body{padding:20px;font-family: Arial;}a{display:inline-block;margin: 3px 0;color:#08729c;}</style><p>Running on '+self_host+'.</p>LDBBC connected on '+ldbbc_host+'. <a href="/iphs">iphs</a><br/><h2>Mock Server</h2><a href="/mock/rdf">Milestone Values (RDF XML)</a><br/><a href="/mock/json">Milestone Values (JSON)</a><br/><a href="/mock/ui">UI</a><br/><h2>Visualization Server</h2><a href="/stages">UI</a><br/><a href="/stages/stages.json">parsed stages json</a><br/><script>setInterval(function(){window.location.reload()}, 2000);</script>');
 });
 
 /// testing
