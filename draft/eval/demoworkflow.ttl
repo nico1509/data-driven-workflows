@@ -46,7 +46,7 @@
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{A}" ] .
+      http:body "{\"http://schema.org/text\":\"A\"}" ] .
 
 <#B> a :AtomicActivity ;
   :hasPostcondition <#truePostCondition> ;
@@ -54,7 +54,7 @@
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{B}" ] .
+      http:body "{\"http://schema.org/text\":\"B\"}" ] .
 
 <#C> a :AtomicActivity ;
   :hasPostcondition <#truePostCondition> ;
@@ -62,7 +62,7 @@
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{C}" ] .
+      http:body "{\"http://schema.org/text\":\"C\"}" ] .
 
 
 #
