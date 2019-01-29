@@ -63,7 +63,7 @@ app.get('/mock/setup', function(req, res){
 
     var script = `curl -f -X DELETE `+ldbbc+` && 
     curl -f -X PUT -T ../workflow/evacuation-workflow.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
-    curl -f -X PUT -T ../ontology/ibm-vocab.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
+    curl -f -X PUT -T ../ontology/gsm-vocab.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
     curl -f -X PUT -T ../ontology/list-vocab.ttl `+ldbbc+` -Hcontent-type:text/turtle && 
     curl -f -X PUT -T ../workflow/evacuation-workflow-instance.ttl `+ldbbc+` -Hcontent-type:text/turtle`;
 

@@ -23,16 +23,16 @@ var ldpc = "http://" + ldpcHost + ldpcPath;
 
 var instance = {
   "@id" : "#it",
-  "@type" : "ibm:WorkflowInstance",
-  "ibm:isInstanceOf" : "http://tok450s.lan:8080/ldbbc/evacuation-workflow.ttl#EvacuationWorkflowModel",
-  "ibm:hasState": "ibm:uninitialized"
+  "@type" : "gsm:WorkflowInstance",
+  "gsm:isInstanceOf" : "http://tok450s.lan:8080/ldbbc/evacuation-workflow.ttl#EvacuationWorkflowModel",
+  "gsm:hasState": "gsm:uninitialized"
 };
 var context = {
   "name": "http://xmlns.com/foaf/0.1/name",
 //  "home": "http://people.aifb.kit.edu/co1683/2018/iswcdemo/vocab#home",
-  "ibm": "http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#",
-  "ibm:isInstanceOf":  { "@type": "@id" },
-  "ibm:hasState": { "@type": "@id" }
+  "gsm": "http://tok450s.lan:8080/ldbbc/gsm-vocab.ttl#",
+  "gsm:isInstanceOf":  { "@type": "@id" },
+  "gsm:hasState": { "@type": "@id" }
 };
 
 // Convert a HTML form to JSON

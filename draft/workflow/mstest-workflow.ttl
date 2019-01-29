@@ -1,5 +1,5 @@
 @prefix : <#> .
-@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix gsm: <http://tok450s.lan:8080/ldbbc/gsm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -23,28 +23,28 @@
 
 # Workflow
 :MSTestWorkflowModel
-    a ibm:WorkflowModel ;
-    ibm:containsStageModel 
+    a gsm:WorkflowModel ;
+    gsm:containsStageModel 
         :Stage1. 
 
 
 # Guards
 :G1 
-    a ibm:Guard ;
-    ibm:hasCondition :S1 .
+    a gsm:Guard ;
+    gsm:hasCondition :S1 .
 
 # Stages
 :Stage1
-    a ibm:StageModel ;
-    ibm:hasGuard :G1 ;
-    ibm:hasMilestoneModel :C1, :C2, :C3 ;
-    ibm:hasTaskModel :Task1 .
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 ;
+    gsm:hasMilestoneModel :C1, :C2, :C3 ;
+    gsm:hasTaskModel :Task1 .
 
 
 # Tasks
 :Task1 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
@@ -53,26 +53,26 @@
 
 # Milestones
 :C1
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :V1 ;
-    ibm:hasInvalidatingSentry :I1 .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :V1 ;
+    gsm:hasInvalidatingSentry :I1 .
 
 :C2
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :V2 ;
-    ibm:hasInvalidatingSentry :I2 .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :V2 ;
+    gsm:hasInvalidatingSentry :I2 .
 
 :C3
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :V3 ;
-    ibm:hasInvalidatingSentry :I3 .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :V3 ;
+    gsm:hasInvalidatingSentry :I3 .
 
 
 # dummy milestone for stages with no explicit milestone
 :CX
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :AlwaysTrue ;
-    ibm:hasInvalidatingSentry :HighTemperatureDetected .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :AlwaysTrue ;
+    gsm:hasInvalidatingSentry :HighTemperatureDetected .
 
 
 # Sentries
