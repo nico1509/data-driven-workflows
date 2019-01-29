@@ -1,0 +1,72 @@
+#
+# A workflow description for our ISWC 2018 demo.
+#
+# Author: Tobias Käfer
+#
+
+# Standard prefixes:
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+
+@prefix : <http://purl.org/wild/vocab#> .
+
+# Prefixes for the components of the demo:
+@prefix speaker: <http://t2-rest-speaker.lan/#> .
+@prefix light: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+@prefix rfid-submit: <http://t2-rest-rfid-ambient.lan/rfid/#> .
+@prefix rfid-bright: <http://t2-rest-bright.lan/#> .
+@prefix rfid-dark: <http://t2-rest-dark.lan/#> .
+
+
+#
+# The workflow model.
+#
+
+<#wfm> a :WorkflowModel ;
+  :hasBehaviour <#root> .
+
+#
+# Atomic and composite activities.
+#
+
+<#root> a :ParallelActivity ;
+  :hasChildActivities ( <#A> <#B> ) .
+
+<#A> a :AtomicActivity ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{A}" ] .
+
+<#B> a :AtomicActivity ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{B}" ] .
+
+#
+# Pre- and Postconditions
+#
+
+<#speakerQuiet> a sp:Ask ;
+  sp:where ([ 
+  sp:subject speaker:spk ;
+  sp:predicate <http://example.org/speaking> ;
+  sp:object "false"^^xsd:boolean ]) .
+
+<#start> a sp:Ask ;
+  sp:where ([
+        sp:subject rfid-submit:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
+<#truePostCondition> a sp:Ask ; sparql-result:boolean "true"^^xsd:boolean .
