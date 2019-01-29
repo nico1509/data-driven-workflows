@@ -106,7 +106,7 @@
     a ibm:StageModel ;
     ibm:hasGuard :Gcount ;
     ibm:hasMilestoneModel :CXcount ;
-    ibm:hasTaskModel :CountPeopleTask .
+    ibm:hasTaskModel :AddPerson .
 
 :StartExtinguishing
     a ibm:StageModel ;
@@ -117,15 +117,14 @@
 :CheckForCompleteness 
     a ibm:StageModel ;
     ibm:hasGuard :G4 ;
-    ibm:hasMilestoneModel :Cincomplete , :Ccomplete ;
-    ibm:hasTaskModel :CheckForCompletenessTask .
+    ibm:hasMilestoneModel :All , :Missing ;
+    ibm:hasTaskModel :CountPeopleTask .
 
 :StartSearching
     a ibm:StageModel ;
     ibm:hasGuard :G6 ;
-    #ibm:hasMilestoneModel :C4b ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :StartSearchingTask .
+    ibm:hasMilestoneModel :C4 ;
+    ibm:hasTaskModel :SearchPeopleTask .
 
 :SayItsDone
     a ibm:StageModel ;
@@ -179,7 +178,7 @@
         http:body "{\"http://schema.org/text\":\"Close the fire doors!\"}"^^xsd:string
     ] .
 
-:CountPeopleTask 
+:AddPerson 
     a ibm:TaskModel ;
     ibm:hasHttpRequest [
         a http:Request ;
@@ -197,7 +196,7 @@
         http:body "{\"http://schema.org/text\":\"Emergency arrived! Start extinguishing\"}"^^xsd:string
     ] .
 
-:CheckForCompletenessTask 
+:CountPeopleTask 
     a ibm:TaskModel ;
     ibm:hasHttpRequest [
         a http:Request ;
@@ -206,13 +205,13 @@
         http:body "{\"http://schema.org/text\":\"People are now evacuated. Check if everyone is here!\"}"^^xsd:string
     ] .
 
-:StartSearchingTask 
+:SearchPeopleTask 
     a ibm:TaskModel ;
     ibm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "{\"http://schema.org/text\":\"Oh jeez! There are people missing. Let's search them!\"}"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"The fire is now extinguished, but Oh jeez! There are people missing. Let's search them!\"}"^^xsd:string
     ] .
 
 :SayItsDoneTask 
@@ -241,17 +240,17 @@
 #    ibm:hasValidatingSentry :PeopleCounted ;
 #   ibm:hasInvalidatingSentry :HighTemperatureDetected .
 
-#:C4a 
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleComplete ;
-#    ibm:hasInvalidatingSentry :NoFireAnymore .
+:C4 
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :PeopleCompleteFireExtinguished ;
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
-:Ccomplete 
+:All 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleCountedAndComplete ;
     ibm:hasInvalidatingSentry :NoFireAnymore .
 
-:Cincomplete 
+:Missing 
     a ibm:MilestoneModel ;
     ibm:hasValidatingSentry :PeopleCountedAndIncomplete ;
     ibm:hasInvalidatingSentry :NoFireAnymore .
@@ -308,7 +307,7 @@
     a sp:Ask ;
     sp:where ([
         sp:subject mock:Temperature ;
-        sp:predicate <http://example.org/isBright> ;
+        sp:predicate <http://example.org/isHigh> ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
@@ -361,8 +360,8 @@
         sp:object "true"^^xsd:boolean
     ] [
         sp:subject mock:People ;
-        sp:predicate <http://example.org/counted> ;
-        sp:object "true"^^xsd:boolean
+        sp:predicate <http://example.org/complete> ;
+        sp:object "false"^^xsd:boolean
     ]) .
 
 :PeopleIncompleteFireExtinguished

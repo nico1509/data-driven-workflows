@@ -15,8 +15,8 @@
 # Mock Server Temperature and People counter
 { _:h http:mthd http_m:GET ; http:requestURI <http://mock-server.lan:3000/mock/rdf> . } 
 
-{ ?value <http://example.org/value> ?val . ?val math:lessThan "50"^^xsd:double . } => { ?value <http://example.org/value> "false"^^xsd:boolean . } .
-{ ?value <http://example.org/value> ?val . ?val math:notLessThan "50"^^xsd:double . } => { ?value <http://example.org/value> "true"^^xsd:boolean . } .
+{ ?value <http://example.org/value> ?val . ?val math:lessThan "50"^^xsd:double . } => { ?value <http://example.org/isHigh> "false"^^xsd:boolean . } .
+{ ?value <http://example.org/value> ?val . ?val math:notLessThan "50"^^xsd:double . } => { ?value <http://example.org/isHigh> "true"^^xsd:boolean . } .
 
 { ?value <http://example.org/count> ?val . ?val math:lessThan "5"^^xsd:double . } => { ?value <http://example.org/complete> "false"^^xsd:boolean . } .
 { ?value <http://example.org/count> ?val . ?val math:notLessThan "5"^^xsd:double . } => { ?value <http://example.org/complete> "true"^^xsd:boolean . } .
