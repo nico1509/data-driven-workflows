@@ -1,0 +1,32 @@
+# Environmental Conditional (root:cond -> A B)
+vorher:		ooo
+während:	oo
+nachher:	oo
+## (1 pc erfüllt) (root:cond -> A B C D E F G H I J K L M N O P Q R S T)
+vorher:		ooo
+während:	oo
+nachher:	oo
+## (3 pc erfüllt) (root:cond -> A B C D E F G H I J K L M N O P Q R S T)
+vorher:		ooo
+während:	oo
+nachher:	oo
+
+# Realistic Conditional (root:seq -> A alpha:cond -> B C)
+vorher:		ooo
+während:	oooo
+nachher:	oooo
+
+# Sequential (root:seq -> A B)
+vorher:		ooo
+während:	oooo
+nachher:	oo
+## (root:seq -> A B C D)
+vorher:		ooo
+während:	oooooooo
+nachher:	oo
+
+# Parallel (root:par -> A B) (wird nicht zu Ende ausgeführt)
+vorher:		ooo
+während:	o
+nachher:	o
+
