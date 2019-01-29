@@ -1,0 +1,603 @@
+#
+# Workflow semantics implementation.
+#
+
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix ldf: <http://ex.org/ldf#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix maths: <http://vocab.arvida.de/2014/03/maths/vocab#> .
+@prefix qrl: <http://www.aifb.kit.edu/project/ld-retriever/qrl#>.
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix schema: <http://schema.org/> .
+@prefix this: <http://this.nxparser.github.io/reference/to/URI/of/current/rdf/graph/for/representing/permanently/relative/URIs/in/N-Triples/#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix wild: <http://purl.org/wild/vocab#> .
+@prefix list: <http://purl.org/list/vocab#> .
+
+@prefix :       <http://tok450s.lan/ldbbc/> .
+@prefix tmp:    <http://tok450s.lan/ldbbc/> .
+@prefix tmp_ha: <http://tok450s.lan/ldbbc/#> . # because we cannot parse local names with 0 or 1 letter
+@prefix webserver: <http://tok450s.lan/ldbbc/> .
+
+
+## wild:containsActivity property should allow for making statements about all activities in a workflow model.
+# wild:containsActivity as property chain axiom of wild:hasBehaviour and wild:hasDescendantActivity
+{ ?WfModel wild:hasBehaviour ?rootActivity . ?rootActivity wild:hasDescendantActivity ?descendantActivity . } => { ?WfModel wild:containsActivity ?descendantActivity . } . 
+# wild:containsActivity as superPropertyOf wild:hasBehaviour
+{ ?WfModel wild:hasBehaviour ?rootActivity . } => { ?WfModel wild:containsActivity ?rootActivity . } . 
+
+############
+
+###
+### Get all the data for initalising / running a workflow.
+###
+
+# ldfu issue 139: requests on URI with and w/o hash results in twice the data.
+{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:uninitialised ; wild:workflowInstanceOf ?td . }
+=>
+{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:initialised ; wild:workflowInstanceOf ?td . }
+=>
+{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:active ; wild:workflowInstanceOf ?td . }
+=>
+{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+## Request also the tasks (in case they are not defined in the task definition's information resource):
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:uninitialised ; wild:workflowInstanceOf ?td . ?td wild:hasDescendant ?desc . }
+#=>
+#{ _:h http:mthd http_m:GET ; http:requestURI ?desc . } . 
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:initialised ; wild:workflowInstanceOf ?td . ?td wild:hasDescendant ?desc . }
+#=>
+#{ _:h http:mthd http_m:GET ; http:requestURI ?desc . } . 
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:active ; wild:workflowInstanceOf ?td . ?td wild:hasDescendant ?desc . }
+#=>
+#{ _:h http:mthd http_m:GET ; http:requestURI ?desc . } . 
+## For debugging at the end:
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:done ; wild:workflowInstanceOf ?td . }
+#=>
+#{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:done ; wild:workflowInstanceOf ?td . ?td wild:hasDescendant ?desc . }
+#=>
+#{ _:h http:mthd http_m:GET ; http:requestURI ?desc . } . 
+
+###
+### Initialising resources that maintain the state of a workflow instance.
+###
+
+# Initialising a Workflow Instance 1: The workflow model's resource be initialised.
+#{ ?WfInstance wild:hasState wild:uninitialised ; wild:workflowInstanceOf ?WfModel . ?WfModel wild:hasBehaviour ?rootActivity . }
+#=>
+#{ _:h http:mthd http_m:POST ; http:requestURI tmp_ha:ck ; http:body { this:it wild:instanceOf ?rootActivity ; wild:hasState wild:initialised ; wild:inWorkflowInstance ?WfInstance  . } . } .
+
+# Included in Initialising a Workflow Instance 3??
+## Initialising a Workflow Instance 2: The plan of the root element be initialised.
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:uninitialised ; wild:workflowInstanceOf ?td . ?td hta-core:hasBehaviour ?be . ?be hta-core:hasPlan ?plan . }
+#=>
+#{ _:h http:mthd http_m:POST ; http:requestURI tmp_ha:ck ; http:body { this:it wild:instanceOf ?plan ; wild:hasState wild:initialised . } . } .
+
+# Initialising a Workflow Instance 3: Initialising all plans.
+{ ?WfInstance wild:hasState wild:uninitialised ; wild:workflowInstanceOf ?WfModel . ?WfModel wild:containsActivity ?act . }
+=>
+{ _:h http:mthd http_m:POST ; http:requestURI tmp_ha:ck ; http:body { this:it wild:instanceOf ?act ; wild:hasState wild:initialised ; wild:inWorkflowInstance ?WfInstance . } . } .
+
+# Finally, set the workflow instance initialised. TODO: Patch would be more appropriate.
+{ ?WfInstance wild:hasState wild:uninitialised ; wild:workflowInstanceOf ?WfModel . ?WfModel wild:hasBehaviour ?rootActivity . }
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?WfInstance ; http:body { ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:initialised ; wild:workflowInstanceOf ?WfModel . } . } . 
+
+###
+### Processing of a workflow instance: Activating activities and control flow elements.
+###
+
+# Set the workflow instance active. TODO: Patch would be more appropriate.
+{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:initialised ; wild:workflowInstanceOf ?WfModel . }
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?WfInstance ; http:body { ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:active ; wild:workflowInstanceOf ?WfModel . } . } . 
+
+# Set the root activity instance active. TODO: Patch would be more appropriate.
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:hasBehaviour ?rootActivity .
+?rootActivityInstance wild:instanceOf ?rootActivity ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised . 
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?rootActivityInstance ; http:body { ?rootActivityInstance wild:instanceOf ?rootActivity ; wild:hasState wild:active ; wild:inWorkflowInstance ?WfInstance . } . } .
+
+## Set the root plan in the hta active. TODO: Patch would be more appropriate.
+#{ ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:active ; wild:workflowInstanceOf ?WfModel . ?WfModel wild:hasBehaviour ?td . ?tmp wild:instanceOf ?td ; wild:hasState wild:active . ?td hta-#inferred:hasRootPlan ?plan . ?tmp2 wild:instanceOf ?plan ; wild:hasState wild:initialised .
+#?tmp wild:inWorkflowInstance ?WfInstance . ?tmp2 wild:inWorkflowInstance ?WfInstance .
+#}
+#=>
+#{ _:h http:mthd http_m:PUT ; http:requestURI ?tmp2 ; http:body { ?tmp2 wild:instanceOf ?plan ; wild:hasState wild:active ; wild:inWorkflowInstance ?WfInstance . } . } . 
+
+# A sequence becomes active:
+{ 
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?list .
+?list rdf:first ?firstChildActivity .
+?firstChildActivityInstance wild:instanceOf ?firstChildActivity ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?firstChildActivityInstance ; http:body { ?firstChildActivityInstance wild:instanceOf ?firstChildActivity ; wild:hasState wild:active ; wild:inWorkflowInstance ?WfInstance . } . } .
+{ #Execution: POST
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?list .
+?list rdf:first ?firstChildActivity .
+?firstChildActivityInstance wild:instanceOf ?firstChildActivity ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?firstChildActivity wild:hasHttpRequest ?req .
+?req http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . } .
+{ #Execution: PUT
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?list .
+?list rdf:first ?firstChildActivity .
+?firstChildActivityInstance wild:instanceOf ?firstChildActivity ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?firstChildActivity wild:hasHttpRequest ?req .
+?req http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body . } .
+
+
+# A parallel becomes active:
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ParallelActivity ;
+  wild:hasChildActivity ?childAct .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?childActInst ; http:body { ?childActInst wild:instanceOf ?childAct; wild:hasState wild:active ; wild:inWorkflowInstance ?WfInstance . } . } .
+{ #Execution: PUT
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ParallelActivity ;
+  wild:hasChildActivity ?childAct .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?childAct wild:hasHttpRequest ?req .
+?req http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body . } .
+{ #Execution: POST
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ParallelActivity ;
+  wild:hasChildActivity ?childAct .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?childAct wild:hasHttpRequest ?req .
+?req http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . } .
+
+# A sequence proceeds from one to the next element:
+{ 
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?childList ;
+  wild:hasChildActivity ?childDoneAct , ?childNextAct .
+?childDoneActInst wild:instanceOf ?childDoneAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+?childNextActInst wild:instanceOf ?childNextAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?childList list:equalsOrTransitiveRest ?bn1 , ?bn2 .
+?bn1 rdf:first ?childDoneAct ;
+  rdf:rest ?bn2 .
+?bn2 rdf:first ?childNextAct .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?childNextActInst ; http:body { ?childNextActInst wild:instanceOf ?childNextAct ; wild:hasState wild:active ; wild:inWorkflowInstance ?WfInstance . } . } .
+{ #Execution: PUT
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?childList ;
+  wild:hasChildActivity ?childDoneAct , ?childNextAct .
+?childDoneActInst wild:instanceOf ?childDoneAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+?childNextActInst wild:instanceOf ?childNextAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?childList list:equalsOrTransitiveRest ?bn1 , ?bn2 .
+?bn1 rdf:first ?childDoneAct ;
+  rdf:rest ?bn2 .
+?bn2 rdf:first ?childNextAct .
+?childNextAct wild:hasHttpRequest ?req .
+?req http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body . } .
+{ #Execution: POST
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?childList ;
+  wild:hasChildActivity ?childDoneAct , ?childNextAct .
+?childDoneActInst wild:instanceOf ?childDoneAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+?childNextActInst wild:instanceOf ?childNextAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised .
+?childList list:equalsOrTransitiveRest ?bn1 , ?bn2 .
+?bn1 rdf:first ?childDoneAct ;
+  rdf:rest ?bn2 .
+?bn2 rdf:first ?childNextAct .
+?childNextAct wild:hasHttpRequest ?req .
+?req http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . } .
+
+###
+### Processing of a workflow instance: Handling completed activities and control flow elements.
+###
+
+# A sequence is done if all of its elements are done:
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:SequentialActivity ;
+  wild:hasChildActivities ?childList ;
+  wild:hasChildActivity ?childLastAct .
+?childList list:equalsOrTransitiveRest ?bn .
+?bn rdf:first ?childLastAct ;
+  rdf:rest rdf:nil .
+?childLastActInst wild:instanceOf ?childLastAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+# webserver:time dct:created ?currentTime .  => ; schema:endDate ?currentTime 
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?actInst ; http:body { ?actInst wild:instanceOf ?act ; wild:hasState wild:done ; wild:inWorkflowInstance ?WfInstance . } . } .
+
+# Determining if a parallel is done 1: The first in the list is done.
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ParallelActivity ;
+  wild:hasChildActivities ?childList .
+?childList rdf:first ?firstChildAct .
+?firstChildActInst wild:instanceOf ?firstChildAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+}
+=>
+{ ?firstChildActInst wild:hasVirtualState wild:doneFromListItemOne . } .
+
+# Determining if a parallel is done 2: The middle ones in the list are individually done.
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ParallelActivity ;
+  wild:hasChildActivities ?list ;
+  wild:hasChildActivity ?doneChildAct .
+?doneChildActInst wild:instanceOf ?doneChildAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasVirtualState wild:doneFromListItemOne .
+?list wild:equalsOrTransitiveRest ?bn .
+?bn rdf:first ?doneChildAct ;
+  rdf:rest ?bn2 .
+?bn2 rdf:first ?nextDoneChildAct .
+?nextDoneChildActInst wild:instanceOf ?nextDoneChildAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+}
+=>
+{ ?nextDoneChildActInst wild:hasVirtualState wild:doneFromListItemOne . } .
+
+# Determining if a parallel is done 3: If all including the last are done, the parallel is done.
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ParallelActivity ;
+  wild:hasChildActivities ?list ;
+  wild:hasChildActivity ?doneChildAct .
+?doneChildActInst wild:instanceOf ?doneChildAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasVirtualState wild:doneFromListItemOne .
+?list wild:equalsOrTransitiveRest ?bn .
+?bn rdf:first ?doneChildAct ;
+  rdf:rest rdf:nil .
+# webserver:time dct:created ?currentTime . => ; schema:endDate ?currentTime
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?actInst ; http:body { ?actInst wild:instanceOf ?act ; wild:hasState wild:done ; wild:inWorkflowInstance ?WfInstance  . } . } .
+
+
+# Conditional Activity: Determining whether we are choosing the child to execute 1
+{ 
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ConditionalActivity ;
+  wild:hasChildActivities ?list .
+?list rdf:first ?firstChildAct .
+?firstChildActInst wild:instanceOf ?firstChildAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised . }
+=> { ?firstChildActInst wild:hasVirtualState wild:initialisedFromListItemOne . } .
+
+# Conditional Activity: Determining whether we are choosing the child to execute 2
+{ ?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ConditionalActivity ;
+  wild:hasChildActivities ?childActList ;
+  wild:hasChildActivity ?childAct .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasVirtualState wild:initialisedFromListItemOne .
+?childActList list:equalsOrTransitiveRest ?list1 .
+?list1 rdf:first ?childAct ;
+  rdf:rest ?list2 .
+?list2 rdf:first ?childNextAct .
+?childNextActInst wild:instanceOf ?childNextAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:initialised . }
+=> { ?childNextActInst wild:hasVirtualState wild:initialisedFromListItemOne . } .
+
+# Conditional Activity: Choosing the child to execute
+{ ?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ConditionalActivity ;
+  wild:hasChildActivities ?childActList ;
+  wild:hasChildActivity ?childAct , ?chosenChildAct .
+?chosenChildActInst wild:instanceOf ?chosenChildAct ;
+  wild:inWorkflowInstance ?WfInstance .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasVirtualState wild:initialisedFromListItemOne .
+?childActList list:equalsOrTransitiveRest ?list1 .
+?list1 rdf:first ?childAct ;
+  rdf:rest rdf:nil .
+?chosenChildAct wild:hasPrecondition ?precondition .
+?precondition sparql-result:boolean "true"^^xsd:boolean . }
+=>
+{ _:h http:mthd http_m:PUT ;
+    http:requestURI ?chosenChildActInst ;
+    http:body
+      { ?chosenChildActInst wild:instanceOf ?chosenChildAct ;
+          wild:hasState wild:active ;
+          wild:inWorkflowInstance ?WfInstance . } . } .
+# PUT
+{ ?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ConditionalActivity ;
+  wild:hasChildActivities ?childActList ;
+  wild:hasChildActivity ?childAct , ?chosenChildAct .
+?chosenChildActInst wild:instanceOf ?chosenChildAct ;
+  wild:inWorkflowInstance ?WfInstance .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasVirtualState wild:initialisedFromListItemOne .
+?childActList list:equalsOrTransitiveRest ?list1 .
+?list1 rdf:first ?childAct ;
+  rdf:rest rdf:nil .
+?chosenChildAct wild:hasPrecondition ?precondition .
+?precondition sparql-result:boolean "true"^^xsd:boolean .
+?chosenChildAct wild:hasHttpRequest ?req .
+?req http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?uri ; http:body ?body . } .
+# POST
+{ ?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ConditionalActivity ;
+  wild:hasChildActivities ?childActList ;
+  wild:hasChildActivity ?childAct , ?chosenChildAct .
+?chosenChildActInst wild:instanceOf ?chosenChildAct ;
+  wild:inWorkflowInstance ?WfInstance .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasVirtualState wild:initialisedFromListItemOne .
+?childActList list:equalsOrTransitiveRest ?list1 .
+?list1 rdf:first ?childAct ;
+  rdf:rest rdf:nil .
+?chosenChildAct wild:hasPrecondition ?precondition .
+?precondition sparql-result:boolean "true"^^xsd:boolean .
+?chosenChildAct wild:hasHttpRequest ?req .
+?req http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body .
+}
+=>
+{ _:h http:mthd http_m:POST ; http:requestURI ?uri ; http:body ?body . } .
+
+# Conditional Activity is done:
+{ ?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act a wild:ConditionalActivity ;
+  wild:hasChildActivity ?childAct .
+?childActInst wild:instanceOf ?childAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done . }
+=>
+{ _:h http:mthd http_m:PUT ;
+    http:requestURI ?actInst ;
+    http:body
+      { ?actInst wild:instanceOf ?act ;
+          wild:hasState wild:done ;
+          wild:inWorkflowInstance ?WfInstance . } . } .
+
+
+# The whole Workflow Instance is done. TODO: Should really PATCH here.
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:hasBehaviour ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:done .
+# webserver:time dct:created ?currentTime . => ; schema:endDate ?currentTime
+}
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?WfInstance ; http:body { ?WfInstance a wild:WorkflowInstance ; wild:hasState wild:done ; wild:workflowInstanceOf ?WfModel  . } . } .
+
+# A Task is done:
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act wild:hasPostcondition ?postcondition .
+?postcondition sparql-result:boolean "true"^^xsd:boolean .
+# webserver:time dct:created ?currentTime . => ; schema:endDate ?currentTime
+ }
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?actInst ; http:body { ?actInst wild:instanceOf ?act ; wild:hasState wild:done ; wild:inWorkflowInstance ?WfInstance . } . } .
+
+
+# A Non-Leaf Task is done (kill all subordinates):
+{
+?WfInstance a wild:WorkflowInstance ;
+  wild:hasState wild:active ;
+  wild:workflowInstanceOf ?WfModel .
+?WfModel wild:containsActivity ?act .
+?actInst wild:instanceOf ?act ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState wild:active .
+?act wild:hasPostcondition ?postcondition .
+?postcondition sparql-result:boolean "true"^^xsd:boolean .
+?act wild:hasDescendantActivity ?descAct .
+?descActInst wild:instanceOf ?descAct ;
+  wild:inWorkflowInstance ?WfInstance ;
+  wild:hasState ?actOrInit .
+?actOrInit a wild:ActiveOrInitialisedInstanceState .
+# webserver:time dct:created ?currentTime . => ; schema:endDate ?currentTime
+ }
+=>
+{ _:h http:mthd http_m:PUT ; http:requestURI ?descActInst ; http:body { ?descActInst wild:instanceOf ?descAct ; wild:hasState wild:skipped ; wild:inWorkflowInstance ?WfInstance . } . } .
+
