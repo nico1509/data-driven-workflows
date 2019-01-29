@@ -1,0 +1,187 @@
+#
+# A workflow description for our ISWC 2018 demo.
+#
+# Author: Tobias Käfer
+#
+
+# Standard prefixes:
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+
+@prefix : <http://purl.org/wild/vocab#> .
+
+# Prefixes for the components of the demo:
+@prefix speaker: <http://t2-rest-speaker.lan/#> .
+@prefix light: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+@prefix rfid-submit: <http://t2-rest-rfid-ambient.lan/rfid/#> .
+@prefix rfid-bright: <http://t2-rest-bright.lan/#> .
+@prefix rfid-dark: <http://t2-rest-dark.lan/#> .
+
+
+#
+# The workflow model.
+#
+
+<#wfm> a :WorkflowModel ;
+  :hasBehaviour <#root> .
+
+#
+# Atomic and composite activities.
+#
+
+<#root> a :ConditionalActivity ;
+  :hasChildActivities ( <#darknessQuestion> <#darknessConditionalSplit> ) .
+
+<#A> a :AtomicActivity ;
+  :hasPreCondition <#alpha> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{A}" ] .
+
+<#B> a :AtomicActivity ;
+  :hasPreCondition <#beta> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{B}" ] .
+
+<#darknessConditionalSplit> a :ConditionalActivity ;
+  :hasChildActivities ( <#dark> <#bright> ) .
+
+<#dark> a :Atomic ;
+  :hasPrecondition <#darknessPromisePreCondition> ;
+  :hasChildActivities ( <#dark-intro> <#dark-processing> ) .
+
+<#dark-intro> a :AtomicActivity ;
+  :hasPostcondition <#speakerQuiet> ; 
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":{\"@value\":\"Good choice. Please cover the light sensor and confirm by placing a R F I D card on the R F I D sensor next to it!\",\"@language\":\"en\"}}" ] . 
+
+<#dark-processing> a :ConditionalActivity ;
+  :hasChildActivities ( <#dark-correct> <#dark-incorrect> ) .
+
+<#bright> a :SequentialActivity ;
+  :hasPrecondition <#brightnessPromisePreCondition> ;
+  :hasChildActivities ( <#bright-intro> <#bright-processing> ) .
+
+<#bright-intro> a :AtomicActivity ;
+  :hasPostcondition <#speakerQuiet> ; 
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":{\"@value\":\"All right. Please make sure that the light sensor is not covered and confirm by placing a R F I D card on the R F I D sensor next to it!\",\"@language\":\"en\"}}" ] . 
+
+<#bright-processing> a :ConditionalActivity ;
+  :hasChildActivities ( <#bright-correct> <#bright-incorrect> ) .
+
+<#dark-correct> a :AtomicActivity ;
+  :hasPrecondition <#dark-correct-pc> ; # implicit waiting
+  :hasPostcondition <#speakerQuiet> ; 
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":{\"@value\":\"Absolutely brilliant! You are such a fantastic person! Will you vote for my demo?\",\"@language\":\"en\"}}" ] .
+
+<#dark-incorrect> a :AtomicActivity ;
+  :hasPrecondition <#dark-incorrect-pc> ; # implicit waiting
+  :hasPostcondition <#speakerQuiet> ; 
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":{\"@value\":\"Oh dear, you have no clue! Will you vote for my demo anyway?\",\"@language\":\"en\"}}" ] .
+
+<#bright-correct> a :AtomicActivity ;
+  :hasPrecondition <#bright-correct-pc> ; # implicit waiting
+  :hasPostcondition <#speakerQuiet> ; 
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":{\"@value\":\"You are so smart. You should really vote for my demo!\",\"@language\":\"en\"}}" ] .
+
+<#bright-incorrect> a :AtomicActivity ;
+  :hasPrecondition <#bright-incorrect-pc> ; # implicit waiting
+  :hasPostcondition <#speakerQuiet> ; 
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":{\"@value\":\"That was wrong! Stephen Hawking would have done better. Will you vote for my demo anyway?.\",\"@language\":\"en\"}}" ] .
+
+
+#
+# Pre- and Postconditions
+#
+
+<#speakerQuiet> a sp:Ask ;
+  sp:where ([ 
+  sp:subject speaker:spk ;
+  sp:predicate <http://example.org/speaking> ;
+  sp:object "false"^^xsd:boolean ]) .
+
+<#darknessPromisePreCondition> a sp:Ask ;
+  sp:where (
+  [ sp:subject rfid-dark:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "true"^^xsd:boolean ] 
+  [ sp:subject rfid-bright:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "false"^^xsd:boolean ] ) .
+<#brightnessPromisePreCondition> a sp:Ask ;
+  sp:where (
+  [ sp:subject rfid-bright:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "true"^^xsd:boolean ]
+  [ sp:subject rfid-dark:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "false"^^xsd:boolean ] ) .
+
+<#dark-correct-pc> a sp:Ask ;
+  sp:where (
+  [ sp:subject rfid-submit:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "true"^^xsd:boolean  ]
+  [ sp:subject light:value ;
+    sp:predicate <http://example.org/isBright> ;
+    sp:object "false"^^xsd:boolean ] ) .
+<#dark-incorrect-pc> a sp:Ask ;
+  sp:where (
+  [ sp:subject rfid-submit:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "true"^^xsd:boolean  ]
+  [ sp:subject light:value ;
+    sp:predicate <http://example.org/isBright> ;
+    sp:object "true"^^xsd:boolean ] ) .
+<#bright-correct-pc> a sp:Ask ;
+  sp:where (
+  [ sp:subject rfid-submit:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "true"^^xsd:boolean  ]
+  [ sp:subject light:value ;
+    sp:predicate <http://example.org/isBright> ;
+    sp:object "true"^^xsd:boolean ] ) .
+<#bright-incorrect-pc> a sp:Ask ;
+  sp:where (
+  [ sp:subject rfid-submit:sensor ;
+    sp:predicate rdf:value ;
+    sp:object "true"^^xsd:boolean  ]
+  [ sp:subject light:value ;
+    sp:predicate <http://example.org/isBright> ;
+    sp:object "false"^^xsd:boolean ] ) .
+
+<#truePostCondition> a sp:Ask ; sparql-result:boolean "true"^^xsd:boolean .
