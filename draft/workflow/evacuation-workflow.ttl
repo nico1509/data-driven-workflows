@@ -234,7 +234,7 @@
 
 :C2
     a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleEvacuated , :PeopleEvacuatedMOCK ;
+    ibm:hasValidatingSentry :PeopleEvacuated ;
     ibm:hasInvalidatingSentry :NoFireAnymore .
 
 #:C3
@@ -321,15 +321,15 @@
         sp:object "true"^^xsd:boolean
     ]) .
 
-:PeopleEvacuated
-    a sp:Ask ;
-    sp:where ([
-        sp:subject rfid-ambient:sensor ;
-        sp:predicate rdf:value ;
-        sp:object "true"^^xsd:boolean 
-    ]) .
+#:PeopleEvacuated
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-bright:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean 
+#    ]) .
 
-:PeopleEvacuatedMOCK
+:PeopleEvacuated
     a sp:Ask ;
     sp:where ([
         sp:subject mock:People ;
@@ -341,7 +341,7 @@
 :PeopleCounted
     a sp:Ask ;
     sp:where ([
-        sp:subject rfid-bright:sensor ;
+        sp:subject rfid-dark:sensor ;
         sp:predicate rdf:value ;
         sp:object "true"^^xsd:boolean
     ]) .
@@ -413,8 +413,8 @@
 :NoFireAnymore 
     a sp:Ask ;
     sp:where ([
-        sp:subject mock:AlarmButton ;
-        sp:predicate <http://example.org/isPressed> ;
+        sp:subject rfid-ambient:sensor ; # mockable ?
+        sp:predicate rdf:value ;
         sp:object "false"^^xsd:boolean
     ] [
         sp:subject ambient-light:value ;
