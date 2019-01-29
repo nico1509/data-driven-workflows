@@ -37,20 +37,22 @@
   :hasChildActivities ( <#A> <#B> ) .
 
 <#A> a :AtomicActivity ;
+  :hasPreCondition <#start> ;
   :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{A}" ] .
+      http:body "{\"http://schema.org/text\":\"A\"}" ] .
 
 <#B> a :AtomicActivity ;
+  :hasPreCondition <#start> ;
   :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{B}" ] .
+      http:body "{\"http://schema.org/text\":\"B\"}" ] .
 
 #
 # Pre- and Postconditions
@@ -64,7 +66,7 @@
 
 <#start> a sp:Ask ;
   sp:where ([
-        sp:subject rfid-submit:sensor ;
+        sp:subject rfid-bright:sensor ;
         sp:predicate rdf:value ;
         sp:object "true"^^xsd:boolean 
     ]) .

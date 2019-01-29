@@ -34,95 +34,184 @@
 #
 
 <#root> a :ConditionalActivity ;
-  :hasChildActivities ( <#darknessQuestion> <#darknessConditionalSplit> ) .
+  :hasChildActivities ( <#A> <#B> <#C> <#D> <#E> <#F> <#G> <#H> <#I> <#J> <#K> <#L> <#M> <#N> <#O> <#P> <#Q> <#R> <#S> <#T> ) .
 
 <#A> a :AtomicActivity ;
-  :hasPreCondition <#alpha> ;
+  :hasPrecondition <#start> ;
   :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{A}" ] .
+      http:body "{\"http://schema.org/text\":\"A\"}" ] .
 
 <#B> a :AtomicActivity ;
-  :hasPreCondition <#beta> ;
+  :hasPrecondition <#impossible> ;
   :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{B}" ] .
+      http:body "{\"http://schema.org/text\":\"B\"}" ] .
 
-<#darknessConditionalSplit> a :ConditionalActivity ;
-  :hasChildActivities ( <#dark> <#bright> ) .
-
-<#dark> a :Atomic ;
-  :hasPrecondition <#darknessPromisePreCondition> ;
-  :hasChildActivities ( <#dark-intro> <#dark-processing> ) .
-
-<#dark-intro> a :AtomicActivity ;
-  :hasPostcondition <#speakerQuiet> ; 
+<#C> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{\"http://schema.org/text\":{\"@value\":\"Good choice. Please cover the light sensor and confirm by placing a R F I D card on the R F I D sensor next to it!\",\"@language\":\"en\"}}" ] . 
+      http:body "{\"http://schema.org/text\":\"C\"}" ] .
 
-<#dark-processing> a :ConditionalActivity ;
-  :hasChildActivities ( <#dark-correct> <#dark-incorrect> ) .
-
-<#bright> a :SequentialActivity ;
-  :hasPrecondition <#brightnessPromisePreCondition> ;
-  :hasChildActivities ( <#bright-intro> <#bright-processing> ) .
-
-<#bright-intro> a :AtomicActivity ;
-  :hasPostcondition <#speakerQuiet> ; 
+<#D> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{\"http://schema.org/text\":{\"@value\":\"All right. Please make sure that the light sensor is not covered and confirm by placing a R F I D card on the R F I D sensor next to it!\",\"@language\":\"en\"}}" ] . 
+      http:body "{\"http://schema.org/text\":\"D\"}" ] .
 
-<#bright-processing> a :ConditionalActivity ;
-  :hasChildActivities ( <#bright-correct> <#bright-incorrect> ) .
-
-<#dark-correct> a :AtomicActivity ;
-  :hasPrecondition <#dark-correct-pc> ; # implicit waiting
-  :hasPostcondition <#speakerQuiet> ; 
+<#E> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{\"http://schema.org/text\":{\"@value\":\"Absolutely brilliant! You are such a fantastic person! Will you vote for my demo?\",\"@language\":\"en\"}}" ] .
+      http:body "{\"http://schema.org/text\":\"E\"}" ] .
 
-<#dark-incorrect> a :AtomicActivity ;
-  :hasPrecondition <#dark-incorrect-pc> ; # implicit waiting
-  :hasPostcondition <#speakerQuiet> ; 
+<#F> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{\"http://schema.org/text\":{\"@value\":\"Oh dear, you have no clue! Will you vote for my demo anyway?\",\"@language\":\"en\"}}" ] .
+      http:body "{\"http://schema.org/text\":\"F\"}" ] .
 
-<#bright-correct> a :AtomicActivity ;
-  :hasPrecondition <#bright-correct-pc> ; # implicit waiting
-  :hasPostcondition <#speakerQuiet> ; 
+<#G> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{\"http://schema.org/text\":{\"@value\":\"You are so smart. You should really vote for my demo!\",\"@language\":\"en\"}}" ] .
+      http:body "{\"http://schema.org/text\":\"G\"}" ] .
 
-<#bright-incorrect> a :AtomicActivity ;
-  :hasPrecondition <#bright-incorrect-pc> ; # implicit waiting
-  :hasPostcondition <#speakerQuiet> ; 
+<#H> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{\"http://schema.org/text\":{\"@value\":\"That was wrong! Stephen Hawking would have done better. Will you vote for my demo anyway?.\",\"@language\":\"en\"}}" ] .
+      http:body "{\"http://schema.org/text\":\"H\"}" ] .
+<#I> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"I\"}" ] .
 
+<#J> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"J\"}" ] .
+
+<#K> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"K\"}" ] .
+
+<#L> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"L\"}" ] .
+<#M> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"M\"}" ] .
+
+<#N> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"N\"}" ] .
+
+<#O> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"O\"}" ] .
+
+<#P> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"P\"}" ] .
+<#Q> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"Q\"}" ] .
+
+<#R> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"R\"}" ] .
+
+<#S> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"S\"}" ] .
+
+<#T> a :AtomicActivity ;
+  :hasPrecondition <#impossible> ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"T\"}" ] .
 
 #
 # Pre- and Postconditions
@@ -134,54 +223,13 @@
   sp:predicate <http://example.org/speaking> ;
   sp:object "false"^^xsd:boolean ]) .
 
-<#darknessPromisePreCondition> a sp:Ask ;
-  sp:where (
-  [ sp:subject rfid-dark:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "true"^^xsd:boolean ] 
-  [ sp:subject rfid-bright:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "false"^^xsd:boolean ] ) .
-<#brightnessPromisePreCondition> a sp:Ask ;
-  sp:where (
-  [ sp:subject rfid-bright:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "true"^^xsd:boolean ]
-  [ sp:subject rfid-dark:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "false"^^xsd:boolean ] ) .
+<#start> a sp:Ask ;
+  sp:where ([
+        sp:subject rfid-submit:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
 
-<#dark-correct-pc> a sp:Ask ;
-  sp:where (
-  [ sp:subject rfid-submit:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "true"^^xsd:boolean  ]
-  [ sp:subject light:value ;
-    sp:predicate <http://example.org/isBright> ;
-    sp:object "false"^^xsd:boolean ] ) .
-<#dark-incorrect-pc> a sp:Ask ;
-  sp:where (
-  [ sp:subject rfid-submit:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "true"^^xsd:boolean  ]
-  [ sp:subject light:value ;
-    sp:predicate <http://example.org/isBright> ;
-    sp:object "true"^^xsd:boolean ] ) .
-<#bright-correct-pc> a sp:Ask ;
-  sp:where (
-  [ sp:subject rfid-submit:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "true"^^xsd:boolean  ]
-  [ sp:subject light:value ;
-    sp:predicate <http://example.org/isBright> ;
-    sp:object "true"^^xsd:boolean ] ) .
-<#bright-incorrect-pc> a sp:Ask ;
-  sp:where (
-  [ sp:subject rfid-submit:sensor ;
-    sp:predicate rdf:value ;
-    sp:object "true"^^xsd:boolean  ]
-  [ sp:subject light:value ;
-    sp:predicate <http://example.org/isBright> ;
-    sp:object "false"^^xsd:boolean ] ) .
+<#impossible> a sp:Ask ; sparql-result:boolean "false"^^xsd:boolean .
 
 <#truePostCondition> a sp:Ask ; sparql-result:boolean "true"^^xsd:boolean .

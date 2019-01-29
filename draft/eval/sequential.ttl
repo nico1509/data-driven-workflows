@@ -34,13 +34,10 @@
 #
 
 <#root> a :SequentialActivity ;
-  :hasChildActivities ( <#alpha> <#C> ) .
-
-<#alpha> a :SequentialActivity ;
-  :hasChildActivities ( <#A> <#B> ) .
+  :hasChildActivities ( <#A> <#B> <#C> <#D> ) .
 
 <#A> a :AtomicActivity ;
-  :hasPreCondition <#start> ;
+  :hasPrecondition <#start> ;
   :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
@@ -64,6 +61,13 @@
       http:requestURI speaker:spk ;
       http:body "{\"http://schema.org/text\":\"C\"}" ] .
 
+<#D> a :AtomicActivity ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{\"http://schema.org/text\":\"D\"}" ] .
 
 #
 # Pre- and Postconditions
