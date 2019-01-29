@@ -34,24 +34,36 @@
 #
 
 <#root> a :SequentialActivity ;
-  :hasChildActivities ( <#fireAlarlm> <#callFireDepartment> ) .
+  :hasChildActivities ( <#alpha> <#C> ) .
 
-<#fireAlarlm> a :AtomicActivity ;
-  :hasPrecondition <#fireAlarlm> ;
-  :hasPostcondition <#speakerQuiet> ;
+<#alpha> a :SequentialActivity ;
+  :hasChildActivities ( <#A> <#B> ) .
+
+<#A> a :AtomicActivity ;
+  :hasPreCondition <#start> ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{Fire alarm triggered. Fire department will be called in 5 4 3 2 1}" ] .
+      http:body "{A}" ] .
 
-<#fireAlarlm> a :AtomicActivity ;
-  :hasPostcondition <#speakerQuiet> ;
+<#B> a :AtomicActivity ;
+  :hasPostcondition <#truePostCondition> ;
   :hasHttpRequest
     [ a http:Request ;
       http:mthd http_m:POST ;
       http:requestURI speaker:spk ;
-      http:body "{Calling 911" ] .
+      http:body "{B}" ] .
+
+<#C> a :AtomicActivity ;
+  :hasPostcondition <#truePostCondition> ;
+  :hasHttpRequest
+    [ a http:Request ;
+      http:mthd http_m:POST ;
+      http:requestURI speaker:spk ;
+      http:body "{C}" ] .
+
 
 #
 # Pre- and Postconditions
@@ -63,7 +75,7 @@
   sp:predicate <http://example.org/speaking> ;
   sp:object "false"^^xsd:boolean ]) .
 
-<#fireAlarlm> a sp:Ask ;
+<#start> a sp:Ask ;
   sp:where ([
         sp:subject rfid-submit:sensor ;
         sp:predicate rdf:value ;
