@@ -56,7 +56,7 @@
 
 :G5
     a ibm:Guard ;
-    ibm:hasCondition :PeopleCounted, :PeopleCountedMOCK .
+    ibm:hasCondition :PeopleCounted .
 
 :G6
     a ibm:Guard ;
@@ -117,8 +117,7 @@
 :CheckForCompleteness 
     a ibm:StageModel ;
     ibm:hasGuard :G4 ;
- #   ibm:hasMilestoneModel :C5 , :C4a ;
-    ibm:hasMilestoneModel :CX ;
+    ibm:hasMilestoneModel :Cincomplete , :Ccomplete ;
     ibm:hasTaskModel :CheckForCompletenessTask .
 
 :StartSearching
@@ -247,15 +246,15 @@
 #    ibm:hasValidatingSentry :PeopleComplete ;
 #    ibm:hasInvalidatingSentry :NoFireAnymore .
 
-#:C4b 
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleComplete ;
-#    ibm:hasInvalidatingSentry :NoFireAnymore .
+:Ccomplete 
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :PeopleCountedAndComplete ;
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
-#:C5 
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleIncomplete ;
-#    ibm:hasInvalidatingSentry :NoFireAnymore .
+:Cincomplete 
+    a ibm:MilestoneModel ;
+    ibm:hasValidatingSentry :PeopleCountedAndIncomplete ;
+    ibm:hasInvalidatingSentry :NoFireAnymore .
 
 :C6
     a ibm:MilestoneModel ;
@@ -338,17 +337,29 @@
     ]) .
 
 
+#:PeopleCounted
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-dark:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean
+#    ]) .
+
 :PeopleCounted
     a sp:Ask ;
     sp:where ([
-        sp:subject rfid-dark:sensor ;
-        sp:predicate rdf:value ;
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
         sp:object "true"^^xsd:boolean
     ]) .
 
-:PeopleCountedMOCK
+:PeopleCountedAndIncomplete
     a sp:Ask ;
     sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ] [
         sp:subject mock:People ;
         sp:predicate <http://example.org/counted> ;
         sp:object "true"^^xsd:boolean
@@ -366,13 +377,17 @@
         sp:object "true"^^xsd:boolean
     ]) .
 
-#:PeopleComplete
-#    a sp:Ask ;
-#    sp:where ([
-#        sp:subject rfid-dark:sensor ;
-#        sp:predicate rdf:value ;
-#        sp:object "true"^^xsd:boolean 
-#    ]) .
+:PeopleCountedAndComplete
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "true"^^xsd:boolean  
+    ]) .
 
 :PeopleCompleteFireExtinguished
     a sp:Ask ;
