@@ -92,6 +92,11 @@
     rdfs:domain :Instance ;
     rdfs:range :State .
 
+:isAchieved
+    a rdf:Property ;
+    rdfs:domain :MileStoneInstance ;
+    rdfs:range xsd:boolean .
+
 :hasTask
     a rdf:Property ;
     rdfs:domain :StageModel ;

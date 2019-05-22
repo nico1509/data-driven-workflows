@@ -97,7 +97,7 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
             this:MilestoneInstance gsm:isInstanceOf ?milestoneModel ;
-            gsm:hasState gsm:unachieved ;
+            gsm:isAchieved "false"^^xsd:boolean ;
             gsm:inWorkflowInstance ?WfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
@@ -225,7 +225,7 @@
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
-            gsm:hasState gsm:achieved ;
+            gsm:isAchieved "true"^^xsd:boolean ;
             gsm:inWorkflowInstance ?wfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
@@ -272,7 +272,7 @@
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?milestoneInstance gsm:hasState gsm:achieved .
+    ?milestoneInstance gsm:isAchieved "true"^^xsd:boolean .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
@@ -284,7 +284,7 @@
         http:requestURI ?milestoneInstance ; 
         http:body {
             ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
-            gsm:hasState gsm:unachieved ;
+            gsm:isAchieved "false"^^xsd:boolean ;
             gsm:inWorkflowInstance ?wfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
@@ -301,7 +301,7 @@
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?milestoneInstance gsm:hasState gsm:achieved .
+    ?milestoneInstance gsm:isAchieved "true"^^xsd:boolean .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
@@ -310,7 +310,7 @@
     ?milestoneInstance gsm:forStageModel ?stageModelOfInstance .
     ?stageModelOfInstance gsm:hasMilestoneModel ?otherMilestoneModel .
     ?otherMilestoneInstance gsm:isInstanceOf ?otherMilestoneModel ;
-                            gsm:hasState gsm:achieved .
+                            gsm:isAchieved "true"^^xsd:boolean .
 }
 =>
 {
@@ -319,7 +319,7 @@
         http:requestURI ?otherMilestoneInstance ; 
         http:body {
             ?otherMilestoneInstance gsm:isInstanceOf ?otherMilestoneModel ;
-            gsm:hasState gsm:unachieved ;
+            gsm:isAchieved "false"^^xsd:boolean ;
             gsm:inWorkflowInstance ?wfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
@@ -337,7 +337,7 @@
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?milestoneInstance gsm:hasState gsm:achieved .
+    ?milestoneInstance gsm:isAchieved "true"^^xsd:boolean .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
