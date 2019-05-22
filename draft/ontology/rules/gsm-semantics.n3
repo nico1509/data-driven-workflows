@@ -69,14 +69,14 @@
                 gsm:hasState gsm:uninitialized ;
                 gsm:isInstanceOf ?WfModel . 
                 ?WfModel gsm:containsStageModel ?stageModel .
-                ?stageModel gsm:hasTaskModel ?taskModel .
+                ?stageModel gsm:hasTask ?task .
 }
 =>
 {
     _:h2 http:mthd http_m:POST ; 
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
-            this:TaskInstance gsm:isInstanceOf ?taskModel ;
+            this:TaskInstance gsm:isInstanceOf ?task ;
             gsm:inWorkflowInstance ?WfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
@@ -123,7 +123,7 @@
 #    ?wfModel gsm:containsStageModel ?stageModel .
 #    ?stageInstance gsm:isInstanceOf ?stageModel ;
 #                    gsm:hasState gsm:triggered .
-#    ?stageModel gsm:hasTaskModel ?taskModel .
+#    ?stageModel gsm:hasTask ?task .
 #} 
 #=> 
 #{
@@ -176,7 +176,7 @@
     ?wfInstance gsm:isInstanceOf ?wfModel .
     ?wfModel gsm:containsStageModel ?stageModel .
     ?stageModel gsm:hasGuard ?guard ;
-                gsm:hasTaskModel ?taskModel .
+                gsm:hasTask ?task .
 
     # Prerequisite
     ?stageInstance gsm:isInstanceOf ?stageModel .
@@ -187,7 +187,7 @@
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
     ?wfInstance gsm:hasState gsm:active .
 
-    ?taskModel gsm:hasHttpRequest ?httpRequest .
+    ?task gsm:hasHttpRequest ?httpRequest .
 
     ?httpRequest http:mthd ?httpMthd ;
                 http:requestURI ?httpUri ;
