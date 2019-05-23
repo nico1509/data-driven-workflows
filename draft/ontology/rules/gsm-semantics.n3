@@ -58,16 +58,17 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body {
             this:StageInstance gsm:isInstanceOf ?descendantStageModel ;
+            gsm:inSuperStageInstance ?WfInstance ;
             gsm:hasState gsm:inactive ;
         } . 
 } .
 
 # Setup Task Instances
 { 
-    ?WfInstance a gsm:WorkflowInstance ;
+    ?stageInstance a gsm:StageInstance ;
                 gsm:hasState gsm:uninitialized ;
-                gsm:isInstanceOf ?WfModel . 
-                ?WfModel gsm:containsStageModel ?stageModel .
+                gsm:isInstanceOf ?stageModel . 
+                ?stageModel gsm:hasDescendantStage ?descendamntStageModel .
                 ?stageModel gsm:hasTask ?task .
 }
 =>
@@ -76,9 +77,9 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
             this:TaskInstance gsm:isInstanceOf ?task ;
-            gsm:inWorkflowInstance ?WfInstance ;
+            gsm:inSuperStageInstance ?WfInstance ;
             # UI modifications
-            gsm:forStageModel ?stageModel .
+            gsm:forStageModel ?descendantStageModel .
         } .
     
 } .
@@ -97,7 +98,7 @@
         http:body { 
             this:MilestoneInstance gsm:isInstanceOf ?milestoneModel ;
             gsm:isAchieved "false"^^xsd:boolean ;
-            gsm:inWorkflowInstance ?WfInstance ;
+            gsm:inSuperStageInstance ?WfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } .
@@ -162,7 +163,7 @@
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
             gsm:hasState gsm:running ;
-            gsm:inWorkflowInstance ?wfInstance .
+            gsm:inSuperStageInstance ?wfInstance .
         } . 
 } .
 
@@ -225,7 +226,7 @@
         http:body {
             ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
             gsm:isAchieved "true"^^xsd:boolean ;
-            gsm:inWorkflowInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?wfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } . 
@@ -255,7 +256,7 @@
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
             gsm:hasState gsm:done ;
-            gsm:inWorkflowInstance ?wfInstance .
+            gsm:inSuperStageInstance ?wfInstance .
         } . 
 } .
 
@@ -284,7 +285,7 @@
         http:body {
             ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
             gsm:isAchieved "false"^^xsd:boolean ;
-            gsm:inWorkflowInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?wfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } . 
@@ -319,7 +320,7 @@
         http:body {
             ?otherMilestoneInstance gsm:isInstanceOf ?otherMilestoneModel ;
             gsm:isAchieved "false"^^xsd:boolean ;
-            gsm:inWorkflowInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?wfInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } . 
@@ -349,7 +350,7 @@
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
             gsm:hasState gsm:inactive ;
-            gsm:inWorkflowInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?wfInstance ;
             # UI modification
             gsm:forStageModel ?stageModel .
         } . 
@@ -432,6 +433,6 @@
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
             gsm:hasState gsm:inactive ;
-            gsm:inWorkflowInstance ?wfInstance .
+            gsm:inSuperStageInstance ?wfInstance .
         } . 
 } .

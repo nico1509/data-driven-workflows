@@ -110,10 +110,10 @@
     rdfs:domain :Instantiable ;
     rdfs:range :Instantiable .
 
-:inWorkflowInstance                      ###Temporary construct if recursive parent-instance requests are too hard
+:inSuperStageInstance                      ###Temporary construct if recursive parent-instance requests are too hard
     a rdf:Property ;
     rdfs:domain :Instantiable ;
-    rdfs:range :WorkflowInstance .
+    rdfs:range :StageInstance .
 
 :hasHttpRequest
     a rdf:Property ;
