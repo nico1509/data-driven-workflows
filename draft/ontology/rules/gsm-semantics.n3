@@ -142,6 +142,35 @@
 #            } .
 #} .
 
+
+# FCR-1 transitive helper
+
+
+{
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean ;
+        gsm:hasState gsm:active ;
+        gsm:isInstanceOf ?stageModel .
+
+    ?stageModel gsm:hasChildStage ?childStageModel .
+    ?childStageInstance gsm:isInstanceOf ?childStageModel .
+} => {
+    ?childStageInstance gsm:allAncestorsActive "true"^^xsd:boolean .
+} . 
+
+{
+    ?stageInstance gsm:allAncestorsActive  "true"^^xsd:boolean ;
+        gsm:hasState gsm:active ;
+        gsm:isInstanceOf ?stageModel .
+
+    ?stageModel 
+       gsm:hasChildStage ?childStageModel .
+    ?childStageInstance gsm:isInstanceOf ?childStageModel .
+} => { 
+    ?childStageInstance gsm:allAncestorsActive "true"^^xsd:boolean . 
+} .
+
+
+
 # FCR-1
 
 {
@@ -152,13 +181,8 @@
     ?stageModel gsm:hasGuard ?guard .
 
     # Prerequisite
-
-    # nesting
-    ?parentStageModel gsm:hasDescendantStage ?stageModel .
-    ?parentStageInstance gsm:isInstanceOf ?parentStageModel;
-                        gsm:hasState :active .
-
-    ?stageInstance gsm:hasState gsm:inactive .
+    ?stageInstance gsm:allAncestorsActive "true"^^xsd:boolean ;
+                gsm:hasState gsm:inactive .
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
@@ -181,26 +205,6 @@
 # (PUT, POST at least), see annotation below
 # 
 {
-     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean ;
-       gsm:hasState gsm:active ;
-       gsm:isInstanceOf ?stageModel .
-
-    ?stageModel 
-       gsm:hasChildStage ?childStageModel .
-    ?childStageInstance gsm:isInstanceOf ?childStageModel .
-} => { ?childStageModel gsm:allAncestorsActive true .} .
-
-{
-     ?stageInstance gsm:allAncestorsActive  true ;
-       gsm:hasState gsm:active ;
-       gsm:isInstanceOf ?stageModel .
-
-    ?stageModel 
-       gsm:hasChildStage ?childStageModel .
-    ?childStageInstance gsm:isInstanceOf ?childStageModel .
-} => { ?childStageModel gsm:allAncestorsActive true . } .
-
-{
 
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
@@ -210,13 +214,8 @@
                 gsm:hasTask ?task .
 
     # Prerequisite
-
-    # nesting
-    ?parentStageModel gsm:hasDescendantStage ?stageModel .
-    ?parentStageInstance gsm:isInstanceOf ?parentStageModel;
-                        gsm:hasState :active .
-
-    ?stageInstance gsm:hasState gsm:inactive .
+    ?stageInstance gsm:allAncestorsActive "true"^^xsd:boolean ;
+                    gsm:hasState gsm:inactive .
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
@@ -282,39 +281,6 @@
 
     # Prerequisite
     ?stageInstance gsm:hasState gsm:active .
-
-    # Antecedent
-    ?sentry sparql-result:boolean "true"^^xsd:boolean .
-}
-=>
-{
-    # Consequent
-    _:h http:mthd http_m:PUT ; 
-        http:requestURI ?stageInstance ; 
-        http:body {
-            ?stageInstance gsm:isInstanceOf ?stageModel ;
-                gsm:hasState gsm:done ;
-                gsm:inSuperStageInstance ?superStageInstance .
-        } . 
-} .
-
-# set all descendand stages as done
-{
-    # Basis
-    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
-    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
-                    gsm:isInstanceOf ?stageModel .
-    
-    ?stageModel gsm:hasMilestoneModel ?milestoneModel .
-    ?milestoneModel gsm:hasValidatingSentry ?sentry .
-    ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
-
-    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
-    ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
-
-    # Prerequisite
-    ?stageInstance gsm:hasState gsm:active .
-    ?descendantStageInstance gsm:hasState gsm:active; # FRAGE: sollten auch inactive child stages auf done gesetzt werden? 
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
