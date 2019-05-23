@@ -38,11 +38,11 @@
 :TaskInstance
     rdfs:subClassOf :Instance .
 
-:WorkflowModel
-    rdfs:subClassOf :Instantiable .
+#:WorkflowModel
+#    rdfs:subClassOf :Instantiable .
 
-:WorkflowInstance
-    rdfs:subClassOf :Instance .
+#:WorkflowInstance
+#    rdfs:subClassOf :Instance .
 
 :Guard
     rdfs:subClassOf :Conditional .
@@ -59,10 +59,13 @@
     rdfs:domain :Instance ;
     rdfs:range :Instantiable .
 
-:containsStageModel
+:hasDescendantStage
     a rdf:Property ;
-    rdfs:domain :WorkflowModel ;
-    rdfs:range :StageModel .
+    rdfs:domain :StageModel ;
+    rdfs:model :StageModel .
+
+:hasChildStage
+    rdfs:subPropertyOf :hasDescendantStage .
 
 :hasCondition
     a rdf:Property ;
