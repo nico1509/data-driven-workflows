@@ -29,6 +29,9 @@
 #=>
 #{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
 
+# TODO: ?SUPERstageInstance
+
+
 # Setup Workflow Instances() 
 { 
     ?stageInstance a gsm:StageInstance ;
@@ -205,7 +208,7 @@
 
 } .
 
-# PAC-2
+# FCR-2
 # set milestone achieved
 {
     # Basis
@@ -265,7 +268,7 @@
 } .
 
 
-# PAC-3
+# FCR-3
 # reset milestone
 {
     # Basis
