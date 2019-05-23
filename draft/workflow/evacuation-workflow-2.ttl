@@ -1,0 +1,439 @@
+@prefix : <#> .
+@prefix gsm: <http://tok450s.lan:8080/ldbbc/gsm-vocab.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sparql-result: <http://www.w3.org/2005/sparql-results#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix http_m: <http://www.w3.org/2011/http-methods#>.
+
+
+# Workflow-specific Prefixes
+@prefix mock: <http://mock-server.lan:3000/mock/rdf#> .
+@prefix rfid-bright: <http://t2-rest-bright.lan/#> .
+@prefix rfid-dark: <http://t2-rest-dark.lan/#> .
+@prefix rfid-ambient: <http://t2-rest-rfid-ambient.lan/rfid#> .
+@prefix ambient-light: <http://t2-rest-rfid-ambient.lan/ambient/light#> .
+@prefix ambient-sound: <http://t2-rest-rfid-ambient.lan/ambient/sound#> .
+@prefix speaker: <http://t2-rest-speaker.lan/#> .
+
+
+
+# Workflow
+:EvacuationWorkflowModel
+    a gsm:WorkflowModel ;
+    gsm:containsStageModel 
+        :CallEmergency ,
+        :StartEvacuatingPeople , 
+        :ActivateSiren , 
+        :OpenChimney , 
+        :CloseFireDoors , 
+        :CountPeople , 
+        :StartExtinguishing , 
+        :CheckForCompleteness , 
+        :StartSearching , 
+        :SayItsDone . 
+
+
+# Guards
+:G1 
+    a gsm:Guard ;
+    gsm:hasCondition :FireAlarmButtonPressed, :FireAlarmButtonPressedMOCK .
+
+:G2
+    a gsm:Guard ;
+    gsm:hasCondition :HighTemperatureDetected, :HighTemperatureDetectedMOCK .
+
+:G3 
+    a gsm:Guard ;
+    gsm:hasCondition :EmergencyArrived .
+
+:G4
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleEvacuated , :PeopleEvacuatedMOCK .
+
+:G5
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleCounted .
+
+:G6
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleIncompleteFireExtinguished .
+
+:G7
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleCompleteFireExtinguished .
+
+:Gcount
+    a gsm:Guard ;
+    gsm:hasCondition :CountButtonPressed .
+
+
+# Stages
+:CallEmergency
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :C1 ;
+    gsm:hasTask :CallEmergencyTask .
+
+:StartEvacuatingPeople
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :C2 ;
+    gsm:hasTask :StartEvacuatingPeopleTask .
+
+:ActivateSiren
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTask :ActivateSirenTask .
+
+:OpenChimney
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTask :OpenChimneyTask .
+
+:CloseFireDoors
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTask :CloseFireDoorsTask .
+
+:CountPeople
+    a gsm:StageModel ;
+    gsm:hasGuard :Gcount ;
+    gsm:hasMilestoneModel :CXcount ;
+    gsm:hasTask :AddPerson .
+
+:StartExtinguishing
+    a gsm:StageModel ;
+    gsm:hasGuard :G3 ;
+    gsm:hasMilestoneModel :C6 ;
+    gsm:hasTask :StartExtinguishingTask .
+
+:CheckForCompleteness 
+    a gsm:StageModel ;
+    gsm:hasGuard :G4 ;
+    gsm:hasMilestoneModel :All , :Missing ;
+    gsm:hasTask :CountPeopleTask .
+
+:StartSearching
+    a gsm:StageModel ;
+    gsm:hasGuard :G6 ;
+    gsm:hasMilestoneModel :C4 ;
+    gsm:hasTask :SearchPeopleTask .
+
+:SayItsDone
+    a gsm:StageModel ;
+    gsm:hasGuard :G7 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTask :SayItsDoneTask .
+
+# Tasks
+:CallEmergencyTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Call Emergency!\"}"^^xsd:string
+    ] .
+
+:StartEvacuatingPeopleTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Evacuate People!\"}"^^xsd:string
+    ] .
+
+:ActivateSirenTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Activate Siren!\"}"^^xsd:string
+    ] .
+
+:OpenChimneyTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Open the chimney!\"}"^^xsd:string
+    ] .
+
+:CloseFireDoorsTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Close the fire doors!\"}"^^xsd:string
+    ] .
+
+:AddPerson 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://mock-server.lan:3000/mock/cntPeople/add> ;
+        http:body ""^^xsd:string
+    ] .
+
+:StartExtinguishingTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Emergency arrived! Start extinguishing\"}"^^xsd:string
+    ] .
+
+:CountPeopleTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"People are now evacuated. Check if everyone is here!\"}"^^xsd:string
+    ] .
+
+:SearchPeopleTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"The fire is now extinguished, but Oh jeez! There are people missing. Let's search them!\"}"^^xsd:string
+    ] .
+
+:SayItsDoneTask 
+    a gsm:Task ;
+    gsm:hasHttpRequest [
+        a http:Request ;
+        http:mthd http_m:POST ;
+        http:requestURI <http://t2-rest-speaker.lan> ;
+        http:body "{\"http://schema.org/text\":\"Great! Everyone is save now.\"}"^^xsd:string
+    ] .
+
+
+# Milestones
+:C1
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :EmergencyArrived ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+:C2
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleEvacuated ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+#:C3
+#    a gsm:MilestoneModel ;
+#    gsm:hasValidatingSentry :PeopleCounted ;
+#   gsm:hasInvalidatingSentry :HighTemperatureDetected .
+
+:C4 
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleCompleteFireExtinguished ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+:All 
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleCountedAndComplete ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+:Missing 
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleCountedAndIncomplete ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+:C6
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :FireExtinguished ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+# dummy milestone for stages with no explicit milestone
+:CX
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :AlwaysTrue ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
+
+:CXcount
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :AlwaysTrue ;
+    gsm:hasInvalidatingSentry :CountButtonNotPressed .
+
+
+# Sentries
+:AlwaysTrue
+    a sp:Ask ;
+    sp:where ([
+        sparql-result:boolean "true"^^xsd:boolean
+    ]) .
+
+:FireAlarmButtonPressed
+    a sp:Ask ;
+    sp:where ([
+        sp:subject rfid-ambient:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:FireAlarmButtonPressedMOCK
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:AlarmButton ;
+        sp:predicate <http://example.org/isPressed> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:HighTemperatureDetected
+    a sp:Ask ;
+    sp:where ([
+        sp:subject ambient-light:value ;
+        sp:predicate <http://example.org/isBright> ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
+:HighTemperatureDetectedMOCK
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Temperature ;
+        sp:predicate <http://example.org/isHigh> ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
+:EmergencyArrived
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Emergency ;
+        sp:predicate <http://example.org/isArrived> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+#:PeopleEvacuated
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-bright:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean 
+#    ]) .
+
+:PeopleEvacuated
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/evacuated> ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
+
+#:PeopleCounted
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-dark:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean
+#    ]) .
+
+:PeopleCounted
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:PeopleCountedAndIncomplete
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+:PeopleIncompleteFireExtinguished
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "false"^^xsd:boolean
+    ] [
+        sp:subject mock:Fire ;
+        sp:predicate <http://example.org/extinguished> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:PeopleCountedAndComplete
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "true"^^xsd:boolean  
+    ]) .
+
+:PeopleCompleteFireExtinguished
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "true"^^xsd:boolean  
+    ] [
+        sp:subject mock:Fire ;
+        sp:predicate <http://example.org/extinguished> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:CountButtonPressed
+    a sp:Ask ;
+    sp:where ([
+        sp:subject rfid-bright:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "true"^^xsd:boolean 
+    ]) .
+
+:CountButtonNotPressed
+    a sp:Ask ;
+    sp:where ([
+        sp:subject rfid-bright:sensor ;
+        sp:predicate rdf:value ;
+        sp:object "false"^^xsd:boolean 
+    ]) .
+
+:FireExtinguished
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:Fire ;
+        sp:predicate <http://example.org/extinguished> ;
+        sp:object "true"^^xsd:boolean
+    ]) .
+
+:NoFireAnymore 
+    a sp:Ask ;
+    sp:where ([
+        sp:subject rfid-ambient:sensor ; # mockable ?
+        sp:predicate rdf:value ;
+        sp:object "false"^^xsd:boolean
+    ] [
+        sp:subject ambient-light:value ;
+        sp:predicate <http://example.org/isBright> ;
+        sp:object "false"^^xsd:boolean
+    ]) .
+
+
