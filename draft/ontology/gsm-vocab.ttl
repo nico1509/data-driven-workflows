@@ -15,9 +15,6 @@
 :State
     a rdfs:Class .
     
-:StageContainer
-    a rdfs:Class .
-
 :Instance
     a rdfs:Class .
 
@@ -29,13 +26,12 @@
 
 # Workflow Element Classes
 :StageModel
-    rdfs:subClassOf :StageContainer ;
     rdfs:subClassOf :Instantiable .
 
 :StageInstance
     rdfs:subClassOf :Instance .
 
-:TaskModel
+:Task
     rdfs:subClassOf :Conditional ;  ##If task hast condition it's a postcondition!
     rdfs:subClassOf :Instantiable .
 
@@ -43,7 +39,6 @@
     rdfs:subClassOf :Instance .
 
 :WorkflowModel
-    rdfs:subClassOf :StageContainer ;
     rdfs:subClassOf :Instantiable .
 
 :WorkflowInstance
@@ -66,7 +61,7 @@
 
 :containsStageModel
     a rdf:Property ;
-    rdfs:domain :StageContainer ;
+    rdfs:domain :WorkflowModel ;
     rdfs:range :StageModel .
 
 :hasCondition
@@ -97,10 +92,15 @@
     rdfs:domain :Instance ;
     rdfs:range :State .
 
-:hasTaskModel
+:isAchieved
+    a rdf:Property ;
+    rdfs:domain :MileStoneInstance ;
+    rdfs:range xsd:boolean .
+
+:hasTask
     a rdf:Property ;
     rdfs:domain :StageModel ;
-    rdfs:range :TaskModel .
+    rdfs:range :Task .
 
 :inInstance
     a rdf:Property ;
@@ -114,7 +114,7 @@
 
 :hasHttpRequest
     a rdf:Property ;
-    rdfs:domain :TaskModel ;
+    rdfs:domain :Task ;
     rdfs:range http:Request .
 
 # States

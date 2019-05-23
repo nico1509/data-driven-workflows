@@ -76,65 +76,65 @@
     a gsm:StageModel ;
     gsm:hasGuard :G1 , :G2 ;
     gsm:hasMilestoneModel :C1 ;
-    gsm:hasTaskModel :CallEmergencyTask .
+    gsm:hasTask :CallEmergencyTask .
 
 :StartEvacuatingPeople
     a gsm:StageModel ;
     gsm:hasGuard :G1 , :G2 ;
     gsm:hasMilestoneModel :C2 ;
-    gsm:hasTaskModel :StartEvacuatingPeopleTask .
+    gsm:hasTask :StartEvacuatingPeopleTask .
 
 :ActivateSiren
     a gsm:StageModel ;
     gsm:hasGuard :G1 , :G2 ;
     gsm:hasMilestoneModel :CX ;
-    gsm:hasTaskModel :ActivateSirenTask .
+    gsm:hasTask :ActivateSirenTask .
 
 :OpenChimney
     a gsm:StageModel ;
     gsm:hasGuard :G1 , :G2 ;
     gsm:hasMilestoneModel :CX ;
-    gsm:hasTaskModel :OpenChimneyTask .
+    gsm:hasTask :OpenChimneyTask .
 
 :CloseFireDoors
     a gsm:StageModel ;
     gsm:hasGuard :G1 , :G2 ;
     gsm:hasMilestoneModel :CX ;
-    gsm:hasTaskModel :CloseFireDoorsTask .
+    gsm:hasTask :CloseFireDoorsTask .
 
 :CountPeople
     a gsm:StageModel ;
     gsm:hasGuard :Gcount ;
     gsm:hasMilestoneModel :CXcount ;
-    gsm:hasTaskModel :AddPerson .
+    gsm:hasTask :AddPerson .
 
 :StartExtinguishing
     a gsm:StageModel ;
     gsm:hasGuard :G3 ;
     gsm:hasMilestoneModel :C6 ;
-    gsm:hasTaskModel :StartExtinguishingTask .
+    gsm:hasTask :StartExtinguishingTask .
 
 :CheckForCompleteness 
     a gsm:StageModel ;
     gsm:hasGuard :G4 ;
     gsm:hasMilestoneModel :All , :Missing ;
-    gsm:hasTaskModel :CountPeopleTask .
+    gsm:hasTask :CountPeopleTask .
 
 :StartSearching
     a gsm:StageModel ;
     gsm:hasGuard :G6 ;
     gsm:hasMilestoneModel :C4 ;
-    gsm:hasTaskModel :SearchPeopleTask .
+    gsm:hasTask :SearchPeopleTask .
 
 :SayItsDone
     a gsm:StageModel ;
     gsm:hasGuard :G7 ;
     gsm:hasMilestoneModel :CX ;
-    gsm:hasTaskModel :SayItsDoneTask .
+    gsm:hasTask :SayItsDoneTask .
 
 # Tasks
 :CallEmergencyTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -143,7 +143,7 @@
     ] .
 
 :StartEvacuatingPeopleTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -152,7 +152,7 @@
     ] .
 
 :ActivateSirenTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -161,7 +161,7 @@
     ] .
 
 :OpenChimneyTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -170,7 +170,7 @@
     ] .
 
 :CloseFireDoorsTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -179,7 +179,7 @@
     ] .
 
 :AddPerson 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -188,7 +188,7 @@
     ] .
 
 :StartExtinguishingTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -197,7 +197,7 @@
     ] .
 
 :CountPeopleTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -206,7 +206,7 @@
     ] .
 
 :SearchPeopleTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
@@ -215,7 +215,7 @@
     ] .
 
 :SayItsDoneTask 
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;

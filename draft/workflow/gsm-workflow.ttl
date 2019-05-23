@@ -33,11 +33,11 @@
     a gsm:StageModel ;
     gsm:hasGuard :PressButton ;
     gsm:hasMilestoneModel :DidSomething ;
-    gsm:hasTaskModel :WorkingTask .
+    gsm:hasTask :WorkingTask .
 
 # Tasks
 :WorkingTask
-    a gsm:TaskModel ;
+    a gsm:Task ;
     gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
