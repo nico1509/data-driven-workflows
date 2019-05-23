@@ -181,6 +181,26 @@
 # (PUT, POST at least), see annotation below
 # 
 {
+     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean ;
+       gsm:hasState gsm:active ;
+       gsm:isInstanceOf ?stageModel .
+
+    ?stageModel 
+       gsm:hasChildStage ?childStageModel .
+    ?childStageInstance gsm:isInstanceOf ?childStageModel .
+} => { ?childStageModel gsm:allAncestorsActive true .} .
+
+{
+     ?stageInstance gsm:allAncestorsActive  true ;
+       gsm:hasState gsm:active ;
+       gsm:isInstanceOf ?stageModel .
+
+    ?stageModel 
+       gsm:hasChildStage ?childStageModel .
+    ?childStageInstance gsm:isInstanceOf ?childStageModel .
+} => { ?childStageModel gsm:allAncestorsActive true . } .
+
+{
 
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
@@ -252,15 +272,16 @@
 # set stage done
 {
     # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
+    
     ?stageModel gsm:hasMilestoneModel ?milestoneModel .
     ?milestoneModel gsm:hasValidatingSentry ?sentry .
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?stageInstance gsm:isInstanceOf ?stageModel ;
-                    gsm:hasState gsm:running .
+    ?stageInstance gsm:hasState gsm:active .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
@@ -272,8 +293,41 @@
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
-            gsm:hasState gsm:done ;
-            gsm:inSuperStageInstance ?wfInstance .
+                gsm:hasState gsm:done ;
+                gsm:inSuperStageInstance ?superStageInstance .
+        } . 
+} .
+
+# set all descendand stages as done
+{
+    # Basis
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
+    
+    ?stageModel gsm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel gsm:hasValidatingSentry ?sentry .
+    ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
+
+    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
+    ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
+
+    # Prerequisite
+    ?stageInstance gsm:hasState gsm:active .
+    ?descendantStageInstance gsm:hasState gsm:active; # FRAGE: sollten auch inactive child stages auf done gesetzt werden? 
+
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI ?stageInstance ; 
+        http:body {
+            ?stageInstance gsm:isInstanceOf ?stageModel ;
+                gsm:hasState gsm:done ;
+                gsm:inSuperStageInstance ?superStageInstance .
         } . 
 } .
 
