@@ -146,10 +146,10 @@
 
 {
     # Basis
-    ?superStageInstance gsm:isInstanceOf ?superStageModel .
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
     ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
-    ?descendantStageModel gsm:hasGuard ?guard .
+    ?stageInstance gsm:isInstanceOf ?stageModel .
+    ?stageModel gsm:hasGuard ?guard .
 
     # Prerequisite
     ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
