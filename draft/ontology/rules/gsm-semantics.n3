@@ -146,16 +146,14 @@
 
 {
     # Basis
-    ?stageInstance gsm:isInstanceOf ?stageModel .
-    ?stageModel gsm:hasChildStage ?childStageModel .
+    ?superStageInstance gsm:isInstanceOf ?superStageModel .
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
     ?descendantStageModel gsm:hasGuard ?guard .
 
     # Prerequisite
     ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
     ?descendantStageInstance gsm:hasState gsm:inactive .
-
-    ?parentStageModel gsm:hasChildStage ?descendantStageModel .
-    ?parentStageModel gsm:hasState gsm:active
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
