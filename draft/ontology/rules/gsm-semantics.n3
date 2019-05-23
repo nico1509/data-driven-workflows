@@ -41,7 +41,8 @@
         http:requestURI ?stageInstance ; 
         http:body { 
             this:it gsm:isInstanceOf ?stageModel ;
-            gsm:hasState gsm:active . 
+            gsm:hasState gsm:active ;
+            gsm:isSuperStageInstance "true"^^xsd:boolean .
         } .
 } .
 
@@ -100,7 +101,7 @@
             gsm:isAchieved "false"^^xsd:boolean ;
             gsm:inSuperStageInstance ?stageInstance ;
             # UI modifications
-            gsm:forStageModel ?stageModel .
+            gsm:forStageModel ?descendantStageModel .
         } .
 } .
 
@@ -142,13 +143,16 @@
 
 {
     # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
-    ?stageModel gsm:hasGuard ?guard .
+    ?stageInstance gsm:isInstanceOf ?stageModel .
+    ?stageModel gsm:hasChildStage ?childStageModel .
+    ?descendantStageModel gsm:hasGuard ?guard .
 
     # Prerequisite
-    ?stageInstance gsm:isInstanceOf ?stageModel .
-    ?stageInstance gsm:hasState gsm:inactive .
+    ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
+    ?descendantStageInstance gsm:hasState gsm:inactive .
+
+    ?parentStageModel gsm:hasChildStage ?descendantStageModel .
+    ?parentStageModel gsm:hasState gsm:active
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .

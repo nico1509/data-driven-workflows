@@ -110,6 +110,11 @@
     rdfs:domain :Instantiable ;
     rdfs:range :Instantiable .
 
+:isSuperStageInstance
+    a rdf:Property ;
+    rdfs:domain :StageInstance ;
+    rdfs:range xsd:boolean .
+
 :inSuperStageInstance                      ###Temporary construct if recursive parent-instance requests are too hard
     a rdf:Property ;
     rdfs:domain :Instantiable ;
