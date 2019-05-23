@@ -222,20 +222,15 @@
 
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
-    ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
-    ?stageModel gsm:hasGuard ?guard ;
-                gsm:hasTask ?task .
-
-    # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
+    
     ?stageModel gsm:hasMilestoneModel ?milestoneModel .
     ?milestoneModel gsm:hasValidatingSentry ?sentry .
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?stageInstance gsm:isInstanceOf ?stageModel ;
-                    gsm:hasState gsm:running .
+    ?stageInstance gsm:hasState gsm:active .
 
     # Antecedent
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
@@ -248,7 +243,7 @@
         http:body {
             ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
             gsm:isAchieved "true"^^xsd:boolean ;
-            gsm:inSuperStageInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?superStageInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } . 
