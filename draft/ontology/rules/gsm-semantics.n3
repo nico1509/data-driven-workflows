@@ -301,9 +301,10 @@
 # FCR-3
 # reset milestone
 {
-    # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+     # Basis
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
     ?stageModel gsm:hasMilestoneModel ?milestoneModel .
     ?milestoneModel gsm:hasInvalidatingSentry ?sentry .
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
@@ -322,7 +323,7 @@
         http:body {
             ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
             gsm:isAchieved "false"^^xsd:boolean ;
-            gsm:inSuperStageInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?superStageInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } . 
@@ -330,9 +331,11 @@
 
 # reset OTHER milestones of the stage
 {
+
     # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
     ?stageModel gsm:hasMilestoneModel ?milestoneModel .
     ?milestoneModel gsm:hasInvalidatingSentry ?sentry .
     ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
@@ -357,17 +360,55 @@
         http:body {
             ?otherMilestoneInstance gsm:isInstanceOf ?otherMilestoneModel ;
             gsm:isAchieved "false"^^xsd:boolean ;
-            gsm:inSuperStageInstance ?wfInstance ;
+            gsm:inSuperStageInstance ?superStageInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
+        } . 
+} .
+
+# reset all milestones of all child stages (traversing)
+{
+    # Basis
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
+    ?stageModel gsm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel gsm:hasInvalidatingSentry ?sentry .
+    ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
+
+    # Prerequisite
+    ?milestoneInstance gsm:isAchieved "true"^^xsd:boolean .
+
+    # Antecedent
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+
+    # Addition
+    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
+
+    ?descendantStageModel gsm:hasMilestoneModel ?otherMilestoneModel .
+    ?otherMilestoneInstance gsm:isInstanceOf ?otherMilestoneModel ;
+                            gsm:isAchieved "true"^^xsd:boolean .
+}
+=>
+{
+    # Consequent
+    _:h http:mthd http_m:PUT ; 
+        http:requestURI ?otherMilestoneInstance ; 
+        http:body {
+            ?otherMilestoneInstance gsm:isInstanceOf ?otherMilestoneModel ;
+            gsm:isAchieved "false"^^xsd:boolean ;
+            gsm:inSuperStageInstance ?superStageInstance ;
+            # UI modifications
+            gsm:forStageModel ?descendantStageModel .
         } . 
 } .
 
 # reset stage
 {
     # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
     ?stageModel gsm:hasMilestoneModel ?milestoneModel .
     ?stageInstance gsm:isInstanceOf ?stageModel .
     ?milestoneModel gsm:hasInvalidatingSentry ?sentry .
@@ -386,90 +427,46 @@
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
-            gsm:hasState gsm:inactive ;
-            gsm:inSuperStageInstance ?wfInstance ;
+                gsm:hasState gsm:inactive ;
+                gsm:inSuperStageInstance ?superStageInstance ;
+            
             # UI modification
-            gsm:forStageModel ?stageModel .
+                gsm:forStageModel ?stageModel .
         } . 
 } .
 
-# PAC-4
-#{
-#    # Basis
-#    ?wfInstance gsm:isInstanceOf ?wfModel .
-#    ?wfModel gsm:containsStageModel ?stageModel .
-#    ?stageModel gsm:hasMilestoneModel ?milestoneModel ;
-#            gsm:hasGuard ?guard .
-#    
-#    # Prerequisite
-#    ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
-#                        gsm:hasState gsm:active .
-#
-#    # Antecedent
-#    ?guard gsm:hasCondition ?sentry .
-#    ?sentry sparql-result:boolean "true"^^xsd:boolean .
-#    ?wfInstance gsm:hasState gsm:active .
-#} 
-#=>
-#{
-#    # Consequent
-#    _:h http:mthd http_m:PUT ; 
-#        http:requestURI ?milestoneInstance ; 
-#        http:body {
-#            ?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
-#            gsm:hasState gsm:inactive ;
-#            gsm:inWorkflowInstance ?wfInstance .
-#        } .
-#} .
 
-# PAC-5
-#{
-#    # Basis
-#    ?wfInstance gsm:isInstanceOf ?wfModel .
-#    ?wfModel gsm:containsStageModel ?stageModel .
-#    ?stageModel gsm:hasMilestoneModel ?milestoneModel .
-#    ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
-
-#    # Prerequisite
-#    ?stageInstance gsm:isInstanceOf ?stageModel ;
-#                    gsm:hasState gsm:running .
-#
-#    # Antecedent
-#    ?milestoneInstance gsm:hasState gsm:achieved .
-#}
-#=>
-#{
-#    # Consequent
-#    _:h http:mthd http_m:PUT ; 
-#       http:requestURI ?stageInstance ; 
-#        http:body {
-#            ?stageInstance gsm:isInstanceOf ?stageModel ;
-#            gsm:hasState gsm:done ;
-#            gsm:inWorkflowInstance ?wfInstance .
-#        } . 
-#} .
-
-# PAC-6
+#reset all child stages  (traversing)
 {
     # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
+    ?stageModel gsm:hasMilestoneModel ?milestoneModel .
+    ?milestoneModel gsm:hasInvalidatingSentry ?sentry .
+    ?milestoneInstance gsm:isInstanceOf ?milestoneModel .
 
     # Prerequisite
-    ?stageInstance gsm:isInstanceOf ?stageModel .
-    ?stageInstance gsm:hasState gsm:active .
+    ?milestoneInstance gsm:isAchieved "true"^^xsd:boolean .
 
     # Antecedent
-    ?wfInstance gsm:hasState gsm:inactive .
+    ?sentry sparql-result:boolean "true"^^xsd:boolean .
+
+    # Addition
+    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
+    ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
 }
 =>
 {
     # Consequent
     _:h http:mthd http_m:PUT ; 
-        http:requestURI ?stageInstance ; 
+        http:requestURI ?descendantStageInstance ; 
         http:body {
-            ?stageInstance gsm:isInstanceOf ?stageModel ;
-            gsm:hasState gsm:inactive ;
-            gsm:inSuperStageInstance ?wfInstance .
+            ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel ;
+                gsm:hasState gsm:inactive ;
+                gsm:inSuperStageInstance ?superStageInstance ;
+         
+            # UI modification
+                gsm:forStageModel ?descendantStageModel .
         } . 
 } .
