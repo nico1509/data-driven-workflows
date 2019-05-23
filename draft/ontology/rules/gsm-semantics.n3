@@ -148,17 +148,21 @@
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
     ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
-    ?stageInstance gsm:isInstanceOf ?stageModel .
     ?stageModel gsm:hasGuard ?guard .
 
     # Prerequisite
-    ?descendantStageInstance gsm:isInstanceOf ?descendantStageModel .
-    ?descendantStageInstance gsm:hasState gsm:inactive .
+
+    # nesting
+    ?parentStageModel gsm:hasDescendantStage ?stageModel .
+    ?parentStageInstance gsm:isInstanceOf ?parentStageModel;
+                        gsm:hasState :active .
+
+    ?stageInstance gsm:isInstanceOf ?stageModel ;
+                    gsm:hasState gsm:inactive .
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
-    ?wfInstance gsm:hasState gsm:active .
 } 
 => 
 {
@@ -167,8 +171,8 @@
         http:requestURI ?stageInstance ; 
         http:body {
             ?stageInstance gsm:isInstanceOf ?stageModel ;
-            gsm:hasState gsm:running ;
-            gsm:inSuperStageInstance ?wfInstance .
+            gsm:hasState gsm:active ;
+            gsm:inSuperStageInstance ?superStageInstance .
         } . 
 } .
 
@@ -177,20 +181,26 @@
 # (PUT, POST at least), see annotation below
 # 
 {
+
     # Basis
-    ?wfInstance gsm:isInstanceOf ?wfModel .
-    ?wfModel gsm:containsStageModel ?stageModel .
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
     ?stageModel gsm:hasGuard ?guard ;
                 gsm:hasTask ?task .
 
     # Prerequisite
-    ?stageInstance gsm:isInstanceOf ?stageModel .
-    ?stageInstance gsm:hasState gsm:inactive .
+
+    # nesting
+    ?parentStageModel gsm:hasDescendantStage ?stageModel .
+    ?parentStageInstance gsm:isInstanceOf ?parentStageModel;
+                        gsm:hasState :active .
+
+    ?stageInstance gsm:isInstanceOf ?stageModel ;
+                    gsm:hasState gsm:inactive .
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
-    ?wfInstance gsm:hasState gsm:active .
 
     ?task gsm:hasHttpRequest ?httpRequest .
 
