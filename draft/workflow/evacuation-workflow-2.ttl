@@ -22,9 +22,9 @@
 
 
 # Workflow
-:EvacuationWorkflowModel
-    a gsm:WorkflowModel ;
-    gsm:containsStageModel 
+:EvacuationWorkflowStageModel
+    a gsm:StageModel ;
+    gsm:hasChildStage 
         :CallEmergency ,
         :StartEvacuatingPeople , 
         :ActivateSiren , 
