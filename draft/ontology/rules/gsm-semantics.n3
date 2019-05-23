@@ -58,7 +58,7 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body {
             this:StageInstance gsm:isInstanceOf ?descendantStageModel ;
-            gsm:inSuperStageInstance ?WfInstance ;
+            gsm:inSuperStageInstance ?stageInstance ;
             gsm:hasState gsm:inactive ;
         } . 
 } .
@@ -68,7 +68,7 @@
     ?stageInstance a gsm:StageInstance ;
                 gsm:hasState gsm:uninitialized ;
                 gsm:isInstanceOf ?stageModel . 
-                ?stageModel gsm:hasDescendantStage ?descendamntStageModel .
+                ?stageModel gsm:hasDescendantStage ?descendantStageModel .
                 ?stageModel gsm:hasTask ?task .
 }
 =>
@@ -77,7 +77,7 @@
         http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
         http:body { 
             this:TaskInstance gsm:isInstanceOf ?task ;
-            gsm:inSuperStageInstance ?WfInstance ;
+            gsm:inSuperStageInstance ?stageInstance ;
             # UI modifications
             gsm:forStageModel ?descendantStageModel .
         } .
@@ -85,11 +85,11 @@
 } .
 # Setup Milestone Instances
 { 
-    ?WfInstance a gsm:WorkflowInstance ;
+    ?stageInstance a gsm:StageInstance ;
                 gsm:hasState gsm:uninitialized ;
-                gsm:isInstanceOf ?WfModel . 
-    ?WfModel gsm:containsStageModel ?stageModel .
-    ?stageModel gsm:hasMilestoneModel ?milestoneModel .
+                gsm:isInstanceOf ?stageModel . 
+    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
+    ?descendantStageModel gsm:hasMilestoneModel ?milestoneModel .
 }
 =>
 {
@@ -98,7 +98,7 @@
         http:body { 
             this:MilestoneInstance gsm:isInstanceOf ?milestoneModel ;
             gsm:isAchieved "false"^^xsd:boolean ;
-            gsm:inSuperStageInstance ?WfInstance ;
+            gsm:inSuperStageInstance ?stageInstance ;
             # UI modifications
             gsm:forStageModel ?stageModel .
         } .
