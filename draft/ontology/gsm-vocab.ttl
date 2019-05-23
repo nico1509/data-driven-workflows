@@ -124,15 +124,6 @@
 :uninitialized
     a :State .
 
-:initialized
-    a :State .
-
-:triggered
-    a :State .
-
-:running
-    a :State .
-
 :done 
     a :State .
 
@@ -140,10 +131,4 @@
     a :State .
     
 :active
-    a :State .
-
-:achieved
-    a :State .
-
-:unachieved
     a :State .
