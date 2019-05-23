@@ -170,9 +170,7 @@
 } .
 
 
-
 # FCR-1
-
 {
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
@@ -187,6 +185,11 @@
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
     ?sentry sparql-result:boolean "true"^^xsd:boolean .
+
+    # -------- all milestones have to be archived / 'and' is supposed but not prooven
+    #?guard gsm:hasMilestoneModel ?milestoneModel .
+    #?milestoneInstance gsm:isInstanceOf ?milestoneModel ;
+    #                    gsm:isAchieved "true"^^xsd:boolean .
 } 
 => 
 {
