@@ -201,7 +201,7 @@
 
 } .
 
-# PAC-2
+# FCR-2
 # set milestone achieved
 {
     # Basis
@@ -261,7 +261,7 @@
 } .
 
 
-# PAC-3
+# FCR-3
 # reset milestone
 {
     # Basis
@@ -353,86 +353,5 @@
             ibm:inWorkflowInstance ?wfInstance ;
             # UI modification
             ibm:forStageModel ?stageModel .
-        } . 
-} .
-
-# PAC-4
-#{
-#    # Basis
-#    ?wfInstance ibm:isInstanceOf ?wfModel .
-#    ?wfModel ibm:containsStageModel ?stageModel .
-#    ?stageModel ibm:hasMilestoneModel ?milestoneModel ;
-#            ibm:hasGuard ?guard .
-#    
-#    # Prerequisite
-#    ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
-#                        ibm:hasState ibm:active .
-#
-#    # Antecedent
-#    ?guard ibm:hasCondition ?sentry .
-#    ?sentry sparql-result:boolean "true"^^xsd:boolean .
-#    ?wfInstance ibm:hasState ibm:active .
-#} 
-#=>
-#{
-#    # Consequent
-#    _:h http:mthd http_m:PUT ; 
-#        http:requestURI ?milestoneInstance ; 
-#        http:body {
-#            ?milestoneInstance ibm:isInstanceOf ?milestoneModel ;
-#            ibm:hasState ibm:inactive ;
-#            ibm:inWorkflowInstance ?wfInstance .
-#        } .
-#} .
-
-# PAC-5
-#{
-#    # Basis
-#    ?wfInstance ibm:isInstanceOf ?wfModel .
-#    ?wfModel ibm:containsStageModel ?stageModel .
-#    ?stageModel ibm:hasMilestoneModel ?milestoneModel .
-#    ?milestoneInstance ibm:isInstanceOf ?milestoneModel .
-
-#    # Prerequisite
-#    ?stageInstance ibm:isInstanceOf ?stageModel ;
-#                    ibm:hasState ibm:running .
-#
-#    # Antecedent
-#    ?milestoneInstance ibm:hasState ibm:achieved .
-#}
-#=>
-#{
-#    # Consequent
-#    _:h http:mthd http_m:PUT ; 
-#       http:requestURI ?stageInstance ; 
-#        http:body {
-#            ?stageInstance ibm:isInstanceOf ?stageModel ;
-#            ibm:hasState ibm:done ;
-#            ibm:inWorkflowInstance ?wfInstance .
-#        } . 
-#} .
-
-# PAC-6
-{
-    # Basis
-    ?wfInstance ibm:isInstanceOf ?wfModel .
-    ?wfModel ibm:containsStageModel ?stageModel .
-
-    # Prerequisite
-    ?stageInstance ibm:isInstanceOf ?stageModel .
-    ?stageInstance ibm:hasState ibm:active .
-
-    # Antecedent
-    ?wfInstance ibm:hasState ibm:inactive .
-}
-=>
-{
-    # Consequent
-    _:h http:mthd http_m:PUT ; 
-        http:requestURI ?stageInstance ; 
-        http:body {
-            ?stageInstance ibm:isInstanceOf ?stageModel ;
-            ibm:hasState ibm:inactive ;
-            ibm:inWorkflowInstance ?wfInstance .
         } . 
 } .

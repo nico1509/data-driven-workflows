@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+    <head>
+        <title>People Counter</title>
+
+        <!-- styles -->
+        <style type="text/css">
+
+            body{
+                margin: 0;
+                padding: 0;
+            }
+
+            #page{
+                width: 300px;
+                position: relative;
+                margin: 0 auto;
+                padding-top: 10px;
+            }
+
+            #counter{
+                background: #d8d8d8;
+                font-size: 50px;
+                font-family: Arial;
+                padding: 30px;
+                border-radius: 20px;
+                text-align: center;
+                border: 1px solid #d8d8d8;
+
+                transform: scale(1.2);
+            }
+
+            #cnt{
+                font-size: 70px;
+            }
+        
+            #counter[data-server-status="fail"]{
+                border-color: rgb(255, 45, 62);
+                background: rgba(255, 45, 62, 0.2);
+            }
+        </style>
+
+        <!-- scripts -->
+        <script src="/res/jQuery.js"></script>       
+        <link rel="stylesheet" type="text/css" href="/res/fa/css/all.css" />
+            
+        <script>
+            var loading = false;
+            setInterval(function(){
+                if(loading) return;
+                loading = true;
+                
+                $.get('/mock/json').done(function(json){
+                    console.log('JSON: ', json, 'cnt: ', json.cntPeople);
+                   
+                    $('#cnt').text(json.cntPeople);
+                    $('#counter').attr('data-server-status', 'done');
+                    loading = false;
+                }).fail(function(){
+                    $('#counter').attr('data-server-status', 'fail');
+                    loading = false;
+                });
+
+            }, 2 * 1000);
+        </script>
+    </head>
+    <body>
+
+        <div id="page">
+
+            <p id="counter">
+                <span id="cnt">0</span>/5
+                <br/>
+                <span>People</span>
+            </p>
+
+        </div>
+
+    </body>
+</html>

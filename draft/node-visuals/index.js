@@ -239,6 +239,17 @@ app.get('/stages', function (req, res) {
 });
 */
 
+// people count ui page (html)
+app.get('/mock/cntPeople/ui', function (req, res) {
+    
+    fs.readFile('html/peoplecnt.html', 'utf8', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    });
+    
+});
+
 // landing page
 app.get('/', function (req, res) {
     var ip = require('ip');
