@@ -147,7 +147,8 @@
 {
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
-    ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
     ?stageModel gsm:hasGuard ?guard .
 
     # Prerequisite
@@ -157,8 +158,7 @@
     ?parentStageInstance gsm:isInstanceOf ?parentStageModel;
                         gsm:hasState :active .
 
-    ?stageInstance gsm:isInstanceOf ?stageModel ;
-                    gsm:hasState gsm:inactive .
+    ?stageInstance gsm:hasState gsm:inactive .
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
@@ -184,7 +184,8 @@
 
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
-    ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance ;
+                    gsm:isInstanceOf ?stageModel .
     ?stageModel gsm:hasGuard ?guard ;
                 gsm:hasTask ?task .
 
@@ -195,8 +196,7 @@
     ?parentStageInstance gsm:isInstanceOf ?parentStageModel;
                         gsm:hasState :active .
 
-    ?stageInstance gsm:isInstanceOf ?stageModel ;
-                    gsm:hasState gsm:inactive .
+    ?stageInstance gsm:hasState gsm:inactive .
 
     # Antecedent
     ?guard gsm:hasCondition ?sentry .
@@ -219,6 +219,13 @@
 # FCR-2
 # set milestone achieved
 {
+
+    # Basis
+    ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
+    ?stageInstance gsm:inSuperStageInstance ?superStageInstance .
+    ?stageModel gsm:hasGuard ?guard ;
+                gsm:hasTask ?task .
+
     # Basis
     ?wfInstance gsm:isInstanceOf ?wfModel .
     ?wfModel gsm:containsStageModel ?stageModel .
