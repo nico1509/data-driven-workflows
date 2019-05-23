@@ -1,7 +1,7 @@
 # Common Prefixes
 
 @prefix : <#> .
-@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix gsm: <http://tok450s.lan:8080/ldbbc/gsm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -19,26 +19,26 @@
 
 
 :MyWorkflowModel
-    a ibm:WorkflowModel ;
-    ibm:containsStageModel :DoSomething .
+    a gsm:WorkflowModel ;
+    gsm:containsStageModel :DoSomething .
 
 # Guards
 :PressButton
-    a ibm:Guard ;
-    ibm:hasCondition :ButtonIsPressed .
+    a gsm:Guard ;
+    gsm:hasCondition :ButtonIsPressed .
     
     
 # Stages
 :DoSomething
-    a ibm:StageModel ;
-    ibm:hasGuard :PressButton ;
-    ibm:hasMilestoneModel :DidSomething ;
-    ibm:hasTaskModel :WorkingTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :PressButton ;
+    gsm:hasMilestoneModel :DidSomething ;
+    gsm:hasTaskModel :WorkingTask .
 
 # Tasks
 :WorkingTask
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI worker:doWork ;
@@ -47,10 +47,10 @@
 
 # Milestones
 :DidSomething
-    a ibm:MilestoneModel ;
-    ibm:hasAchievingSentry :SomethingIsDone ;    
-    #ibm:hasInvalidatingSentry :Reset .    
-    ibm:hasInvalidatingSentry :ButtonIsNotPressed .
+    a gsm:MilestoneModel ;
+    gsm:hasAchievingSentry :SomethingIsDone ;    
+    #gsm:hasInvalidatingSentry :Reset .    
+    gsm:hasInvalidatingSentry :ButtonIsNotPressed .
 
 # Sentries
 :ButtonIsPressed 

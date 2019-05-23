@@ -1,5 +1,5 @@
 @prefix : <#> .
-@prefix ibm: <http://tok450s.lan:8080/ldbbc/ibm-vocab.ttl#> .
+@prefix gsm: <http://tok450s.lan:8080/ldbbc/gsm-vocab.ttl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -23,8 +23,8 @@
 
 # Workflow
 :EvacuationWorkflowModel
-    a ibm:WorkflowModel ;
-    ibm:containsStageModel 
+    a gsm:WorkflowModel ;
+    gsm:containsStageModel 
         :CallEmergency ,
         :StartEvacuatingPeople , 
         :ActivateSiren , 
@@ -39,105 +39,103 @@
 
 # Guards
 :G1 
-    a ibm:Guard ;
-    ibm:hasCondition :FireAlarmButtonPressed, :FireAlarmButtonPressedMOCK .
+    a gsm:Guard ;
+    gsm:hasCondition :FireAlarmButtonPressed, :FireAlarmButtonPressedMOCK .
 
 :G2
-    a ibm:Guard ;
-    ibm:hasCondition :HighTemperatureDetected, :HighTemperatureDetectedMOCK .
+    a gsm:Guard ;
+    gsm:hasCondition :HighTemperatureDetected, :HighTemperatureDetectedMOCK .
 
 :G3 
-    a ibm:Guard ;
-    ibm:hasCondition :EmergencyArrived .
+    a gsm:Guard ;
+    gsm:hasCondition :EmergencyArrived .
 
 :G4
-    a ibm:Guard ;
-    ibm:hasCondition :PeopleEvacuated , :PeopleEvacuatedMOCK .
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleEvacuated , :PeopleEvacuatedMOCK .
 
 :G5
-    a ibm:Guard ;
-    ibm:hasCondition :PeopleCounted, :PeopleCountedMOCK .
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleCounted .
 
 :G6
-    a ibm:Guard ;
-    ibm:hasCondition :PeopleIncompleteFireExtinguished .
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleIncompleteFireExtinguished .
 
 :G7
-    a ibm:Guard ;
-    ibm:hasCondition :PeopleCompleteFireExtinguished .
+    a gsm:Guard ;
+    gsm:hasCondition :PeopleCompleteFireExtinguished .
 
 :Gcount
-    a ibm:Guard ;
-    ibm:hasCondition :CountButtonPressed .
+    a gsm:Guard ;
+    gsm:hasCondition :CountButtonPressed .
 
 
 # Stages
 :CallEmergency
-    a ibm:StageModel ;
-    ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :C1 ;
-    ibm:hasTaskModel :CallEmergencyTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :C1 ;
+    gsm:hasTaskModel :CallEmergencyTask .
 
 :StartEvacuatingPeople
-    a ibm:StageModel ;
-    ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :C2 ;
-    ibm:hasTaskModel :StartEvacuatingPeopleTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :C2 ;
+    gsm:hasTaskModel :StartEvacuatingPeopleTask .
 
 :ActivateSiren
-    a ibm:StageModel ;
-    ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :ActivateSirenTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTaskModel :ActivateSirenTask .
 
 :OpenChimney
-    a ibm:StageModel ;
-    ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :OpenChimneyTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTaskModel :OpenChimneyTask .
 
 :CloseFireDoors
-    a ibm:StageModel ;
-    ibm:hasGuard :G1 , :G2 ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :CloseFireDoorsTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G1 , :G2 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTaskModel :CloseFireDoorsTask .
 
 :CountPeople
-    a ibm:StageModel ;
-    ibm:hasGuard :Gcount ;
-    ibm:hasMilestoneModel :CXcount ;
-    ibm:hasTaskModel :CountPeopleTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :Gcount ;
+    gsm:hasMilestoneModel :CXcount ;
+    gsm:hasTaskModel :AddPerson .
 
 :StartExtinguishing
-    a ibm:StageModel ;
-    ibm:hasGuard :G3 ;
-    ibm:hasMilestoneModel :C6 ;
-    ibm:hasTaskModel :StartExtinguishingTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G3 ;
+    gsm:hasMilestoneModel :C6 ;
+    gsm:hasTaskModel :StartExtinguishingTask .
 
 :CheckForCompleteness 
-    a ibm:StageModel ;
-    ibm:hasGuard :G4 ;
- #   ibm:hasMilestoneModel :C5 , :C4a ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :CheckForCompletenessTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G4 ;
+    gsm:hasMilestoneModel :All , :Missing ;
+    gsm:hasTaskModel :CountPeopleTask .
 
 :StartSearching
-    a ibm:StageModel ;
-    ibm:hasGuard :G6 ;
-    #ibm:hasMilestoneModel :C4b ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :StartSearchingTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G6 ;
+    gsm:hasMilestoneModel :C4 ;
+    gsm:hasTaskModel :SearchPeopleTask .
 
 :SayItsDone
-    a ibm:StageModel ;
-    ibm:hasGuard :G7 ;
-    ibm:hasMilestoneModel :CX ;
-    ibm:hasTaskModel :SayItsDoneTask .
+    a gsm:StageModel ;
+    gsm:hasGuard :G7 ;
+    gsm:hasMilestoneModel :CX ;
+    gsm:hasTaskModel :SayItsDoneTask .
 
 # Tasks
 :CallEmergencyTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
@@ -145,8 +143,8 @@
     ] .
 
 :StartEvacuatingPeopleTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
@@ -154,8 +152,8 @@
     ] .
 
 :ActivateSirenTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
@@ -163,8 +161,8 @@
     ] .
 
 :OpenChimneyTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
@@ -172,17 +170,17 @@
     ] .
 
 :CloseFireDoorsTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
         http:body "{\"http://schema.org/text\":\"Close the fire doors!\"}"^^xsd:string
     ] .
 
-:CountPeopleTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+:AddPerson 
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://mock-server.lan:3000/mock/cntPeople/add> ;
@@ -190,35 +188,35 @@
     ] .
 
 :StartExtinguishingTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
         http:body "{\"http://schema.org/text\":\"Emergency arrived! Start extinguishing\"}"^^xsd:string
     ] .
 
-:CheckForCompletenessTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+:CountPeopleTask 
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
         http:body "{\"http://schema.org/text\":\"People are now evacuated. Check if everyone is here!\"}"^^xsd:string
     ] .
 
-:StartSearchingTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+:SearchPeopleTask 
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
-        http:body "{\"http://schema.org/text\":\"Oh jeez! There are people missing. Let's search them!\"}"^^xsd:string
+        http:body "{\"http://schema.org/text\":\"The fire is now extinguished, but Oh jeez! There are people missing. Let's search them!\"}"^^xsd:string
     ] .
 
 :SayItsDoneTask 
-    a ibm:TaskModel ;
-    ibm:hasHttpRequest [
+    a gsm:TaskModel ;
+    gsm:hasHttpRequest [
         a http:Request ;
         http:mthd http_m:POST ;
         http:requestURI <http://t2-rest-speaker.lan> ;
@@ -228,50 +226,50 @@
 
 # Milestones
 :C1
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :EmergencyArrived ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :EmergencyArrived ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
 :C2
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :PeopleEvacuated ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleEvacuated ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
 #:C3
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleCounted ;
-#   ibm:hasInvalidatingSentry :HighTemperatureDetected .
+#    a gsm:MilestoneModel ;
+#    gsm:hasValidatingSentry :PeopleCounted ;
+#   gsm:hasInvalidatingSentry :HighTemperatureDetected .
 
-#:C4a 
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleComplete ;
-#    ibm:hasInvalidatingSentry :NoFireAnymore .
+:C4 
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleCompleteFireExtinguished ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
-#:C4b 
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleComplete ;
-#    ibm:hasInvalidatingSentry :NoFireAnymore .
+:All 
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleCountedAndComplete ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
-#:C5 
-#    a ibm:MilestoneModel ;
-#    ibm:hasValidatingSentry :PeopleIncomplete ;
-#    ibm:hasInvalidatingSentry :NoFireAnymore .
+:Missing 
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :PeopleCountedAndIncomplete ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
 :C6
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :FireExtinguished ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :FireExtinguished ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
 # dummy milestone for stages with no explicit milestone
 :CX
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :AlwaysTrue ;
-    ibm:hasInvalidatingSentry :NoFireAnymore .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :AlwaysTrue ;
+    gsm:hasInvalidatingSentry :NoFireAnymore .
 
 :CXcount
-    a ibm:MilestoneModel ;
-    ibm:hasValidatingSentry :AlwaysTrue ;
-    ibm:hasInvalidatingSentry :CountButtonNotPressed .
+    a gsm:MilestoneModel ;
+    gsm:hasValidatingSentry :AlwaysTrue ;
+    gsm:hasInvalidatingSentry :CountButtonNotPressed .
 
 
 # Sentries
@@ -309,7 +307,7 @@
     a sp:Ask ;
     sp:where ([
         sp:subject mock:Temperature ;
-        sp:predicate <http://example.org/isBright> ;
+        sp:predicate <http://example.org/isHigh> ;
         sp:object "true"^^xsd:boolean 
     ]) .
 
@@ -338,20 +336,32 @@
     ]) .
 
 
-:PeopleCounted
-    a sp:Ask ;
-    sp:where ([
-        sp:subject rfid-dark:sensor ;
-        sp:predicate rdf:value ;
-        sp:object "true"^^xsd:boolean
-    ]) .
+#:PeopleCounted
+#    a sp:Ask ;
+#    sp:where ([
+#        sp:subject rfid-dark:sensor ;
+#        sp:predicate rdf:value ;
+#        sp:object "true"^^xsd:boolean
+#    ]) .
 
-:PeopleCountedMOCK
+:PeopleCounted
     a sp:Ask ;
     sp:where ([
         sp:subject mock:People ;
         sp:predicate <http://example.org/counted> ;
         sp:object "true"^^xsd:boolean
+    ]) .
+
+:PeopleCountedAndIncomplete
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "false"^^xsd:boolean
     ]) .
 
 :PeopleIncompleteFireExtinguished
@@ -366,13 +376,17 @@
         sp:object "true"^^xsd:boolean
     ]) .
 
-#:PeopleComplete
-#    a sp:Ask ;
-#    sp:where ([
-#        sp:subject rfid-dark:sensor ;
-#        sp:predicate rdf:value ;
-#        sp:object "true"^^xsd:boolean 
-#    ]) .
+:PeopleCountedAndComplete
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/counted> ;
+        sp:object "true"^^xsd:boolean
+    ] [
+        sp:subject mock:People ;
+        sp:predicate <http://example.org/complete> ;
+        sp:object "true"^^xsd:boolean  
+    ]) .
 
 :PeopleCompleteFireExtinguished
     a sp:Ask ;
