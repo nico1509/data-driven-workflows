@@ -17,21 +17,6 @@
 @prefix webserver: <http://tok450s.lan:8080/ldbbc/> .
 
 
-#{ ?WfInstance a gsm:WorkflowInstance ; gsm:hasState gsm:uninitialized ; gsm:isInstanceOf ?td . }
-#=>
-#{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
-
-#{ ?WfInstance a gsm:WorkflowInstance ; gsm:hasState gsm:initialized ; gsm:isInstanceOf ?td . }
-#=>
-#{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
-
-#{ ?WfInstance a gsm:WorkflowInstance ; gsm:hasState gsm:active ; gsm:isInstanceOf ?td . }
-#=>
-#{ _:h http:mthd http_m:GET ; http:requestURI ?td . } . 
-
-# TODO: ?SUPERstageInstance
-
-
 # Setup Workflow Instances() 
 { 
     ?stageInstance a gsm:StageInstance ;
@@ -44,8 +29,9 @@
         http:requestURI ?stageInstance ; 
         http:body { 
             this:it gsm:isInstanceOf ?stageModel ;
-            gsm:hasState gsm:active ;
-            gsm:isSuperStageInstance "true"^^xsd:boolean .
+                a gsm:StageInstance ;
+                gsm:hasState gsm:active ;
+                gsm:isSuperStageInstance "true"^^xsd:boolean .
         } .
 } .
 
@@ -63,7 +49,7 @@
         http:body {
             this:StageInstance gsm:isInstanceOf ?descendantStageModel ;
             gsm:inSuperStageInstance ?stageInstance ;
-            gsm:hasState gsm:inactive ;
+            gsm:hasState gsm:inactive .
         } . 
 } .
 
@@ -72,8 +58,8 @@
     ?stageInstance a gsm:StageInstance ;
                 gsm:hasState gsm:uninitialized ;
                 gsm:isInstanceOf ?stageModel . 
-                ?stageModel gsm:hasDescendantStage ?descendantStageModel .
-                ?stageModel gsm:hasTask ?task .
+    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
+    ?stageModel gsm:hasTask ?task .
 }
 =>
 {
