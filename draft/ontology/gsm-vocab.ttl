@@ -60,7 +60,7 @@
     rdfs:range :Instantiable .
 
 :hasDescendantStage
-    a owl:transitiveProperty ;
+    a owl:TransitiveProperty ;
     rdfs:domain :StageModel ;
     rdfs:model :StageModel .
 
