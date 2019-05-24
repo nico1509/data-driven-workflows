@@ -101,28 +101,28 @@
 :M1
     a gsm:MilestoneModel ;
     gsm:hasValidatingSentry :EmergencyArrived ;
-    gsm:hasInvalidatingSentry :NoFireAnymore .
+    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
 
 :M2
     a gsm:MilestoneModel ;
     gsm:hasValidatingSentry :PeopleCounted ;
-    gsm:hasInvalidatingSentry :NoFireAnymore .
+    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
 
 :M3
     a gsm:MilestoneModel ;
     gsm:hasValidatingSentry :PeopleEvacuated ;
-    gsm:hasInvalidatingSentry :NoFireAnymore .
+    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
 
 :M4
     a gsm:MilestoneModel ;
     gsm:hasValidatingSentry :FireExtinguished ;
-    gsm:hasInvalidatingSentry :NoFireAnymore .
+    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
 
 # dummy milestone for stages with no explicit milestone
 :CX
     a gsm:MilestoneModel ;
     gsm:hasValidatingSentry :AlwaysTrue ;
-    gsm:hasInvalidatingSentry :NoFireAnymore .
+    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
 
 # Sentries
 :AlwaysTrue
@@ -177,4 +177,12 @@
         sp:subject mock:Fire ;
         sp:predicate <http://example.org/extinguished> ;
         sp:object "true"^^xsd:boolean
+    ]) .
+
+:FireAlarmButtonNOTPressedMOCK 
+    a sp:Ask ;
+    sp:where ([
+        sp:subject mock:AlarmButton ;
+        sp:predicate <http://example.org/isPressed> ;
+        sp:object "false"^^xsd:boolean
     ]) .
