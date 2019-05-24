@@ -110,13 +110,11 @@
 
 :M3
     a gsm:MilestoneModel ;
-    gsm:hasValidatingSentry :PeopleEvacuated ;
-    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
+    gsm:hasValidatingSentry :PeopleEvacuated .
 
 :M4
     a gsm:MilestoneModel ;
-    gsm:hasValidatingSentry :FireExtinguished ;
-    gsm:hasInvalidatingSentry :FireAlarmButtonNOTPressedMOCK .
+    gsm:hasValidatingSentry :FireExtinguished .
 
 # dummy milestone for stages with no explicit milestone
 :CX
