@@ -22,9 +22,9 @@
 
 
 # Workflow
-:EvacuationWorkflowModel
-    a gsm:WorkflowModel ;
-    gsm:containsStageModel 
+:EvacuationWorkflowStageModel
+    a gsm:StageModel ;
+    gsm:hasChildStage 
         :CallEmergency ,
         :StartEvacuatingPeople , 
         :ActivateSiren , 
@@ -44,7 +44,8 @@
 
 :G2
     a gsm:Guard ;
-    gsm:hasCondition :HighTemperatureDetected, :HighTemperatureDetectedMOCK .
+    gsm:hasCondition :HighTemperatureDetected, :HighTemperatureDetectedMOCK . #;
+    #gsm:hasMilestoneModel :C1, :C3 .
 
 :G3 
     a gsm:Guard ;
