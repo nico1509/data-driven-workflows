@@ -53,26 +53,6 @@
         } . 
 } .
 
-# Setup Task Instances
-{ 
-    ?stageInstance a gsm:StageInstance ;
-                gsm:hasState gsm:uninitialized ;
-                gsm:isInstanceOf ?stageModel . 
-    ?stageModel gsm:hasDescendantStage ?descendantStageModel .
-    ?stageModel gsm:hasTask ?task .
-}
-=>
-{
-    _:h2 http:mthd http_m:POST ; 
-        http:requestURI <http://tok450s.lan:8080/ldbbc/> ; 
-        http:body { 
-            this:TaskInstance gsm:isInstanceOf ?task ;
-            gsm:inSuperStageInstance ?stageInstance ;
-            # UI modifications
-            gsm:forStageModel ?descendantStageModel .
-        } .
-    
-} .
 # Setup Milestone Instances
 { 
     ?stageInstance a gsm:StageInstance ;
