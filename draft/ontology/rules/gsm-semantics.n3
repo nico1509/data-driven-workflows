@@ -358,7 +358,7 @@
         } . 
 } .
 
-# FCR-5
+# FCR-5 set state done
 {
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
@@ -387,7 +387,8 @@
         } . 
 } .
 
-# FCR-6 Reset all child stages' states (done -> inactive)  (traversing)
+# FCR-6 
+# Reset all child stages' states (done -> inactive)  (traversing)
 {
     # Basis
     ?superStageInstance gsm:isSuperStageInstance "true"^^xsd:boolean .
